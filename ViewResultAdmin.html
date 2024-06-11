@@ -1,67 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
+    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-           <title>Viewresult_admin</title> 
-   </head>
-<h1>UNIVERSITY OF ENERGY AND NATURAL RESOURCE</h1>
-<h3>ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
-<body>
+        <title>Viewresult_admin</title> 
+    </head>
+    <header>
+        <img src="lg.png" width="5%" breadth="5%" alt="Group Logo">
+        <h3>UNIVERSITY OF ENERGY AND NATURAL RESOURCES,
+        ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
+        <p><a href="Login.html" id="logout"><button>Logout</button></a></p>
+    </header>
+    <hr>
+    <body>
+        <div class="container">
+            <label for="schools">Select a School:</label>
+            <select id="schools" class="school-select" onchange="updateSubjects()">
+                <option value="">--Select a School--</option>
+                <option value="school1">NATURAL RESOURCES</option>
+                <option value="school2">ENERGY</option>
+                <option value="school3">ENGINEERING</option>
+                <option value="school4">SCIENCE</option>
+                <option value="school5">AGRICULTURE AND TECHNOLOGY</option>
+                <option value="school6">GEOSCIENCE</option>
+                <option value="school7">ARTS AND SOCIAL SCIENCE</option>
+                <option value="school8">GRADUATE STUDIES</option>
+                <option value="school9">MINES AND BUILT ENVIRONMENT</option>
+            </select>
+            <label for="subjects">Select a Subject:</label>
+            <select id="subjects" class="subject-select">
+                <option value="">--Select a Subject--</option>
+            </select>
+        </div>
 
-   <div class="container">
-      <label for="schools">Select a School:</label>
-      <select id="schools" class="school-select" onchange="updateSubjects()">
-          <option value="">--Select a School--</option>
-          <option value="school1">NATURAL RESOURCES</option>
-          <option value="school2">ENERGY</option>
-          <option value="school3">ENGINEERING</option>
-          <option value="school4">SCIENCE</option>
-          <option value="school5">AGRICULTURE AND TECHNOLOGY</option>
-          <option value="school6">GEOSCIENCE</option>
-          <option value="school7">ARTS AND SOCIAL SCIENCE</option>
-          <option value="school8">GRADUATE STUDIES</option>
-          <option value="school9">MINES AND BUILT ENVIRONMENT</option>
-      </select>
-      
-      <label for="subjects">Select a Subject:</label>
-      <select id="subjects" class="subject-select">
-          <option value="">--Select a Subject--</option>
-      </select>
-  </div>
+        <script>
+            const subjects = {
+                school1: ['Diploma Natural Resources Management', 'Diploma Fire,Safety and Disaster Management', 'BSc.Natural Resource', 'BSc. Hospitality Management', 'BSc.Aquaculture And Aquatic Resource Management','BSc.Fire,Safety and Disaster Management'],
+                school2: ['BSc. Petroleum Energineering', 'BSc. Renewable Energy engineering',],
+                school3: ['BSc.Agriculture Engineering', 'BSc. Computer Engineering', 'BSc. Electrical And Electronic Engineering(Regular/Weekend)', 'BSc.Environmental Engineering', 'BSc.Mechanical Enginering(Regular/Weekend)','BSc.Civil Engineering(Regular/Weekend)'],
+                school4: ['Diploma Statistics(Regular/Weekend)', 'Dilpoma Information Technology', 'Diploma Computer Science', 'BSc. Biological Science', 'Bsc.Medical Laboratory Science','BSc.Nursing','BSc.Chemistry','BSc.Computer Scienc(Regular/Weekend)','BSc.information Technology(Regular/Weekend)','BSc. Aturial Science(Regular/Weekend)','BSc.Statistics(Regular/Weekend)','BSc.Mathematical(Regular/Weekend)','BSc.Biochemistry'],
+                school5: ['BSc.Agriculture', 'BSc. Agribussiness', 'BSc.Food Technology', 'BSc. Agriculture Resource and Economics'],
+                school6: ['Diploma Geo-Information Science', 'Diploma Geomatics', 'BSc.Geomatics', 'BSc.Planning and Sustainability','BSc.Applied Meteorology and Climate Science','BSc.Geoinformation Science','BSc.Geo-Environmental Science','BSc.Climate Change and Sustainability'],
+                school7: ['BSc.Enterpreneurial Management', 'BSc. Accounting', 'BSc.Economics', 'BSc.Professional French'],
+                school8: ['MSc./PhD Sustainable Energy Management', 'BSc./PhD Environment Enginnering Management', 'MPhil/PhD Social Forestry and Environment Governance', 'MBA./MPhil/PhD Crop Science','MSc./MPhil/PhD Environment,Water and Sustainability','MSc./MPhil/PhD Computer Science','MPhil.Applied Mathematics','MSc./MPhil Environment Planning and Development','MBA/MPhil Agribusiness Management','MSc./MPhil Climate Change','MSc./MPhil Geoinformation Science','MSc./MPhil Land Degradation Neutrality','PhD Sustainable Land Management','MSc./MPhil Animal Production','MPhil. Chemistry','MPhil Environment Science','MSc.Sustainable Mining'],
+                school9: ['BSc. Sustainable Mining','BSc. Sustainable land Management'],
+            };
 
-  <script>
-      const subjects = {
-          school1: ['Diploma Natural Resources Management', 'Diploma Fire,Safety and Disaster Management', 'BSc.Natural Resource', 'BSc. Hospitality Management', 'BSc.Aquaculture And Aquatic Resource Management','BSc.Fire,Safety and Disaster Management'],
-          school2: ['BSc. Petroleum Energineering', 'BSc. Renewable Energy engineering',],
-          school3: ['BSc.Agriculture Engineering', 'BSc. Computer Engineering', 'BSc. Electrical And Electronic Engineering(Regular/Weekend)', 'BSc.Environmental Engineering', 'BSc.Mechanical Enginering(Regular/Weekend)','BSc.Civil Engineering(Regular/Weekend)'],
-          school4: ['Diploma Statistics(Regular/Weekend)', 'Dilpoma Information Technology', 'Diploma Computer Science', 'BSc. Biological Science', 'Bsc.Medical Laboratory Science','BSc.Nursing','BSc.Chemistry','BSc.Computer Scienc(Regular/Weekend)','BSc.information Technology(Regular/Weekend)','BSc. Aturial Science(Regular/Weekend)','BSc.Statistics(Regular/Weekend)','BSc.Mathematical(Regular/Weekend)','BSc.Biochemistry'],
-          school5: ['BSc.Agriculture', 'BSc. Agribussiness', 'BSc.Food Technology', 'BSc. Agriculture Resource and Economics'],
-          school6: ['Diploma Geo-Information Science', 'Diploma Geomatics', 'BSc.Geomatics', 'BSc.Planning and Sustainability','BSc.Applied Meteorology and Climate Science','BSc.Geoinformation Science','BSc.Geo-Environmental Science','BSc.Climate Change and Sustainability'],
-          school7: ['BSc.Enterpreneurial Management', 'BSc. Accounting', 'BSc.Economics', 'BSc.Professional French'],
-          school8: ['MSc./PhD Sustainable Energy Management', 'BSc./PhD Environment Enginnering Management', 'MPhil/PhD Social Forestry and Environment Governance', 'MBA./MPhil/PhD Crop Science','MSc./MPhil/PhD Environment,Water and Sustainability','MSc./MPhil/PhD Computer Science','MPhil.Applied Mathematics','MSc./MPhil Environment Planning and Development','MBA/MPhil Agribusiness Management','MSc./MPhil Climate Change','MSc./MPhil Geoinformation Science','MSc./MPhil Land Degradation Neutrality','PhD Sustainable Land Management','MSc./MPhil Animal Production','MPhil. Chemistry','MPhil Environment Science','MSc.Sustainable Mining'],
-          school9: ['BSc. Sustainable Mining','BSc. Sustainable land Management'],
-      };
-
-      function updateSubjects() {
-          const schoolSelect = document.getElementById('schools');
-          const subjectSelect = document.getElementById('subjects');
-          const selectedSchool = schoolSelect.value;
+            function updateSubjects() {
+                const schoolSelect = document.getElementById('schools');
+                const subjectSelect = document.getElementById('subjects');
+                const selectedSchool = schoolSelect.value;
           
-          // Clear previous subjects
-          subjectSelect.innerHTML = '<option value="">--Select a Subject--</option>';
+                // Clear previous subjects
+                subjectSelect.innerHTML = '<option value="">--Select a Subject--</option>';
 
-          if (selectedSchool && subjects[selectedSchool]) {
-              subjects[selectedSchool].forEach(subject => {
-                  const option = document.createElement('option');
-                  option.value = subject.toLowerCase();
-                  option.textContent = subject;
-                  subjectSelect.appendChild(option);
-              });
-          }
-      }
-  </script>
-
-<button type="submit">SUBMIT</button>
-</body>
+                if (selectedSchool && subjects[selectedSchool]) {
+                    subjects[selectedSchool].forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.toLowerCase();
+                    option.textContent = subject;
+                    subjectSelect.appendChild(option);
+                });
+                }
+            }
+        </script>
+        <button type="submit">Submit</button>
+    </body>
+    <footer>
+        <hr>
+        Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
+        <p>&copy; 2024, All rights reserved.</p>
+    </footer>
 </html>
