@@ -1,41 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Pages</title> 
-</head>
-<body>
-    <h1>Admin Profile</h1>
-    <ul>
-        <!-- User management -->
-        <li>User Management</li>
-        <h4>Update Personal info</h4>
-        <td>Name:</td>
-        <td>
-            <input type="text" name="">
-                <label for="dob">Date of Birth:</label>
-                <input type="date" id="dob" name="dob">
-        </td>
-                    <td>ID:</td>
-            <td>
-                <input type="text" ID="">
-                <td>
-                    <!-- Add or Delete User -->
-                    <div>
-                          <a href="AddDeleteuser.html"><button type="submit">Add/Delete User</button></a>
-                        </form>
-                    </div>
-        <li>Exams management</li>
-                         <a href="MountUnmountQuet.html"><button type="submit">Mount/Unmount Quetions</button></a>   
-        <li>Result management</li>
-                         <a href="Viewresult_admin.htmls"> <button type="submit">View Results_admin</button></a>
-        <li>Backup/Recovery</li>
-        <a href="BackupRecoveryquetion.html"><button type="submit">Backup/Recovery Question</button></a>
-        <a href="BackupRecoveryresult.html"><button type="submit">Backup/Recovery Result</button></a>
-        <li>FeedBack Pages</li>
-        <a href="FeedbackPage.html"><button type="submit">View FeedBack</button></a>
+    <title>Admin Profile</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
 
-    </ul>
+        header {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="text-center">
+        <img src="lg.png" width="5%" alt="Group Logo">
+        <h3>UNIVERSITY OF ENERGY AND NATURAL RESOURCES, ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
+        <p><a href="Login.html" id="logout"><button class="btn btn-outline-primary">Logout</button></a></p>
+    </header>
+    <hr>
+
+    <div class="d-flex">
+        <div class="sidebar">
+            <button class="btn btn-link btn-block" onclick="showSection('personal-details')">Personal Details</button>
+            <button class="btn btn-link btn-block" onclick="showSection('mount-unmount')">Mount/Unmount Questions</button>
+            <button class="btn btn-link btn-block" onclick="showSection('view-results')">View Results</button>
+            <button class="btn btn-link btn-block" onclick="showSection('backup-data')">Backup Data</button>
+            <button class="btn btn-link btn-block" onclick="showSection('admin-approval')">Admin Approval</button>
+            <button class="btn btn-link btn-block" onclick="showSection('feedback')">Feedback</button>
+        </div>
+
+        <div class="content">
+            <div id="personal-details" class="content-section active">
+                <h2>Personal Details</h2>
+                <div id="details-view">
+                    <p><strong>Name:</strong> <span id="adminName">Admin Name</span></p>
+                    <p><strong>Gender:</strong> <span id="adminGender">Male</span></p>
+                    <p><strong>Date of Birth:</strong> <span id="adminDob">1990-01-01</span></p>
+                    <button class="btn btn-primary" onclick="editDetails()">Edit</button>
+                </div>
+                <div id="details-edit" style="display: none;">
+                    <form>
+                        <div class="form-group">
+                            <label for="editAdminName">Name:</label>
+                            <input type="text" class="form-control" id="editAdminName" value="Admin Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="editAdminGender">Gender:</label>
+                            <select class="form-control" id="editAdminGender">
+                                <option>Male</option>
+                                <option>Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAdminDob">Date of Birth:</label>
+                            <input type="date" class="form-control" id="editAdminDob" value="1990-01-01">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveDetails()">Save</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="mount-unmount" class="content-section">
+                <h2>Mount/Unmount Questions</h2>
+                <div class="mt-4">
+                    <h5>Upload New Questions</h5>
+                    <form>
+                        <div class="form-group">
+                            <label for="questionFile">Select File:</label>
+                            <input type="file" class="form-control-file" id="questionFile">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                </div>
+                <div class="mt-4">
+                    <h5>Remove Existing Questions</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Question ID</th>
+                                <th>Question</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="questionTable">
+                            <!-- Example rows (You would dynamically generate these) -->
+                            <tr>
+                                <td>1</td>
+                                <td>What is the capital of France?</td>
+                                <td><button class="btn btn-danger" onclick="removeQuestion(this)">Remove</button></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Explain the theory of relativity.</td>
+                                <td><button class="btn btn-danger" onclick="removeQuestion(this)">Remove</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-results" class="content-section">
+                <h2>View Results</h2>
+                <!-- Add content to view student results here -->
+            </div>
+
+            <div id="backup-data" class="content-section">
+                <h2>Backup Data</h2>
+                <button class="btn btn-primary">Backup to Google Drive</button>
+                <button class="btn btn-primary">Backup to OneDrive</button>
+            </div>
+
+            <div id="admin-approval" class="content-section">
+                <h2>Admin Approval</h2>
+                <div class="mt-4">
+                    <h5>Approve Students</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Date of Birth</th>
+                                <th>Level</th>
+                                <th>School</th>
+                                <th>Programme</th>
+                                <th>ID</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentApprovalTable">
+                            <!-- Example rows (You would dynamically generate these) -->
+                            <tr>
+                                <td>John Doe</td>
+                                <td>Male</td>
+                                <td>1995-05-15</td>
+                                <td>100</td>
+                                <td>Science</td>
+                                <td>Physics</td>
+                                <td>12345</td>
+                                <td>
+                                    <button class="btn btn-success" onclick="approveUser(this)">Approve</button>
+                                    <button class="btn btn-danger" onclick="rejectUser(this)">Reject</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    <h5>Approve Lecturers</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Date of Birth</th>
+                                <th>School</th>
+                                <th>ID</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lecturerApprovalTable">
+                            <!-- Example rows (You would dynamically generate these) -->
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>Female</td>
+                                <td>1980-03-22</td>
+                                <td>Science</td>
+                                <td>54321</td>
+                                <td>
+                                    <button class="btn btn-success" onclick="approveUser(this)">Approve</button>
+                                    <button class="btn btn-danger" onclick="rejectUser(this)">Reject</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="feedback" class="content-section">
+                <h2>Feedback</h2>
+                <!-- Add content to view feedback messages here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            var sections = document.getElementsByClassName('content-section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function editDetails() {
+            document.getElementById('details-view').style.display = 'none';
+            document.getElementById('details-edit').style.display = 'block';
+        }
+
+        function saveDetails() {
+            var name = document.getElementById('editAdminName').value;
+            var gender = document.getElementById('editAdminGender').value;
+            var dob = document.getElementById('editAdminDob').value;
+
+            document.getElementById('adminName').innerText = name;
+            document.getElementById('adminGender').innerText = gender;
+            document.getElementById('adminDob').innerText = dob;
+
+            document.getElementById('details-view').style.display = 'block';
+            document.getElementById('details-edit').style.display = 'none';
+        }
+
+        function cancelEdit() {
+            document.getElementById('details-view').style.display = 'block';
+            document.getElementById('details-edit').style.display = 'none';
+        }
+
+        function removeQuestion(button) {
+            var row = button.parentElement.parentElement;
+            row.parentElement.removeChild(row);
+        }
+
+        function approveUser(button) {
+            var row = button.parentElement.parentElement;
+            // Perform approval action (e.g., update status in the database)
+            row.parentElement.removeChild(row);
+            alert('User approved.');
+        }
+
+        function rejectUser(button) {
+            var row = button.parentElement.parentElement;
+            // Perform rejection action (e.g., update status in the database)
+            row.parentElement.removeChild(row);
+            alert('User rejected.');
+        }
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
+<footer>
+    <hr>
+    <div class="text-center">
+        Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
+        <p>&copy; 2024, All rights reserved.</p>
+    </div>
+</footer>
+
 </html>
