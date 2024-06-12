@@ -1,9 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Profile</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -13,8 +10,42 @@
         }
 
         header {
-            padding: 20px;
-            background-color: #f8f9fa;
+            background-color: #343a40;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header img {
+            margin-right: 1rem;
+        }
+        header .text-center {
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+        header h3 {
+            margin: 0;
+        }
+        header h5 {
+            margin: 0;
+            font-size: 0.8rem;
+        }
+        header p {
+            margin: 0;
+        }
+        header button {
+            margin-left: 1rem;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            width: 100%;
         }
 
         .sidebar {
@@ -35,6 +66,13 @@
         .content-section.active {
             display: block;
         }
+        #middle {
+            width: 100%;
+            height: 100vh;
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -44,9 +82,8 @@
         <h3>UNIVERSITY OF ENERGY AND NATURAL RESOURCES, ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
         <p><a href="Login.html" id="logout"><button class="btn btn-outline-primary">Logout</button></a></p>
     </header>
-    <hr>
 
-    <div class="d-flex">
+    <div id="middle" class="d-flex">
         <div class="sidebar">
             <button class="btn btn-link btn-block" onclick="showSection('personal-details')">Personal Details</button>
             <button class="btn btn-link btn-block" onclick="showSection('mount-unmount')">Mount/Unmount Questions</button>
@@ -268,7 +305,6 @@
 </body>
 
 <footer>
-    <hr>
     <div class="text-center">
         Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
         <p>&copy; 2024, All rights reserved.</p>
