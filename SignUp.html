@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Sign Up</title>
-        <link rel="stylesheet" href="indexFiles/index.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <script>
             function updatePrograms() {
                 var schoolPrograms = {
@@ -67,57 +67,136 @@
                 }
             }
         </script>
+        <style>
+            body {
+                background-color: #f8f9fa;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-height: 100vh;
+            }
+            header {
+                background-color: #343a40;
+                color: white;
+                padding: 1rem;
+                text-align: center;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            header img {
+                margin-right: 1rem;
+            }
+            header .text-center {
+                margin: 0;
+                flex-grow: 1;
+                text-align: center;
+            }
+            header h3 {
+                margin: 0;
+            }
+            header h5 {
+                margin: 0;
+                font-size: 0.8rem;
+            }
+            header p {
+                margin: 0;
+            }
+            header button {
+                margin-left: 1rem;
+            }
+            footer {
+                background-color: #343a40;
+                color: white;
+                text-align: center;
+                padding: 1rem;
+                width: 100%;
+            }
+            .container {
+                margin-top: 2rem;
+                width: 80%;
+                max-width: 600px;
+                flex: 1;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            .heading1 {
+                text-align: center;
+                padding-bottom: 10%;
+            }
+            h3 {
+                margin-top: 10%;
+            }
+            hr {
+                border: none;
+                height: 1px;
+                /* Set the hr color */
+                color: #333; /* old IE */
+                background-color: #333; /* Modern Browsers */
+                }
+        </style>
     </head>
+<body>
     <header>
-        <img src="lg.png" width="5%" breadth="5%" alt="Group Logo">
-        <h3>UNIVERSITY OF ENERGY AND NATURAL RESOURCES,
-        ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
-        <p><a href="Login.html" id="logIn"><button>Login</button></a></p>
+        <img src="lg.png" width="5%" alt="Group Logo">
+        <div class="text-center">
+            <h2>UNIVERSITY OF ENERGY AND NATURAL RESOURCES</h2>
+            <h3>ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
+        </div>
+        <p><a href="Login.html" id="logIn"><button class="btn btn-primary">Login</button></a></p>
     </header>
     <hr>
-<body>
-    <div>
-        <h2>Sign Up</h2>
+    <div class="container">
+        <h2 class="heading1">SIGN UP</h2>
         <form>
-            <p><label for="name">Name</label><br>
-            <input type="text" id="name" name="name" placeholder="Your name" required></p>
-            
-            <p><label for="dob">Date of Birth</label><br>
-            <input type="date" id="dob" name="dob" required></p>
-            
-            <p><label for="gender">Gender</label><br>
-            <select id="gender" name="gender" required>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-            </select></p>
-            
-            <h2>Category</h2>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Your name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" name="dob" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" class="form-control" name="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <h3>CATEGORY</h3>
             <div class="category">
                 <label>
                     <input type="radio" name="category" value="student" required> Student
-                </label>
+                </label><br>
                 <label>
                     <input type="radio" name="category" value="lecturer"> Lecturer
-                </label>
+                </label><br>
                 <label>
                     <input type="radio" name="category" value="administrator"> Administrator
                 </label>
             </div>
             <hr>
 
-            <span>
-            <h3>Student</h3>
-            <p><label for="level">Level</label>
-                <select id="level" name="level" required>
+            <h4>Student</h4>
+            <div class="form-group">
+                <label for="level">Level</label>
+                <select id="level" name="level" class="form-control" required>
                     <option value="">Select your level</option>
                     <option value="level_100">Level 100</option>
                     <option value="level_200">Level 200</option>
                     <option value="level_300">Level 300</option>
                     <option value="level_400">Level 400</option>
                 </select></p>
-            
-            <p><label for="school">School</label>
-                <select id="school" name="school" onchange="updatePrograms()" required>
+            </div>
+            <div class="form-group">
+                <label for="school">School</label>
+                <select id="school" name="school" class="form-control" onchange="updatePrograms()" required>
                     <option value="">Select your school</option>
                     <option value="SCIENCES">SCIENCES</option>
                     <option value="ENGINEERING">ENGINEERING</option>
@@ -128,22 +207,27 @@
                     <option value="MINES AND BUILT ENVIRONMENT">MINES AND BUILT ENVIRONMENT</option>
                     <option value="ARTS AND SOCIAL SCIENCES">ARTS AND SOCIAL SCIENCES</option>
                     <option value="ENERGY">ENERGY</option>
-                </select></p>
-                
-                <p><label for="program">Program</label>
-                <select id="program" name="program" required>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="program">Program</label>
+                <select id="program" class="form-control" name="program" required>
                     <option value="">Select your program</option>
-                </select></p>
-                
-                <p><label for="id_num">Id</label>
-                    <input type="" id="id_num" name="name" placeholder="Your id number" required></p>
-            </span>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_num">Id</label>
+                <input type="" class="form-control" id="id_num" name="name" placeholder="Your id number" required>
+            </div>
+        
             <hr>
 
-            <span>
-            <h3>Lecturer</h3>
-            <p><label for="lec_school">School</label>
-                <select id="lec_school" name="lec_school" required>
+            <h4>Lecturer</h4>
+            <div class="form-group">
+                <label for="lec_school">School</label>
+                <select id="lec_school" class="form-control" name="lec_school" required>
                     <option value="">Select your school</option>
                     <option value="lec_SCIENCES">SCIENCES</option>
                     <option value="lec_ENGINEERING">ENGINEERING</option>
@@ -154,32 +238,44 @@
                     <option value="lec_MINES AND BUILT ENVIRONMENT">MINES AND BUILT ENVIRONMENT</option>
                     <option value="lec_ARTS AND SOCIAL SCIENCES">ARTS AND SOCIAL SCIENCES</option>
                     <option value="lec_ENERGY">ENERGY</option>
-                </select></p>
+                </select>
+            </div>
 
-                <p><label for="lec_id_num">Id</label>
-                    <input type="" id="lec_id_num" name="name" placeholder="Your id number" required></p>
-            </span>
+            <div class="form-group">
+                <label for="lec_id_num">Id</label>
+                <input type="" class="form-control" id="lec_id_num" name="name" placeholder="Your id number" required>
+            </div>
+        
+
             <hr>
 
-            <span>
-            <h3>Administrator</h3>
-            <p><label for="admin_id_num">Id</label>
-                <input type="" id="admin_id_num" name="name" placeholder="Your id number" required></p>
-            </span>
+            <h4>Administrator</h4>
+            <div class="form-group">
+                <label for="admin_id_num">Id</label>
+                <input type="" class="form-control" id="admin_id_num" name="name" placeholder="Your id number" required>
+            </div>
+            
             <hr>
+            
+            <div class="form-group">
+                <label for="password">New Password</label><br>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
 
-            <p><label for="password">New Password</label><br>
-                <input type="password" name="password" placeholder="Password" required></p>
-            <p><label for="confirm_password">Confirm Password</label><br>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required></p>
-
-            <p><button type="submit">Submit</button></p>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label><br>
+                <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button></p>
         </form>
     </div>
-</body>
-<footer>
     <hr>
-    Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
-    <p>&copy; 2024, All rights reserved.</p>
-</footer>
+    <footer>
+        Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
+        <p>&copy; 2024, All rights reserved.</p>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 </html>
