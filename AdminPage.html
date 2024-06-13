@@ -2,40 +2,7 @@
 <html>
 <head>
     <title>Admin Profile</title>
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.min.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.min.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.min.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.min.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.min.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css.map.">
     <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.css.map">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.min.css">
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.min.css.map">
     <style>
         body {
             margin: 0;
@@ -52,27 +19,34 @@
             align-items: center;
             justify-content: space-between;
         }
+
         header img {
             margin-right: 1rem;
         }
+
         header .text-center {
             margin: 0;
             flex-grow: 1;
             text-align: center;
         }
+
         header h3 {
             margin: 0;
         }
+
         header h5 {
             margin: 0;
             font-size: 0.8rem;
         }
+
         header p {
             margin: 0;
         }
+
         header button {
             margin-left: 1rem;
         }
+
         footer {
             background-color: #343a40;
             color: white;
@@ -99,6 +73,7 @@
         .content-section.active {
             display: block;
         }
+
         #middle {
             width: 100%;
             height: 100vh;
@@ -106,13 +81,40 @@
             background-repeat: no-repeat;
             margin: 0;
         }
+
+        .chatbox {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .message.admin {
+            text-align: right;
+        }
+
+        .message p {
+            margin: 0;
+        }
+
+        .message .time {
+            font-size: 0.8rem;
+            color: #888;
+        }
     </style>
 </head>
 
 <body>
     <header class="text-center">
         <img src="lg.png" width="5%" alt="Group Logo">
-        <h3>UNIVERSITY OF ENERGY AND NATURAL RESOURCES, ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
+        <div class="text-center">
+            <h2>UNIVERSITY OF ENERGY AND NATURAL RESOURCES</h2>
+            <h3>ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
+        </div>
         <p><a href="Login.html" id="logout"><button class="btn btn-outline-primary">Logout</button></a></p>
     </header>
 
@@ -261,9 +263,9 @@
                             <tr>
                                 <td>Jane Smith</td>
                                 <td>Female</td>
-                                <td>1980-03-22</td>
-                                <td>Science</td>
-                                <td>54321</td>
+                                <td>1980-07-20</td>
+                                <td>Engineering</td>
+                                <td>67890</td>
                                 <td>
                                     <button class="btn btn-success" onclick="approveUser(this)">Approve</button>
                                     <button class="btn btn-danger" onclick="rejectUser(this)">Reject</button>
@@ -273,19 +275,38 @@
                     </table>
                 </div>
             </div>
+
             <div id="feedback" class="content-section">
                 <h2>Feedback</h2>
-                <!-- Add content to view feedback messages here -->
+                <div class="chatbox" id="chatbox">
+                    <!-- Example messages -->
+                    <div class="message">
+                        <p>Student: Can you explain question 3?</p>
+                        <span class="time">12:45 PM</span>
+                    </div>
+                    <div class="message admin">
+                        <p>Admin: Sure, question 3 is about...</p>
+                        <span class="time">12:47 PM</span>
+                    </div>
+                </div>
+                <form id="chatForm">
+                    <div class="form-group mt-3">
+                        <textarea class="form-control" id="chatInput" rows="3" placeholder="Type your message..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
             </div>
         </div>
     </div>
 
+    <footer>
+        <p>&copy; 2023 University of Energy and Natural Resources. All rights reserved.</p>
+    </footer>
+
     <script>
         function showSection(sectionId) {
-            var sections = document.getElementsByClassName('content-section');
-            for (var i = 0; i < sections.length; i++) {
-                sections[i].classList.remove('active');
-            }
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
         }
 
@@ -295,53 +316,49 @@
         }
 
         function saveDetails() {
-            var name = document.getElementById('editAdminName').value;
-            var gender = document.getElementById('editAdminGender').value;
-            var dob = document.getElementById('editAdminDob').value;
-
+            const name = document.getElementById('editAdminName').value;
+            const gender = document.getElementById('editAdminGender').value;
+            const dob = document.getElementById('editAdminDob').value;
             document.getElementById('adminName').innerText = name;
             document.getElementById('adminGender').innerText = gender;
             document.getElementById('adminDob').innerText = dob;
-
-            document.getElementById('details-view').style.display = 'block';
-            document.getElementById('details-edit').style.display = 'none';
+            cancelEdit();
         }
 
         function cancelEdit() {
-            document.getElementById('details-view').style.display = 'block';
             document.getElementById('details-edit').style.display = 'none';
+            document.getElementById('details-view').style.display = 'block';
         }
 
         function removeQuestion(button) {
-            var row = button.parentElement.parentElement;
-            row.parentElement.removeChild(row);
+            const row = button.closest('tr');
+            row.remove();
         }
 
         function approveUser(button) {
-            var row = button.parentElement.parentElement;
-            // Perform approval action (e.g., update status in the database)
-            row.parentElement.removeChild(row);
-            alert('User approved.');
+            const row = button.closest('tr');
+            row.remove();
         }
 
         function rejectUser(button) {
-            var row = button.parentElement.parentElement;
-            // Perform rejection action (e.g., update status in the database)
-            row.parentElement.removeChild(row);
-            alert('User rejected.');
+            const row = button.closest('tr');
+            row.remove();
         }
+
+        document.getElementById('chatForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            if (message) {
+                const chatbox = document.getElementById('chatbox');
+                const newMessage = document.createElement('div');
+                newMessage.classList.add('message', 'admin');
+                newMessage.innerHTML = `<p>Admin: ${message}</p><span class="time">${new Date().toLocaleTimeString()}</span>`;
+                chatbox.appendChild(newMessage);
+                chatbox.scrollTop = chatbox.scrollHeight;
+                chatInput.value = '';
+            }
+        });
     </script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
-<footer>
-    <div class="text-center">
-        Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
-        <p>&copy; 2024, All rights reserved.</p>
-    </div>
-</footer>
-
 </html>
