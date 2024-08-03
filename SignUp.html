@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sign Up</title>
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css.map.">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.min.css.map">
+        <script>
+            function updatePrograms() {
+                var schoolPrograms = {
+                    "SCIENCES": ["Diploma Statistics (Regular/Weekend)", "Diploma Information Technology",
+                    "Diploma Computer Science", "BSc. Biological Science", "BSc. Medical Laboratory Sciences",
+                    "BSc. Nursing", "BSc. Chemistry", "BSc. Computer Science (Regular/Weekend)",
+                    "BSc. Information Technology (Regular/Weekend)", "BSc. Actuarial Science (Regular/Weekend)",
+                    "BSc. Statistics (Regular/Weekend)", "BSc. Mathematics (Regular/Weekend)", "BSc. Biochemistry"],
+
+                    "ENGINEERING": ["BSc. Agricultural Engineering", "BSc. Computer Engineering", 
+                    "BSc. Electrical and Electronic Engineering [Regular/Weekend]",
+                    "BSc. Environmental Engineering", "BSc. Mechanical Engineering [Regular/Weekend]", 
+                    "BSc. Civil Engineering [Regular/Weekend"],
+
+                    "AGRICULTURE AND TECHNOLOGY": ["BSc. Agriculture",
+                    "BSc. AgribBSc. Geomatics",
+                    "BSc. Planning and Sustainusiness", "BSc. Food Technology", "BSc. Agricultural Resource and Economics"],
+
+                    "GEOSCIENCES": ["Diploma Geo-Information Science", "Diploma Geomatics","ability", "BSc. Applied Meteorology and Climate Science",
+                    "BSc. Geoinformation Science", "BSc. Geo-Environmental Science",
+                    "BSc. Climate Change and Sustainability"],
+
+                    "GRADUATE STUDIES": ["MSc./PhD Sustainable Energy Management",
+                    "MSc./PhD Environmental Engineering Management",
+                    "MPhil/PhD Social Forestry and Environmental Governance",
+                    "MSc./MPhil/PhD Environment", "Water and Sustainability",
+                    "MBA/MPhil/PhD Crop Science", "MSc./MPhil/PhD Computer Science",
+                    "MPhil. Applied Mathematics", "MSc./MPhil Environmental Planning and Development",
+                    "MBA/MPhil Agribusiness Management", "MSc./MPhil Climate Change",
+                    "MSc./MPhil Geoinformation Science", "MSc./MPhil Land Degradation Neutrality",
+                    "PhD Sustainable Land Management", "MSc./MPhil. Animal Production",
+                    "MPhil. Chemistry", "MPhil. Environment Science", "MSc. Sustainable Mining"],
+
+                    "NATURAL RESOURCES": ["Diploma Natural Resources Management",
+                    "Diploma Fire, Safety and Disaster Management",
+                    "BSc. Natural Resources","BSc. Hospitality Management",
+                    "BSc. Aquaculture and Aquatic Resource Management", "BSc. Fire, Safety and Disaster Management"],
+
+                    "MINES AND BUILT ENVIRONMENT": ["BSc. Sustainable Mining", "BSc. Sustainable Land Management"],
+
+                    "ARTS AND SOCIAL SCIENCES": ["BSc. Entrepreneurial Management", "BSc. Accounting",
+                    "BSc. Economics", "BA Professional French"],
+
+                    "ENERGY": ["BSc. Petroleum Engineering", "BSc. Renewable Energy Engineering"]
+                };
+                var schoolSelect = document.getElementById("school");
+                var programSelect = document.getElementById("program");
+                var selectedSchool = schoolSelect.value;
+    
+                // Clear existing options
+                programSelect.innerHTML = "";
+    
+                // Populate new options
+                if (selectedSchool) {
+                    var programs = schoolPrograms[selectedSchool];
+                    programs.forEach(function(program) {
+                        var option = document.createElement("option");
+                        option.value = program;
+                        option.text = program;
+                        programSelect.add(option);
+                    });
+                }
+            }
+        </script>
+        <style>
+            body {
+                background-color: #f8f9fa;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-height: 100vh;
+            }
+            header {
+                background-color: #343a40;
+                color: white;
+                padding: 1rem;
+                text-align: center;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            header img {
+                margin-right: 1rem;
+            }
+            header .text-center {
+                margin: 0;
+                flex-grow: 1;
+                text-align: center;
+            }
+            header h3 {
+                margin: 0;
+            }
+            header h5 {
+                margin: 0;
+                font-size: 0.8rem;
+            }
+            header p {
+                margin: 0;
+            }
+            header button {
+                margin-left: 1rem;
+            }
+            footer {
+                background-color: #343a40;
+                color: white;
+                text-align: center;
+                padding: 1rem;
+                width: 100%;
+            }
+            .container {
+                margin-top: 2rem;
+                width: 80%;
+                max-width: 600px;
+                flex: 1;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            .heading1 {
+                text-align: center;
+                padding-bottom: 10%;
+            }
+            h3 {
+                margin-top: 10%;
+            }
+            hr {
+                border: none;
+                height: 2px;
+                background-color: #00ff15; /* Modern Browsers */
+                }
+        </style>
+    </head>
+<body>
+    <header>
+        <img src="lg.png" width="5%" alt="Group Logo">
+        <div class="text-center">
+            <h2>UNIVERSITY OF ENERGY AND NATURAL RESOURCES</h2>
+            <h3>ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
+        </div>
+        <p><a href="Login.html" id="logIn"><button class="btn btn-primary">Login</button></a></p>
+    </header>
+    <hr>
+    <div class="container">
+        <h2 class="heading1">SIGN UP</h2>
+        <form action="register.php" method="post">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Your name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" name="dob" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" class="form-control" name="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <h3>CATEGORY</h3>
+            <div class="category">
+                <label>
+                    <input type="radio" name="category" value="student"> Student
+                </label><br>
+                <label>
+                    <input type="radio" name="category" value="lecturer"> Lecturer
+                </label><br>
+                <label>
+                    <input type="radio" name="category" value="administrator"> Administrator
+                </label>
+            </div>
+            <hr>
+
+            <h4>Student</h4>
+            <div class="form-group">
+                <label for="level">Level</label>
+                <select id="level" name="level" class="form-control" >
+                    <option value="">Select your level</option>
+                    <option value="level_100">Level 100</option>
+                    <option value="level_200">Level 200</option>
+                    <option value="level_300">Level 300</option>
+                    <option value="level_400">Level 400</option>
+                </select></p>
+            </div>
+            <div class="form-group">
+                <label for="school">School</label>
+                <select id="school" name="school" class="form-control" onchange="updatePrograms()">
+                    <option value="">Select your school</option>
+                    <option value="SCIENCES">SCIENCES</option>
+                    <option value="ENGINEERING">ENGINEERING</option>
+                    <option value="AGRICULTURE AND TECHNOLOGY">AGRICULTURE AND TECHNOLOGY</option>
+                    <option value="GEOSCIENCES">GEOSCIENCES</option>
+                    <option value="GRADUATE STUDIES">GRADUATE STUDIES</option>
+                    <option value="NATURAL RESOURCES">NATURAL RESOURCES</option>
+                    <option value="MINES AND BUILT ENVIRONMENT">MINES AND BUILT ENVIRONMENT</option>
+                    <option value="ARTS AND SOCIAL SCIENCES">ARTS AND SOCIAL SCIENCES</option>
+                    <option value="ENERGY">ENERGY</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="program">Program</label>
+                <select id="program" class="form-control" name="program" >
+                    <option value="">Select your program</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_num">Id</label>
+                <input type="" class="form-control" id="id_num" name="id_num" placeholder="Your id number">
+            </div>
+        
+            <hr>
+
+            <h4>Lecturer</h4>
+            <div class="form-group">
+                <label for="lec_school">School</label>
+                <select id="lec_school" class="form-control" name="lec_school" >
+                    <option value="">Select your school</option>
+                    <option value="lec_SCIENCES">SCIENCES</option>
+                    <option value="lec_ENGINEERING">ENGINEERING</option>
+                    <option value="lec_AGRICULTURE AND TECHNOLOGY">AGRICULTURE AND TECHNOLOGY</option>
+                    <option value="lec_GEOSCIENCES">GEOSCIENCES</option>
+                    <option value="lec_GRADUATE STUDIES">GRADUATE STUDIES</option>
+                    <option value="lec_NATURAL RESOURCES">NATURAL RESOURCES</option>
+                    <option value="lec_MINES AND BUILT ENVIRONMENT">MINES AND BUILT ENVIRONMENT</option>
+                    <option value="lec_ARTS AND SOCIAL SCIENCES">ARTS AND SOCIAL SCIENCES</option>
+                    <option value="lec_ENERGY">ENERGY</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="lec_id_num">Id</label>
+                <input type="" class="form-control" id="id_num" name="id_num" placeholder="Your id number">
+            </div>
+        
+
+            <hr>
+
+            <h4>Administrator</h4>
+            <div class="form-group">
+                <label for="admin_id_num">Id</label>
+                <input type="" class="form-control" id="id_num" name="id_num" placeholder="Your id number">
+            </div>
+            
+            <hr>
+            
+            <div class="form-group">
+                <label for="password">New Password</label><br>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label><br>
+                <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button></p>
+        </form>
+    </div>
+    <hr>
+    <footer>
+        Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
+        <p>&copy; 2024, All rights reserved.</p>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
