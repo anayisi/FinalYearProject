@@ -1,9 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Student Page</title>
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch user details and results/courses
+            fetch('details.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.student) {
+                            document.getElementById('user-type').textContent = 'Student';
+                            document.getElementById('user-name').textContent = data.student.name;
+                            document.getElementById('user-email').textContent = data.student.email;
+                            document.getElementById('user-dob').textContent = data.student.dob;
+
+                            // Populate exam results
+                            const resultsTableBody = document.getElementById('results-table-body');
+                            data.exams_results.forEach(result => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${result.course}</td>
+                                    <td>${result.date}</td>
+                                    <td>${result.score}</td>
+                                `;
+                                resultsTableBody.appendChild(row);
+                            });
+                        } else if (data.lecturer) {
+                            document.getElementById('user-type').textContent = 'Lecturer';
+                            document.getElementById('user-name').textContent = data.lecturer.name;
+                            document.getElementById('user-email').textContent = data.lecturer.email;
+                            document.getElementById('user-dob').textContent = data.lecturer.dob;
+
+                            // Populate courses
+                            const coursesTableBody = document.getElementById('courses-table-body');
+                            data.courses.forEach(course => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${course.course_name}</td>
+                                    <td>${course.course_code}</td>
+                                    <td>${course.description}</td>
+                                `;
+                                coursesTableBody.appendChild(row);
+                            });
+                        } else if (data.administrator) {
+                            document.getElementById('user-type').textContent = 'Administrator';
+                            document.getElementById('user-name').textContent = data.administrator.name;
+                            document.getElementById('user-email').textContent = data.administrator.email;
+                            document.getElementById('user-dob').textContent = data.administrator.dob;
+
+                            // Populate all students' results
+                            const allResultsTableBody = document.getElementById('all-results-table-body');
+                            data.all_results.forEach(result => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${result.name}</td>
+                                    <td>${result.email}</td>
+                                    <td>${result.exam_id}</td>
+                                    <td>${result.score}</td>
+                                `;
+                                allResultsTableBody.appendChild(row);
+                            });
+                        }
+                    } else {
+                        alert('Failed to load user details.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
     <style>
         body {
             margin: 0;
@@ -116,10 +184,10 @@
             color: #888;
         }
     </style>
-</head>
 
+</head>
 <body>
-    <header class="text-center">
+    <header>
         <img src="lg.png" width="5%" alt="Group Logo">
         <div class="text-center">
             <h2>UNIVERSITY OF ENERGY AND NATURAL RESOURCES</h2>
@@ -127,7 +195,6 @@
         </div>
         <p><a href="Login.html" id="logout"><button class="btn btn-outline-primary">Logout</button></a></p>
     </header>
-
     <div class="container" id="middle">
         <div class="sidebar">
             <button class="btn btn-link btn-block" onclick="showSection('personal-details')">Personal Details</button>
@@ -135,42 +202,44 @@
             <button class="btn btn-link btn-block" onclick="showSection('view-results')">View Results</button>
             <button class="btn btn-link btn-block" onclick="showSection('feedback')">Feedback</button>
         </div>
-
         <div class="content">
             <div id="personal-details" class="content-section active">
                 <h2>Personal Details</h2>
                 <div id="details-view">
-                    <p><strong>Name:</strong> <span id="studentName">Student Name</span></p>
-                    <p><strong>Gender:</strong> <span id="studentGender">Male</span></p>
-                    <p><strong>Date of Birth:</strong> <span id="studentDob">1990-01-01</span></p>
+                    <p><strong>User Type:</strong> <span id="user-type"></span></p>
+                    <p><strong>Name:</strong> <span id="user-name"></span></p>
+                    <p><strong>Email:</strong> <span id="user-email"></span></p>
+                    <p><strong>Date of Birth:</strong> <span id="user-dob"></span></p>
                     <button class="btn btn-primary" onclick="editDetails()">Edit</button>
                 </div>
                 <div id="details-edit" style="display: none;">
                     <form>
                         <div class="form-group">
                             <label for="editStudentName">Name:</label>
-                            <input type="text" class="form-control" id="editStudentName" value="Student Name">
+                            <input type="text" class="form-control" id="editStudentName" value="">
                         </div>
                         <div class="form-group">
-                            <label for="editStudentGender">Gender:</label>
-                            <select class="form-control" id="editStudentGender">
-                                <option>Male</option>
-                                <option>Female</option>
-                            </select>
+                            <label for="editStudentEmail">Email:</label>
+                            <input type="email" class="form-control" id="editStudentEmail" value="">
                         </div>
                         <div class="form-group">
                             <label for="editStudentDob">Date of Birth:</label>
-                            <input type="date" class="form-control" id="editStudentDob" value="1990-01-01">
+                            <input type="date" class="form-control" id="editStudentDob" value="">
                         </div>
                         <button type="button" class="btn btn-primary" onclick="saveDetails()">Save</button>
                         <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
                     </form>
                 </div>
             </div>
-            
+
             <div id="view-results" class="content-section">
                 <h2>View Results</h2>
                 <!-- Add content to view student results here -->
+            </div>
+
+            <div id="Exam-Pass" class="content-section">
+                <h2>Examination</h2>
+                <!-- Add content to write examinations here -->
             </div>
 
             <div id="feedback" class="content-section">
@@ -193,13 +262,13 @@
                     <button type="submit" class="btn btn-primary">Send</button>
                 </form>
             </div>
+
         </div>
-    </div>
-
+    </div> 
     <footer class="text-center">
-        <p>&copy; 2024 University of Energy and Natural Resources. All rights reserved.</p>
-    </footer>
-
+            Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
+            <p>&copy; 2024, All rights reserved.</p>
+        </footer>
     <script>
         function showSection(sectionId) {
             var sections = document.getElementsByClassName('content-section');
@@ -212,15 +281,19 @@
         function editDetails() {
             document.getElementById('details-view').style.display = 'none';
             document.getElementById('details-edit').style.display = 'block';
+
+            document.getElementById('editStudentName').value = document.getElementById('user-name').innerText;
+            document.getElementById('editStudentEmail').value = document.getElementById('user-email').innerText;
+            document.getElementById('editStudentDob').value = document.getElementById('user-dob').innerText;
         }
 
         function saveDetails() {
             var name = document.getElementById('editStudentName').value;
-            var gender = document.getElementById('editStudentGender').value;
+            var email = document.getElementById('editStudentEmail').value;
             var dob = document.getElementById('editStudentDob').value;
-            document.getElementById('studentName').innerText = name;
-            document.getElementById('studentGender').innerText = gender;
-            document.getElementById('studentDob').innerText = dob;
+            document.getElementById('user-name').innerText = name;
+            document.getElementById('user-email').innerText = email;
+            document.getElementById('user-dob').innerText = dob;
             cancelEdit();
         }
 

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Password Reset</title>
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-grid.rtl.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-reboot.rtl.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap-utilities.rtl.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css.map.">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.css.map">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.rtl.min.css.map">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header img {
+            margin-right: 1rem;
+        }
+        header .text-center {
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+        header h3 {
+            margin: 0;
+        }
+        header h5 {
+            margin: 0;
+            font-size: 0.8rem;
+        }
+        header p {
+            margin: 0;
+        }
+        header button {
+            margin-left: 1rem;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            width: 100%;
+        }
+        .container {
+            margin-top: 2rem;
+            width: 80%;
+            max-width: 600px;
+            flex: 1;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="lg.png" width="5%" alt="Group Logo">
+        <div class="text-center">
+            <h2>UNIVERSITY OF ENERGY AND NATURAL RESOURCES</h2>
+            <h3>ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
+        </div>
+        <p><a href="Login.html" id="logIn"><button class="btn btn-primary">Login</button></a></p>
+    </header>
+    <hr>
+    <div class="container">
+        <h2>Password Reset</h2>
+        <form>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" name="dob" required>
+            </div>
+            <div class="form-group">
+                <label for="id_num">Id</label>
+                <input type="text" class="form-control" id="id_num" name="id_num" placeholder="Your id number" required>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </div>
+    <hr>
+    <footer>
+        Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
+        <p>&copy; 2024, All rights reserved.</p>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
