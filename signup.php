@@ -80,14 +80,14 @@ elseif ($category === 'lecturer') {
     $lec_school = $input['lec_school'];
     $lec_id_num = $input['lec_id_num'];
 
-    $sql = "INSERT INTO lecturers (name, dob, email, password, school, id_num) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO lecturers (name, dob, email, password, lec_school, lec_id_num) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssss", $name, $dob, $email, $hashed_password, $lec_school, $lec_id_num);
 } 
 elseif ($category === 'administrator') {
     $admin_id_num = $input['admin_id_num'];
 
-    $sql = "INSERT INTO administrators (name, dob, email, password, id_num) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO administrators (name, dob, email, password, admin_id_num) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssss", $name, $dob, $email, $hashed_password, $admin_id_num);
 }
