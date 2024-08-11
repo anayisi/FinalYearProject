@@ -79,6 +79,8 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            -webkit-text-size-adjust: 100%; /* Older versions of iOS Safari, Android */
+            text-size-adjust: 100%;
         }
 
         header {
@@ -291,10 +293,33 @@
             var name = document.getElementById('editStudentName').value;
             var email = document.getElementById('editStudentEmail').value;
             var dob = document.getElementById('editStudentDob').value;
-            document.getElementById('user-name').innerText = name;
-            document.getElementById('user-email').innerText = email;
-            document.getElementById('user-dob').innerText = dob;
-            cancelEdit();
+        
+            // AJAX request to update details in the database
+            fetch('update_details.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    dob: dob
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the UI with the new details
+                    document.getElementById('user-name').innerText = name;
+                    document.getElementById('user-email').innerText = email;
+                    document.getElementById('user-dob').innerText = dob;
+                    cancelEdit();
+                    alert('Details updated successfully');
+                } else {
+                    alert('Failed to update details');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
 
         function cancelEdit() {

@@ -14,6 +14,8 @@
             min-height: 100vh;
             margin: 0;
             background-color: #f8f9fa;
+            -webkit-text-size-adjust: 100%; /* Older versions of iOS Safari, Android */
+            text-size-adjust: 100%;
         }
         header {
             background-color: #343a40;
@@ -88,7 +90,7 @@
             <form id="login-form" method="post" action="login.php">
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>

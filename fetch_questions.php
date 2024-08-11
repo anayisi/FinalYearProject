@@ -1,4 +1,6 @@
 <?php
+header('X-Content-Type-Options: nosniff');
+
 $servername = "localhost";
 $username = "root";
 $password = "";

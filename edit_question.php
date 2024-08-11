@@ -1,4 +1,6 @@
 <?php
+header('X-Content-Type-Options: nosniff');
+
 session_start();
 
 $servername = "localhost";

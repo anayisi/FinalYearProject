@@ -1,4 +1,10 @@
 <?php
+header('X-Content-Type-Options: nosniff');
+
+header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1
+header('Pragma: no-cache'); // HTTP 1.0
+header('Expires: 0');
+
 session_start();
 header('Content-Type: application/json');
 
@@ -57,7 +63,7 @@ if (isset($_SESSION['lecturer_id'])) {
     $response['lecturer'] = $lecturer;
 
     // Fetch lecturer courses
-    $sql = "SELECT * FROM courses WHERE lecturer_id = ?";
+    $sql = "SELECT * FROM courses WHERE courses.lecturer_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $lecturer_id);
     $stmt->execute();
