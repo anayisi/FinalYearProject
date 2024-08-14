@@ -60,12 +60,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && password_verify($password, $user['password'])) {
         if ($table === 'students') {
             $_SESSION['student_id'] = $user['student_id'];
+            echo json_encode(['success' => true, 'role' => 'student', 'message' => 'Student Login successful!']);
         } elseif ($table === 'lecturers') {
             $_SESSION['lecturer_id'] = $user['lecturer_id'];
+            echo json_encode(['success' => true, 'role' => 'lecturer', 'message' => 'Lecturer Login successful!']);
         } elseif ($table === 'administrators') {
             $_SESSION['admin_id'] = $user['admin_id'];
+            echo json_encode(['success' => true, 'role' => 'admin', 'message' => 'Admin Login successful!']);
         }
-        echo json_encode(['success' => true, 'message' => 'Login successful!']);
+
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid email or password.']);
     }

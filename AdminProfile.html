@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
     <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('Admin.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('user-type').textContent = 'Administrator';
+                    document.getElementById('user-name').textContent = data.administrator.name;
+                    document.getElementById('user-email').textContent = data.administrator.email;
+                    document.getElementById('user-dob').textContent = data.administrator.dob;
+
+                    // Populate all students' results
+                    const allResultsTableBody = document.getElementById('all-results-table-body');
+                    data.all_results.forEach(result => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${result.name}</td>
+                            <td>${result.email}</td>
+                            <td>${result.exam_id}</td>
+                            <td>${result.score}</td>
+                        `;
+                        allResultsTableBody.appendChild(row);
+                    });
+                } else {
+                        alert('Failed to load user details.');}
+            })
+            .catch(error => console.error('Error:', error));
+        });
         // Function to fetch questions
         function fetchQuestions() {
             var xhr = new XMLHttpRequest();
@@ -190,27 +219,25 @@
             <div id="personal-details" class="content-section active">
                 <h2>Personal Details</h2>
                 <div id="details-view">
-                    <p><strong>Name:</strong> <span id="adminName">Admin Name</span></p>
-                    <p><strong>Gender:</strong> <span id="adminGender">Male</span></p>
-                    <p><strong>Date of Birth:</strong> <span id="adminDob">1990-01-01</span></p>
+                    <p><strong>User Type:</strong> <span id="user-type"></span></p>
+                    <p><strong>Name:</strong> <span id="user-name"></span></p>
+                    <p><strong>Email:</strong> <span id="user-email"></span></p>
+                    <p><strong>Date of Birth:</strong> <span id="user-dob"></span></p>
                     <button class="btn btn-primary" onclick="editDetails()">Edit</button>
                 </div>
                 <div id="details-edit" style="display: none;">
                     <form>
                         <div class="form-group">
                             <label for="editAdminName">Name:</label>
-                            <input type="text" class="form-control" id="editAdminName" value="Admin Name">
+                            <input type="text" class="form-control" id="editAdminName" value="">
                         </div>
                         <div class="form-group">
-                            <label for="editAdminGender">Gender:</label>
-                            <select class="form-control" id="editAdminGender">
-                                <option>Male</option>
-                                <option>Female</option>
-                            </select>
+                            <label for="editAdminEmail">Email:</label>
+                            <input type="email" class="form-control" id="editAdminEmail" value="">
                         </div>
                         <div class="form-group">
                             <label for="editAdminDob">Date of Birth:</label>
-                            <input type="date" class="form-control" id="editAdminDob" value="1990-01-01">
+                            <input type="date" class="form-control" id="editAdminDob" value="">
                         </div>
                         <button type="button" class="btn btn-primary" onclick="saveDetails()">Save</button>
                         <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
@@ -347,7 +374,8 @@
     </div>
 
     <footer class="text-center">
-        <p>&copy; 2024 University of Energy and Natural Resources. All rights reserved.</p>
+        Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
+        <p>&copy; 2024, All rights reserved.</p>
     </footer>
 
     <script>
@@ -362,16 +390,43 @@
         function editDetails() {
             document.getElementById('details-view').style.display = 'none';
             document.getElementById('details-edit').style.display = 'block';
+
+            document.getElementById('editAdminName').value = document.getElementById('user-name').innerText;
+            document.getElementById('editAdminEmail').value = document.getElementById('user-email').innerText;
+            document.getElementById('editAdminDob').value = document.getElementById('user-dob').innerText;
         }
 
         function saveDetails() {
             var name = document.getElementById('editAdminName').value;
-            var gender = document.getElementById('editAdminGender').value;
+            var email = document.getElementById('editAdminEmail').value;
             var dob = document.getElementById('editAdminDob').value;
-            document.getElementById('adminName').innerText = name;
-            document.getElementById('adminGender').innerText = gender;
-            document.getElementById('adminDob').innerText = dob;
-            cancelEdit();
+        
+            // AJAX request to update details in the database
+            fetch('updateAdmindetails.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    dob: dob
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the UI with the new details
+                    document.getElementById('user-name').innerText = name;
+                    document.getElementById('user-email').innerText = email;
+                    document.getElementById('user-dob').innerText = dob;
+                    cancelEdit();
+                    alert('Details updated successfully');
+                } else {
+                    alert('Failed to update details');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
 
         function cancelEdit() {

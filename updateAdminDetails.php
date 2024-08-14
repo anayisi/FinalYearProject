@@ -15,7 +15,6 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-
 // Get the raw POST data
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -26,12 +25,12 @@ $dob = $data['dob'];
 
 // Assuming you have the user's ID stored in the session
 session_start();
-$user_id = $_SESSION['user_id'];
+$admin_id = $_SESSION['admin_id'];
 
 // Update query
-$sql = "UPDATE users SET name = ?, email = ?, dob = ? WHERE id = ?";
+$sql = "UPDATE administrators SET name = ?, email = ?, dob = ? WHERE admin_id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssi", $name, $email, $dob, $user_id);
+$stmt->bind_param("sssi", $name, $email, $dob, $admin_id);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);
