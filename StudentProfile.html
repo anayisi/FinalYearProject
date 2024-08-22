@@ -203,23 +203,14 @@
                 <h2>View Results</h2>
                 <!-- Add content to view student results here -->
             </div>
-
             <div id="feedback" class="content-section">
                 <h2>Feedback</h2>
-                <div class="chatbox" id="chatbox">
-                    <!-- Example messages -->
-                    <div class="message">
-                        <p>Student: Can you explain question 3?</p>
-                        <span class="time">12:45 PM</span>
-                    </div>
-                    <div class="message student">
-                        <p>Admin: Sure, question 3 is about...</p>
-                        <span class="time">12:47 PM</span>
-                    </div>
+                <div id="message_area" class="border p-3 mb-3" style="height: 300px; overflow-y: scroll;">
+                    <!-- Messages will be populated here -->
                 </div>
-                <form id="chatForm">
-                    <div class="form-group mt-3">
-                        <textarea class="form-control" id="chatInput" rows="3" placeholder="Type your message..."></textarea>
+                <form id="feedback_form">
+                    <div class="form-group">
+                        <textarea id="message_input" class="form-control" rows="3" placeholder="Enter your message"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Send</button>
                 </form>
@@ -232,6 +223,39 @@
         <p>&copy; 2024, All rights reserved.</p>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function loadMessages() {
+                $.ajax({
+                    url: 'fetch_messages.php',
+                    method: 'POST',
+                    data: { receiver_role: 'administrator' },
+                    success: function(response) {
+                        $('#message_area').html(response);
+                    }
+                });
+            }
+
+            $('#feedback_form').submit(function(e) {
+                e.preventDefault();
+                const message = $('#message_input').val();
+                if (message) {
+                    $.ajax({
+                        url: 'send_message.php',
+                        method: 'POST',
+                        data: { message: message, receiver_role: 'administrator' },
+                        success: function(response) {
+                            $('#message_input').val('');
+                            loadMessages();
+                        }
+                    });
+                }
+            });
+
+            loadMessages(); // Load messages when page loads
+        });
+    </script>
     <script>
         function showSection(sectionId) {
             var sections = document.getElementsByClassName('content-section');

@@ -352,23 +352,27 @@
 
             <div id="feedback" class="content-section">
                 <h2>Feedback</h2>
-                <div class="chatbox" id="chatbox">
-                    <!-- Example messages -->
-                    <div class="message">
-                        <p>Student: Can you explain question 3?</p>
-                        <span class="time">12:45 PM</span>
+                <div class="row">
+                    <div class="col-md-3">
+                        <h4>Users</h4>
+                        <ul id="user_list" class="list-group">
+                            <!-- User names will be populated here -->
+                        </ul>
                     </div>
-                    <div class="message admin">
-                        <p>Admin: Sure, question 3 is about...</p>
-                        <span class="time">12:47 PM</span>
+                    <div class="col-md-9">
+                        <h4>Conversation</h4>
+                        <div id="message_area" class="border p-3 mb-3" style="height: 300px; overflow-y: scroll;">
+                            <!-- Messages will be populated here -->
+                        </div>
+                        <form id="feedback_form">
+                            <div class="form-group">
+                                <textarea id="message_input" class="form-control" rows="3" placeholder="Enter your message"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </form>
+                        <button id="back_button" class="btn btn-secondary mt-3">Back</button>
                     </div>
                 </div>
-                <form id="chatForm">
-                    <div class="form-group mt-3">
-                        <textarea class="form-control" id="chatInput" rows="3" placeholder="Type your message..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send</button>
-                </form>
             </div>
         </div>
     </div>
@@ -377,7 +381,63 @@
         Developers: Ayisi Emmanuel | Sofaraa Agyei Joseph | Akandi Raphael
         <p>&copy; 2024, All rights reserved.</p>
     </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        let currentUser = null;
 
+        function loadUsers() {
+            $.ajax({
+                url: 'fetch_users.php',
+                method: 'POST',
+                success: function(response) {
+                    $('#user_list').html(response);
+                }
+            });
+        }
+
+        function loadMessages() {
+            if (currentUser) {
+                $.ajax({
+                    url: 'fetch_messages.php',
+                    method: 'POST',
+                    data: { id: currentUser },
+                    success: function(response) {
+                        $('#message_area').html(response);
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function() {
+            loadUsers();
+
+            $('#user_list').on('click', '.user-item', function() {
+                currentUser = $(this).data('id');
+                loadMessages();
+            });
+
+            $('#feedback_form').submit(function(e) {
+                e.preventDefault();
+                const message = $('#message_input').val();
+                if (message && currentUser) {
+                    $.ajax({
+                        url: 'send_message.php',
+                        method: 'POST',
+                        data: { message: message, receiver_id: currentUser },
+                        success: function(response) {
+                            $('#message_input').val('');
+                            loadMessages();
+                        }
+                    });
+                }
+            });
+
+            $('#back_button').click(function() {
+                $('#message_area').html('');
+                currentUser = null;
+            });
+        });
+    </script>
     <script>
         function showSection(sectionId) {
             var sections = document.getElementsByClassName('content-section');
