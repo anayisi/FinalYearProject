@@ -1,3 +1,2 @@
-1. What is a noun?
-2. How many parts of speech are there?
-3. What is an adjective?
+What is the capital of France?|Paris|Berlin|Rome|Madrid|A
+Who is the founder of Ghana?|Addo|Danquah|Busia|Nkrumah|D

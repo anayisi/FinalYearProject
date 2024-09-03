@@ -37,23 +37,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 function parseQuestions($lines) {
     $questions = [];
-    $questionPattern = '/^\d+\./'; // Pattern to match "1.", "2.", etc.
-    $currentQuestion = '';
-
     foreach ($lines as $line) {
-        if (preg_match($questionPattern, $line)) {
-            if ($currentQuestion != '') {
-                $questions[] = trim($currentQuestion);
-            }
-            $currentQuestion = $line;
-        } else {
-            $currentQuestion .= ' ' . $line;
+        $parts = explode('|', $line);
+        if (count($parts) == 6) { // Ensure the format is correct
+            $questions[] = [
+                'question' => trim($parts[0]),
+                'option_a' => trim($parts[1]),
+                'option_b' => trim($parts[2]),
+                'option_c' => trim($parts[3]),
+                'option_d' => trim($parts[4]),
+                'correct_answer' => trim($parts[5]),
+            ];
         }
     }
-    if ($currentQuestion != '') {
-        $questions[] = trim($currentQuestion);
-    }
-
     return $questions;
 }
 
@@ -70,12 +66,20 @@ function storeQuestions($questions) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $stmt = $conn->prepare("INSERT INTO questions (question) VALUES (?)");
+    $stmt = $conn->prepare("INSERT INTO questions (question, option_a, option_b, option_c, option_d, correct_answer) VALUES (?, ?, ?, ?, ?, ?)");
     foreach ($questions as $question) {
-        $stmt->bind_param("s", $question);
+        $stmt->bind_param(
+            "ssssss",
+            $question['question'],
+            $question['option_a'],
+            $question['option_b'],
+            $question['option_c'],
+            $question['option_d'],
+            $question['correct_answer']
+        );
         $stmt->execute();
     }
     $stmt->close();
     $conn->close();
 }
-?>
+
