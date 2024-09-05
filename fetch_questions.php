@@ -1,6 +1,11 @@
 <?php
 header('X-Content-Type-Options: nosniff');
 
+session_start();
+
+// Assuming lecturer_id is stored in session when the lecturer logs in
+$lecturer_id = $_SESSION['lecturer_id'];
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -14,9 +19,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch questions from the database
-$sql = "SELECT id, question, option_a, option_b, option_c, option_d, correct_answer FROM questions";
-$result = $conn->query($sql);
+// Fetch questions from the database for the current lecturer
+$sql = "SELECT id, question, option_a, option_b, option_c, option_d, correct_answer FROM questions WHERE lecturer_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $lecturer_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
@@ -29,12 +37,12 @@ if ($result->num_rows > 0) {
         echo "<td>" . htmlspecialchars($row['option_d']) . "</td>";
         echo "<td>" . htmlspecialchars($row['correct_answer']) . "</td>";
         echo '<td><button class="btn btn-danger" onclick="removeQuestion(this)">Remove</button>';
-        echo '<button class="btn btn-warning" onclick="editQuestion(this)">Edit</button></td>';
         echo "</tr>";
     }
 } else {
-    echo "<tr><td colspan='3'>No questions found</td></tr>";
+    echo "<tr><td colspan='8'>No questions found</td></tr>";
 }
 
+$stmt->close();
 $conn->close();
 ?>

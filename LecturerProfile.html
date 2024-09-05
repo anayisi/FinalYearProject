@@ -62,24 +62,7 @@
             };
             xhr.send("id=" + questionId);
         }
-
-        function editQuestion(button) {
-            var row = button.parentElement.parentElement;
-            var questionId = row.cells[0].innerHTML;
-            var questionText = row.cells[1].innerHTML;
-            var newQuestionText = prompt("Edit Question:", questionText);
-            if (newQuestionText !== null) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "edit_question.php", true);
-                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
-                        fetchQuestions();
-                    }
-                };
-                xhr.send("id=" + questionId + "&question=" + encodeURIComponent(newQuestionText));
-            }
-        }
+        
     </script>
     <style>
         body {
