@@ -6,6 +6,7 @@
     <title>Student Page</title>
     <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('Student.php')
@@ -198,7 +199,22 @@
                     </form>
                 </div>
             </div>
-            
+            <div id="Exam-Pass" class="content-section">
+                <h1 class="text-center">TAKE EXAMS</h1>
+                <div class="container mt-4">
+                    <div class="form-group d-flex">
+                        <input type="text" id="exam_id" class="form-control" placeholder="Enter Exam ID">
+                        <button class="btn btn-primary ml-2" onclick="fetchQuestionss()">Start</button>
+                    </div>
+                </div>
+                <div class="container mt-2" style="max-width:fit-content;"> 
+                    <form id="examForm" method="post" action="submit_exam.php" style="display:none; margin-top:5px;">
+                        <input type="hidden" name="exam_id" id="hidden_exam_id">
+                        <div id="questionsContainer"></div>
+                        <button type="submit" class="btn btn-success mt-3">Submit Exam</button>
+                    </form>          
+                </div>
+            </div>
             <div id="view-results" class="content-section">
                 <h2>View Results</h2>
                 <!-- Add content to view student results here -->
@@ -310,6 +326,53 @@
         function cancelEdit() {
             document.getElementById('details-view').style.display = 'block';
             document.getElementById('details-edit').style.display = 'none';
+        }
+
+        function fetchQuestionss() {
+            const exam_id = document.getElementById('exam_id').value;
+            if (exam_id) {
+                document.getElementById('hidden_exam_id').value = exam_id; // Set exam_id in hidden input
+                fetch(`fetch_questionss.php?exam_id=${exam_id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        document.getElementById('examForm').style.display = 'block';
+                        const questionsContainer = document.getElementById('questionsContainer');
+                        questionsContainer.innerHTML = '';
+                        data.forEach((question, index) => {
+                            let questionHtml = `
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h5>${index + 1}. ${question.question}</h5>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="answer_${question.id}" value="A" required>
+                                            <label class="form-check-label">${question.option_a}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="answer_${question.id}" value="B">
+                                            <label class="form-check-label">${question.option_b}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="answer_${question.id}" value="C">
+                                            <label class="form-check-label">${question.option_c}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="answer_${question.id}" value="D">
+                                            <label class="form-check-label">${question.option_d}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            questionsContainer.innerHTML += questionHtml;
+                        });
+                    } else {
+                        alert('No questions found for this Exam ID.');
+                    }
+                })
+                .catch(error => console.error('Error fetching questions:', error));
+            } else {
+                alert('Please enter an Exam ID.');
+            }
         }
     </script>
 </body>

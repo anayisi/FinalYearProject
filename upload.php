@@ -9,6 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Assuming lecturer_id is stored in session when the lecturer logs in
     $lecturer_id = $_SESSION['lecturer_id'];
+    
+    // Retrieve the exam_id from the form
+    $exam_id = $_POST['exam_id'];
 
     $target_dir = "uploads/";
     $target_file = $target_dir . basename($_FILES["questionFile"]["name"]);
@@ -32,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Read the uploaded file and process it
         $questions = file($target_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $parsedQuestions = parseQuestions($questions);
-        storeQuestions($parsedQuestions, $lecturer_id);
+        storeQuestions($parsedQuestions, $lecturer_id, $exam_id);
         
         echo "Questions have been processed and stored in the database.";
     } else {
@@ -58,7 +61,7 @@ function parseQuestions($lines) {
     return $questions;
 }
 
-function storeQuestions($questions, $lecturer_id) {
+function storeQuestions($questions, $lecturer_id, $exam_id) {
     // Database connection
     $servername = "localhost";
     $username = "root";
@@ -71,17 +74,18 @@ function storeQuestions($questions, $lecturer_id) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $stmt = $conn->prepare("INSERT INTO questions (question, option_a, option_b, option_c, option_d, correct_answer, lecturer_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO questions (question, option_a, option_b, option_c, option_d, correct_answer, lecturer_id, exam_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     foreach ($questions as $question) {
         $stmt->bind_param(
-            "ssssssi", // The 'i' at the end is for the integer type of lecturer_id
+            "ssssssis", // The 'i' at the end is for the integer type of lecturer_id and exam_id
             $question['question'],
             $question['option_a'],
             $question['option_b'],
             $question['option_c'],
             $question['option_d'],
             $question['correct_answer'],
-            $lecturer_id
+            $lecturer_id,
+            $exam_id
         );
         $stmt->execute();
     }
