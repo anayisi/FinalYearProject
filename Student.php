@@ -34,6 +34,7 @@ if (isset($_SESSION['student_id'])) {
     $student = $result->fetch_assoc();
     $response['student'] = $student;
 
+    /*
     // Fetch all students and their results (example admin task)
     $sql = "SELECT students.name, students.email, results.exam_id, results.score FROM students
             JOIN results ON students.student_id = results.student_id";
@@ -46,6 +47,7 @@ if (isset($_SESSION['student_id'])) {
         $all_results_array[] = $row;
     }
     $response['all_results'] = $all_results_array;
+    */
 }
 
 echo json_encode($response);

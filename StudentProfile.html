@@ -17,7 +17,7 @@
                     document.getElementById('user-name').textContent = data.student.name;
                     document.getElementById('user-email').textContent = data.student.email;
                     document.getElementById('user-dob').textContent = data.student.dob;
-
+                    /*
                     // Populate all students' results
                     const allResultsTableBody = document.getElementById('all-results-table-body');
                     data.all_results.forEach(result => {
@@ -30,6 +30,7 @@
                         `;
                         allResultsTableBody.appendChild(row);
                     });
+                    */
                 } else {
                         alert('Failed to load user details.');}
             })
@@ -149,6 +150,14 @@
             font-size: 0.8rem;
             color: #888;
         }
+
+        .input-width {
+            width: 50%; /* Decrease width of the input field */
+        }
+
+        .button-width {
+            width: 20%; /* Increase width of the button */
+        }
     </style>
 </head>
 
@@ -172,7 +181,7 @@
 
         <div class="content">
             <div id="personal-details" class="content-section active">
-                <h2>Personal Details</h2>
+                <h2 class="text-center">PERSONAL DETAILS</h2>
                 <div id="details-view">
                     <p><strong>User Type:</strong> <span id="user-type"></span></p>
                     <p><strong>Name:</strong> <span id="user-name"></span></p>
@@ -200,13 +209,11 @@
                 </div>
             </div>
             <div id="Exam-Pass" class="content-section">
-                <h1 class="text-center">TAKE EXAMS</h1>
-                <div class="container mt-4">
-                    <div class="form-group d-flex">
-                        <input type="text" id="exam_id" class="form-control" placeholder="Enter Exam ID">
-                        <button class="btn btn-primary ml-2" onclick="fetchQuestionss()">Start</button>
+                <h2 class="text-center">TAKE EXAMS</h2>
+                    <div class="form-group d-flex mt-3">
+                        <input type="text" id="exam_id" class="form-control input-width" placeholder="Enter Exam ID">
+                        <button type="button" class="btn btn-primary button-width ml-2" onclick="fetchQuestionss()">Start Exams</button>
                     </div>
-                </div>
                 <div class="container mt-2" style="max-width:fit-content;"> 
                     <form id="examForm" method="post" action="submit_exam.php" style="display:none; margin-top:5px;">
                         <input type="hidden" name="exam_id" id="hidden_exam_id">
@@ -216,8 +223,17 @@
                 </div>
             </div>
             <div id="view-results" class="content-section">
-                <h2>View Results</h2>
-                <!-- Add content to view student results here -->
+                <h2 class="text-center">VIEW RESULTS</h2>
+                <form id="resultForm">
+                    <div class="form-group d-flex mt-3">
+                        <input type="text" class="form-control input-width" id="exam_idd" name="exam_id" placeholder="Enter Exam ID" required>
+                        <button type="button" class="btn btn-primary button-width ml-2" onclick="fetchResults()">View Result</button>
+                    </div>
+                </form>
+                
+                <div id="resultContainer" class="mt-4">
+                    <!-- Results will be displayed here -->
+                </div>        
             </div>
             <div id="feedback" class="content-section">
                 <h2>Feedback</h2>
@@ -370,6 +386,26 @@
                     }
                 })
                 .catch(error => console.error('Error fetching questions:', error));
+            } else {
+                alert('Please enter an Exam ID.');
+            }
+        }
+
+        function fetchResults() {
+            const exam_id = document.getElementById('exam_idd').value;
+            
+            if (exam_id) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'fetch_results.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        document.getElementById('resultContainer').innerHTML = xhr.responseText;
+                    }
+                };
+                
+                xhr.send('exam_id=' + exam_id);
             } else {
                 alert('Please enter an Exam ID.');
             }
