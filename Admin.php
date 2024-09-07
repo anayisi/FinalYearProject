@@ -33,7 +33,7 @@ if (isset($_SESSION['admin_id'])) {
     $result = $stmt->get_result();
     $admin = $result->fetch_assoc();
     $response['administrator'] = $admin;
-
+    /*
     // Fetch all students and their results (example admin task)
     $sql = "SELECT students.name, students.email, results.exam_id, results.score FROM students
             JOIN results ON students.student_id = results.student_id";
@@ -46,6 +46,7 @@ if (isset($_SESSION['admin_id'])) {
         $all_results_array[] = $row;
     }
     $response['all_results'] = $all_results_array;
+    */
 }
 
 echo json_encode($response);

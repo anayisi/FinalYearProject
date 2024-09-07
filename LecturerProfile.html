@@ -175,6 +175,14 @@
             font-size: 0.8rem;
             color: #888;
         }
+
+        .input-width {
+            width: 50%; /* Decrease width of the input field */
+        }
+
+        .button-width {
+            width: 20%; /* Increase width of the button */
+        }
     </style>
 </head>
 
@@ -198,7 +206,7 @@
 
         <div class="content">
             <div id="personal-details" class="content-section active">
-                <h2>Personal Details</h2>
+                <h2 class="text-center">PERSONAL DETAILS</h2>
                 <div id="details-view">
                     <p><strong>User Type:</strong> <span id="user-type"></span></p>
                     <p><strong>Name:</strong> <span id="user-name"></span></p>
@@ -227,7 +235,7 @@
             </div>
 
             <div id="mount-unmount" class="content-section">
-                <h2>Mount/Unmount Questions</h2>
+                <h2 class="text-center">MOUNT/UNMOUNT QUESTIONS</h2>
                 <div class="mt-4">
                     <h5>Upload New Questions</h5>
                     <form action="upload.php" method="post" enctype="multipart/form-data">
@@ -264,12 +272,21 @@
                 </div>
             </div>
             <div id="view-results" class="content-section">
-                <h2>View Results</h2>
-                <!-- Add content to view student results here -->
+                <h2 class="text-center">VIEW RESULTS</h2>
+                <form id="resultForm">
+                    <div class="form-group d-flex mt-3">
+                        <input type="text" class="form-control input-width" id="exam_idd" name="exam_id" placeholder="Enter Exam ID" required>
+                        <button type="button" class="btn btn-primary button-width ml-2" onclick="fetchResults()">View Result</button>
+                    </div>
+                </form>
+                
+                <div id="resultContainer" class="mt-4">
+                    <!-- Results will be displayed here -->
+                </div>
             </div>
 
             <div id="feedback" class="content-section">
-                <h2>Feedback</h2>
+                <h2 class="text-center">FEEDBACK</h2>
                 <div class="chatbox" id="chatbox">
                     <!-- Example messages -->
                     <div class="message">
@@ -350,6 +367,26 @@
         function cancelEdit() {
             document.getElementById('details-view').style.display = 'block';
             document.getElementById('details-edit').style.display = 'none';
+        }
+
+        function fetchResults() {
+            const exam_id = document.getElementById('exam_idd').value;
+            
+            if (exam_id) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'fetch_results_lec.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        document.getElementById('resultContainer').innerHTML = xhr.responseText;
+                    }
+                };
+                
+                xhr.send('exam_id=' + exam_id);
+            } else {
+                alert('Please enter an Exam ID.');
+            }
         }
     </script>
 </body>
