@@ -215,11 +215,11 @@
                         <button type="button" class="btn btn-primary button-width ml-2" onclick="fetchQuestionss()">Start Exams</button>
                     </div>
                 <div class="container mt-2" style="max-width:fit-content;"> 
-                    <form id="examForm" method="post" action="submit_exam.php" style="display:none; margin-top:5px;">
+                    <form id="examForm" method="post" style="display:none; margin-top:5px;">
                         <input type="hidden" name="exam_id" id="hidden_exam_id">
                         <div id="questionsContainer"></div>
-                        <button type="submit" class="btn btn-success mt-3">Submit Exam</button>
-                    </form>          
+                        <button type="button" class="btn btn-success mt-3" onclick="submitExamViaAjax()">Submit Exam</button>
+                    </form>                              
                 </div>
             </div>
             <div id="view-results" class="content-section">
@@ -345,6 +345,7 @@
         }
 
         let examTimer;
+        let isSubmitted = false;
         function fetchQuestionss() {
             const exam_id = document.getElementById('exam_id').value;
             if (exam_id) {
@@ -384,12 +385,12 @@
                             questionsContainer.innerHTML += questionHtml;
                         });
 
-                        //start the timer (60 seconds per question)
-                        const examDuration = data.length * 60; // Total seconds
+                        //start the timer (10 seconds per question)
+                        const examDuration = data.length * 10; // Total seconds
                         startExamTimer(examDuration);
     
                         // Event listener for closing or minimizing the window
-                        window.onblur = autoSubmitExam;
+                        window.onblur = submitExamViaAjax;
     
                     } else {
                         alert('No questions found for this Exam ID.');
@@ -410,41 +411,71 @@
 
             examTimer = setInterval(() => {
                 timeRemaining--;
-                timerDisplay.textContent = `Time remaining: ${Math.floor(timeRemaining / 60)}m ${timeRemaining % 60}s`;
+                timerDisplay.textContent = `Time remaining: ${Math.floor(timeRemaining / 10)}m ${timeRemaining % 10}s`;
 
                 if (timeRemaining <= 0) {
                     clearInterval(examTimer);
-                    autoSubmitExam(); // Submit exam when time is up
+                    submitExamViaAjax(); // Submit exam when time is up
                 }
             }, 1000);
         }
 
+        function submitExamViaAjax() {
+            // Check if exam has already been submitted
+            if (isSubmitted) return;
+
+            isSubmitted = true; // Mark as submitted
+
+            const formData = new FormData(document.getElementById('examForm'));
+        
+            // Submit form using fetch API (AJAX)
+            fetch('submit_exam.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Display a submission success message
+                alert('Exam submitted successfully!');
+        
+                // Reset the form after successful submission
+                resetExamForm();
+            })
+            .catch(error => {
+                console.error('Error submitting exam:', error);
+                alert('There was an issue submitting the exam. Please try again.');
+            });
+        }
+        /*
         // Function to submit exam automatically
         function autoSubmitExam() {
             // Stop the timer
             clearInterval(examTimer);
 
             // Submit the form
-            document.getElementById('examForm').submit();
+            document.getElementById('examForm').submitExamViaAjax();
 
             // Show submission message and reset
             alert('Exam submitted successfully.');
             resetExamForm();
         }
-
+        */
         // Reset the exam form after submission
         function resetExamForm() {
             document.getElementById('examForm').reset();
             document.getElementById('examForm').style.display = 'none';
             document.getElementById('questionsContainer').innerHTML = '';
             document.getElementById('exam_id').value = ''; // Clear the exam ID input
-            document.getElementById('timerDisplay').remove();
+            const timerDisplay = document.getElementById('timerDisplay');
+            if (timerDisplay) {
+                timerDisplay.remove(); // Remove the timer display
+            }
         }
 
         // Event listener for form submission
         document.getElementById('examForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            autoSubmitExam();
+            submitExamViaAjax();
         });
 
 

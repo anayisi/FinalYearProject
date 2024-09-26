@@ -38,3 +38,7 @@ $query = "INSERT INTO results (student_id, exam_id, score) VALUES (?, ?, ?)";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("iss", $student_id, $exam_id, $score);
 $stmt->execute();
+
+// Return a success message
+echo "Exam submitted successfully!";
+?>
