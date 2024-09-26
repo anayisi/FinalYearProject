@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 22, 2024 at 05:41 PM
+-- Generation Time: Sep 26, 2024 at 04:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -100,29 +100,6 @@ CREATE TABLE `exams` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `examss`
---
-
-CREATE TABLE `examss` (
-  `exam_id` int(11) NOT NULL,
-  `course` varchar(100) NOT NULL,
-  `date` date NOT NULL,
-  `duration` int(11) NOT NULL,
-  `total_marks` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `examss`
---
-
-INSERT INTO `examss` (`exam_id`, `course`, `date`, `duration`, `total_marks`, `created_at`) VALUES
-(1, 'Mathematics', '2024-05-15', 120, 100, '2024-07-20 08:34:37'),
-(2, 'English', '2024-05-08', 60, 60, '2024-07-20 09:07:29');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `exam_questions`
 --
 
@@ -191,7 +168,6 @@ CREATE TABLE `lecturers` (
 --
 
 INSERT INTO `lecturers` (`lecturer_id`, `name`, `email`, `password`, `dob`, `school`, `id_num`) VALUES
-(1, 'karl', 'karl@gmail.com', '$2y$10$pveXFaaoV5OCz6sLdqtYBuAsPdeMHUzKgEy.HOGCRugdfVQoAze3O', '2024-09-03', '', ''),
 (2, 'Adzo Evon', 'adzo@gmail.com', '$2y$10$Sp/OJ8alVbnmMyM/.QUmh.w5NgUS6pPuXHyTN21QxsQyTtHzOHMB.', '2024-07-29', 'lec_GRADUATE STUDIES', '1231'),
 (3, 'daavi', 'daavi@gmail.com', '$2y$10$77KGQkeWI2trUhsuG5gTQO7krUkh7JNKPUNLVsPx7xt4ujEf/yY3W', '2024-09-03', 'lec_GEOSCIENCES', '12345'),
 (4, 'Owusu', 'owusu@gmail.com', '$2y$10$m3qWlQIUHc35MhJOp0hIYecMB.3keJJJUD/rRFAAND5GAHe0hn896', '2024-09-02', 'lec_MINES AND BUILT ENVIRONMENT', '1255'),
@@ -208,30 +184,6 @@ CREATE TRIGGER `before_insert_lecturers` BEFORE INSERT ON `lecturers` FOR EACH R
 END
 $$
 DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `lecturerss`
---
-
-CREATE TABLE `lecturerss` (
-  `lecturer_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `dob` date NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `school` varchar(255) DEFAULT NULL,
-  `id_num` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `lecturerss`
---
-
-INSERT INTO `lecturerss` (`lecturer_id`, `name`, `dob`, `email`, `password`, `school`, `id_num`) VALUES
-(1, 'Ayisi Emmanuel', '2024-08-30', 'sofaraaagyeijoseph5@gmail.com', '$2y$10$0zSoh1v7QK83q1DfPNTQ3elop7tkZxBoOdstpa4EPoxikRoT7j4ii', NULL, NULL),
-(11, 'karl', '2024-08-24', 'karl@gmail.com', '$2y$10$PJydEe/NoWodzw.NMQP2Yegx/Pa6jQ5Q9PDbxYRbUAdgiL0H.MMo6', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -270,6 +222,38 @@ CREATE TABLE `objective_questions` (
 
 CREATE TABLE `questions` (
   `id` int(11) NOT NULL,
+  `lecturer_id` int(11) DEFAULT NULL,
+  `admin_id` int(11) DEFAULT NULL,
+  `exam_id` varchar(255) NOT NULL,
+  `question` text NOT NULL,
+  `option_a` varchar(255) NOT NULL,
+  `option_b` varchar(255) NOT NULL,
+  `option_c` varchar(255) NOT NULL,
+  `option_d` varchar(255) NOT NULL,
+  `correct_answer` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `questions`
+--
+
+INSERT INTO `questions` (`id`, `lecturer_id`, `admin_id`, `exam_id`, `question`, `option_a`, `option_b`, `option_c`, `option_d`, `correct_answer`) VALUES
+(20, 1, 0, 'CENG402', 'What is the capital of Nigeria?', 'Abuja', 'Lagos', 'Benin', 'Port H.', 'A'),
+(21, 1, 0, 'CENG402', 'Who is the founder of Ghana?', 'Addo', 'Danquah', 'Busia', 'Nkrumah', 'D'),
+(22, 2, 0, 'CENG505', 'What is the capital of Nigeria?', 'Abuja', 'Lagos', 'Benin', 'Port H.', 'A'),
+(23, 2, 0, 'CENG505', 'Who is the founder of Ghana?', 'Addo', 'Danquah', 'Busia', 'Nkrumah', 'D'),
+(24, 2, 0, 'ELNG404', 'What is the capital of Nigeria?', 'Abuja', 'Lagos', 'Benin', 'Port H.', 'A'),
+(32, 4, 0, 'CENG504', 'What is the capital of Nigeria?', 'Abuja', 'Lagos', 'Benin', 'Port H.', 'A'),
+(33, 4, 0, 'CENG504', 'Who is the founder of Ghana?', 'Addo', 'Danquah', 'Busia', 'Nkrumah', 'D');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `questionss`
+--
+
+CREATE TABLE `questionss` (
+  `id` int(11) NOT NULL,
   `question` text NOT NULL,
   `type` varchar(50) NOT NULL,
   `subject_id` int(11) DEFAULT NULL,
@@ -277,10 +261,10 @@ CREATE TABLE `questions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `questions`
+-- Dumping data for table `questionss`
 --
 
-INSERT INTO `questions` (`id`, `question`, `type`, `subject_id`, `created_at`) VALUES
+INSERT INTO `questionss` (`id`, `question`, `type`, `subject_id`, `created_at`) VALUES
 (14, '2. How many parts of speech are there?', '', NULL, '2024-07-10 02:12:24'),
 (15, '3. What is an adjective?', '', NULL, '2024-07-10 02:12:24'),
 (20, '2. How many parts of speech are there?', '', NULL, '2024-07-10 03:34:49'),
@@ -308,11 +292,20 @@ CREATE TABLE `random_ids` (
 --
 
 CREATE TABLE `results` (
-  `result_id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
-  `exam_id` int(11) NOT NULL,
-  `score` decimal(5,2) NOT NULL
+  `result_id` int(10) NOT NULL,
+  `student_id` varchar(255) NOT NULL,
+  `exam_id` varchar(255) NOT NULL,
+  `score` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `results`
+--
+
+INSERT INTO `results` (`result_id`, `student_id`, `exam_id`, `score`) VALUES
+(61, '1', 'CENG402', '0/0'),
+(62, '1', 'CENG402', '2/2'),
+(63, '1', 'CENG505', '0/0');
 
 -- --------------------------------------------------------
 
@@ -324,16 +317,8 @@ CREATE TABLE `resultss` (
   `result_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `exam_id` int(11) NOT NULL,
-  `score` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `score` decimal(5,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `resultss`
---
-
-INSERT INTO `resultss` (`result_id`, `student_id`, `exam_id`, `score`, `created_at`) VALUES
-(2, 2, 2, 50, '2024-07-20 09:08:17');
 
 -- --------------------------------------------------------
 
@@ -395,32 +380,6 @@ CREATE TRIGGER `before_insert_students` BEFORE INSERT ON `students` FOR EACH ROW
 END
 $$
 DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `studentss`
---
-
-CREATE TABLE `studentss` (
-  `student_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `dob` date NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `level` varchar(50) DEFAULT NULL,
-  `school` varchar(255) DEFAULT NULL,
-  `program` varchar(255) DEFAULT NULL,
-  `id_num` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `studentss`
---
-
-INSERT INTO `studentss` (`student_id`, `name`, `dob`, `email`, `password`, `level`, `school`, `program`, `id_num`) VALUES
-(1, 'Emmanuel Korankye', '2024-08-13', 'kay@gmail.com', '$2y$10$4nNEMAMwH02wVHZRUE25zejmNYahoDUlf1Y7jk0GAWIYpf8Ltf60O', 'level_200', 'SCIENCES', 'Diploma Statistics (Regular/Weekend)', '1223'),
-(8, 'Ayisi Emmanuel', '2024-08-16', 'kaice@gmail.com', '$2y$10$uQ3V36SWesJM69uFpMSCDeUnPKPatvKzie4.B5p8WCalWLhmDYFXa', 'level_300', 'AGRICULTURE AND TECHNOLOGY', 'BSc. Agriculture', '11111');
 
 -- --------------------------------------------------------
 
@@ -513,12 +472,6 @@ ALTER TABLE `exams`
   ADD PRIMARY KEY (`exam_id`);
 
 --
--- Indexes for table `examss`
---
-ALTER TABLE `examss`
-  ADD PRIMARY KEY (`exam_id`);
-
---
 -- Indexes for table `exam_questions`
 --
 ALTER TABLE `exam_questions`
@@ -544,13 +497,6 @@ ALTER TABLE `lecturers`
   ADD PRIMARY KEY (`lecturer_id`);
 
 --
--- Indexes for table `lecturerss`
---
-ALTER TABLE `lecturerss`
-  ADD PRIMARY KEY (`lecturer_id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
 -- Indexes for table `messages`
 --
 ALTER TABLE `messages`
@@ -568,6 +514,12 @@ ALTER TABLE `objective_questions`
 -- Indexes for table `questions`
 --
 ALTER TABLE `questions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `questionss`
+--
+ALTER TABLE `questionss`
   ADD PRIMARY KEY (`id`),
   ADD KEY `subject_id` (`subject_id`);
 
@@ -582,9 +534,7 @@ ALTER TABLE `random_ids`
 -- Indexes for table `results`
 --
 ALTER TABLE `results`
-  ADD PRIMARY KEY (`result_id`),
-  ADD KEY `student_id` (`student_id`),
-  ADD KEY `exam_id` (`exam_id`);
+  ADD PRIMARY KEY (`result_id`);
 
 --
 -- Indexes for table `resultss`
@@ -606,13 +556,6 @@ ALTER TABLE `student`
 --
 ALTER TABLE `students`
   ADD PRIMARY KEY (`student_id`);
-
---
--- Indexes for table `studentss`
---
-ALTER TABLE `studentss`
-  ADD PRIMARY KEY (`student_id`),
-  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `subjective_questions`
@@ -663,12 +606,6 @@ ALTER TABLE `exams`
   MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `examss`
---
-ALTER TABLE `examss`
-  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT for table `exam_questions`
 --
 ALTER TABLE `exam_questions`
@@ -693,16 +630,10 @@ ALTER TABLE `lecturers`
   MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `lecturerss`
---
-ALTER TABLE `lecturerss`
-  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
---
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `objective_questions`
@@ -714,6 +645,12 @@ ALTER TABLE `objective_questions`
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- AUTO_INCREMENT for table `questionss`
+--
+ALTER TABLE `questionss`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
@@ -726,13 +663,13 @@ ALTER TABLE `random_ids`
 -- AUTO_INCREMENT for table `results`
 --
 ALTER TABLE `results`
-  MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `result_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `resultss`
 --
 ALTER TABLE `resultss`
-  MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `student`
@@ -745,12 +682,6 @@ ALTER TABLE `student`
 --
 ALTER TABLE `students`
   MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `studentss`
---
-ALTER TABLE `studentss`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `subjective_questions`
@@ -778,7 +709,7 @@ ALTER TABLE `user_details`
 -- Constraints for table `answers`
 --
 ALTER TABLE `answers`
-  ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`);
+  ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questionss` (`id`);
 
 --
 -- Constraints for table `courses`
@@ -800,24 +731,17 @@ ALTER TABLE `messages`
   ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `administrators` (`admin_id`);
 
 --
--- Constraints for table `questions`
+-- Constraints for table `questionss`
 --
-ALTER TABLE `questions`
-  ADD CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id_sub`);
-
---
--- Constraints for table `results`
---
-ALTER TABLE `results`
-  ADD CONSTRAINT `results_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
-  ADD CONSTRAINT `results_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`exam_id`);
+ALTER TABLE `questionss`
+  ADD CONSTRAINT `questionss_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id_sub`);
 
 --
 -- Constraints for table `resultss`
 --
 ALTER TABLE `resultss`
-  ADD CONSTRAINT `resultss_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `resultss_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `examss` (`exam_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `resultss_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
+  ADD CONSTRAINT `resultss_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`exam_id`);
 
 --
 -- Constraints for table `user_details`
