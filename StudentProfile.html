@@ -344,6 +344,7 @@
             document.getElementById('details-edit').style.display = 'none';
         }
 
+        let examTimer;
         function fetchQuestionss() {
             const exam_id = document.getElementById('exam_id').value;
             if (exam_id) {
@@ -355,13 +356,14 @@
                         document.getElementById('examForm').style.display = 'block';
                         const questionsContainer = document.getElementById('questionsContainer');
                         questionsContainer.innerHTML = '';
+                        //create the questions and set the timer based on the number of questions
                         data.forEach((question, index) => {
                             let questionHtml = `
-                                <div class="card mt-3">
+                                <div class="card mt-3 question" data-question-id="${question.id}">
                                     <div class="card-body">
                                         <h5>${index + 1}. ${question.question}</h5>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="answer_${question.id}" value="A" required>
+                                            <input class="form-check-input" type="radio" name="answer_${question.id}" value="A">
                                             <label class="form-check-label">${question.option_a}</label>
                                         </div>
                                         <div class="form-check">
@@ -381,6 +383,14 @@
                             `;
                             questionsContainer.innerHTML += questionHtml;
                         });
+
+                        //start the timer (60 seconds per question)
+                        const examDuration = data.length * 60; // Total seconds
+                        startExamTimer(examDuration);
+    
+                        // Event listener for closing or minimizing the window
+                        window.onblur = autoSubmitExam;
+    
                     } else {
                         alert('No questions found for this Exam ID.');
                     }
@@ -390,6 +400,53 @@
                 alert('Please enter an Exam ID.');
             }
         }
+
+        // Timer function
+        function startExamTimer(duration) {
+            let timeRemaining = duration;
+            const timerDisplay = document.createElement('p');
+            timerDisplay.setAttribute('id', 'timerDisplay');
+            document.getElementById('examForm').appendChild(timerDisplay);
+
+            examTimer = setInterval(() => {
+                timeRemaining--;
+                timerDisplay.textContent = `Time remaining: ${Math.floor(timeRemaining / 60)}m ${timeRemaining % 60}s`;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(examTimer);
+                    autoSubmitExam(); // Submit exam when time is up
+                }
+            }, 1000);
+        }
+
+        // Function to submit exam automatically
+        function autoSubmitExam() {
+            // Stop the timer
+            clearInterval(examTimer);
+
+            // Submit the form
+            document.getElementById('examForm').submit();
+
+            // Show submission message and reset
+            alert('Exam submitted successfully.');
+            resetExamForm();
+        }
+
+        // Reset the exam form after submission
+        function resetExamForm() {
+            document.getElementById('examForm').reset();
+            document.getElementById('examForm').style.display = 'none';
+            document.getElementById('questionsContainer').innerHTML = '';
+            document.getElementById('exam_id').value = ''; // Clear the exam ID input
+            document.getElementById('timerDisplay').remove();
+        }
+
+        // Event listener for form submission
+        document.getElementById('examForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            autoSubmitExam();
+        });
+
 
         function fetchResults() {
             const exam_id = document.getElementById('exam_idd').value;

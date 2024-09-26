@@ -22,7 +22,10 @@ foreach ($_POST as $key => $value) {
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
 
-        if ($row['correct_answer'] == $student_answer) {
+        // If student did not answer, consider it wrong
+        if (!isset($student_answer) || $row['correct_answer'] != $student_answer) {
+            // Answer is incorrect or unanswered
+        } else {
             $correct_answers++;
         }
     }
@@ -35,6 +38,3 @@ $query = "INSERT INTO results (student_id, exam_id, score) VALUES (?, ?, ?)";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("iss", $student_id, $exam_id, $score);
 $stmt->execute();
-
-echo "Your score is: $score";
-?>
