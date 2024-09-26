@@ -16,7 +16,7 @@
                     document.getElementById('user-name').textContent = data.administrator.name;
                     document.getElementById('user-email').textContent = data.administrator.email;
                     document.getElementById('user-dob').textContent = data.administrator.dob;
-                    /*
+                    
                     // Populate all students' results
                     const allResultsTableBody = document.getElementById('all-results-table-body');
                     data.all_results.forEach(result => {
@@ -29,7 +29,6 @@
                         `;
                         allResultsTableBody.appendChild(row);
                     });
-                    */
                 } else {
                         alert('Failed to load user details.');}
             })
@@ -63,7 +62,7 @@
             };
             xhr.send("id=" + questionId);
         }
-
+/*
         function editQuestion(button) {
             var row = button.parentElement.parentElement;
             var questionId = row.cells[0].innerHTML;
@@ -81,6 +80,7 @@
                 xhr.send("id=" + questionId + "&question=" + encodeURIComponent(newQuestionText));
             }
         }
+*/            
     </script>
     <style>
         body {
@@ -260,19 +260,28 @@
                     <h5>Upload New Questions</h5>
                     <form action="upload.php" method="post" enctype="multipart/form-data">
                         <div class="form-group">
+                            <label for="exam_id">Exam ID:</label>
+                            <input type="text" class="form-control" id="exam_id" name="exam_id" required>
+                        </div>
+                        <div class="form-group">
                             <label for="questionFile">Select File:</label>
-                            <input type="file" class="form-control-file" id="questionFile" name="questionFile">
+                            <input type="file" class="form-control-file" id="questionFile" name="questionFile" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Upload</button>
-                    </form>
+                    </form>                    
                 </div>
                 <div class="mt-4">
-                    <h5>Remove Existing Questions</h5>
+                    <h5>Manage Questions</h5>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Question ID</th>
+                                <th>Q. ID</th>
                                 <th>Question</th>
+                                <th>Option A</th>
+                                <th>Option B</th>
+                                <th>Option C</th>
+                                <th>Option D</th>
+                                <th>Answer</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -303,68 +312,43 @@
             </div>
 
             <div id="admin-approval" class="content-section">
-                <h2>Admin Approval</h2>
-                <div class="mt-4">
-                    <h5>Approve Students</h5>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Gender</th>
-                                <th>Date of Birth</th>
-                                <th>Level</th>
-                                <th>School</th>
-                                <th>Programme</th>
-                                <th>ID</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentApprovalTable">
-                            <!-- Example rows (You would dynamically generate these) -->
-                            <tr>
-                                <td>John Doe</td>
-                                <td>Male</td>
-                                <td>1995-05-15</td>
-                                <td>100</td>
-                                <td>Science</td>
-                                <td>Physics</td>
-                                <td>12345</td>
-                                <td>
-                                    <button class="btn btn-success" onclick="approveUser(this)">Approve</button>
-                                    <button class="btn btn-danger" onclick="rejectUser(this)">Reject</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="container">
+                    <div class="mt-4">
+                        <h5>Students List</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>dob</th>
+                                    <th>department</th>
+                                    <th>id</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentApprovalTable">
+                                <!-- Rows will be dynamically inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <h5>Approve Lecturers</h5>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Gender</th>
-                                <th>Date of Birth</th>
-                                <th>School</th>
-                                <th>ID</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lecturerApprovalTable">
-                            <!-- Example rows (You would dynamically generate these) -->
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>Female</td>
-                                <td>1980-07-20</td>
-                                <td>Engineering</td>
-                                <td>67890</td>
-                                <td>
-                                    <button class="btn btn-success" onclick="approveUser(this)">Approve</button>
-                                    <button class="btn btn-danger" onclick="rejectUser(this)">Reject</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="container">
+                    <div class="mt-4">
+                        <h5>Lecturers List</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>dob</th>
+                                    <th>department</th>
+                                    <th>id</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lecturerApprovalTable">
+                                <!-- Rows will be dynamically inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -530,7 +514,92 @@
             } else {
                 alert('Please enter an Exam ID.');
             }
-        }        
+        }
+            // Function to fetch student details from the PHP script
+    function fetchStudents() {
+        fetch('fetch_students.php')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById('studentApprovalTable');
+                tableBody.innerHTML = ""; // Clear any existing rows
+
+                data.forEach(student => {
+                    let row = `<tr>
+                                    <td>${student.name}</td>
+                                    <td>${student.dob}</td>
+                                    <td>${student.school}</td>
+                                    <td>${student.student_id}</td>
+                                    <td>
+                                        <button class="btn btn-danger" onclick="rejectUser(${student.student_id}, 'student')">Reject</button>
+                                    </td>
+                                </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching students:', error);
+            });
+    }
+
+    // Function to fetch lecturer details from the PHP script
+    function fetchLecturers() {
+        fetch('fetch_lecturers.php')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById('lecturerApprovalTable');
+                tableBody.innerHTML = ""; // Clear any existing rows
+
+                data.forEach(lecturer => {
+                    let row = `<tr>
+                                    <td>${lecturer.name}</td>
+                                    <td>${lecturer.dob}</td>
+                                    <td>${lecturer.school}</td>
+                                    <td>${lecturer.lecturer_id}</td>
+                                    <td>
+                                        <button class="btn btn-danger" onclick="rejectUser(${lecturer.lecturer_id}, 'lecturer')">Reject</button>
+                                    </td>
+                                </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching lecturers:', error);
+            });
+    }
+
+    // JavaScript function to reject a user (either student or lecturer)
+    function rejectUser(userId, userType) {
+    let url;
+
+    // Determine the appropriate URL based on user type (student or lecturer)
+    if (userType === 'student') {
+        url = `reject_student.php?student_id=${userId}`;
+    } else if (userType === 'lecturer') {
+        url = `reject_lecturer.php?lecturer_id=${userId}`;
+    }
+
+    if (confirm('Are you sure you want to reject this user?')) {
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                alert(data); // Show the response message
+                if (userType === 'student') {
+                    fetchStudents(); // Refresh the student list
+                } else {
+                    fetchLecturers(); // Refresh the lecturer list
+                }
+            })
+            .catch(error => {
+                console.error('Error rejecting user:', error);
+            });
+    }
+}
+
+    // Fetch both students and lecturers when the page loads
+    window.onload = function() {
+        fetchStudents(); // Fetch student data
+        fetchLecturers(); // Fetch lecturer data
+    };        
     </script>
 </body>
 </html>
