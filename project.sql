@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 20, 2024 at 05:31 PM
+-- Generation Time: Sep 26, 2024 at 04:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,7 +43,8 @@ CREATE TABLE `administrators` (
 INSERT INTO `administrators` (`admin_id`, `name`, `email`, `password`, `dob`, `id_num`) VALUES
 (1, 'Emmanuel Ayisi', 'patupa@gmail.com', '$2y$10$PEhPxYSNQlkxD4KstwlpTe7H8i/d5yWSfUWvyPmaws02Gg.qg3VxK', '2024-08-21', ''),
 (2, 'Kaka Kay', 'kaka@gmail.com', '$2y$10$GIP1VEtcNnrdHLgbmfDGUO9wi/eae3iQBFqUDaxHsmRjuvFe3chNy', '2024-07-31', '1233'),
-(3, 'panyin', 'panyin@gmail.com', '$2y$10$LhisVJe3RAQFxTI0MFaO3.cMOGUOQY7iw5uhY1pco/LHOK/sguj72', '2024-07-30', '12345');
+(3, 'panyin', 'panyin@gmail.com', '$2y$10$LhisVJe3RAQFxTI0MFaO3.cMOGUOQY7iw5uhY1pco/LHOK/sguj72', '2024-07-30', '12345'),
+(4, 'Isaac', 'ik@gmail.com', '$2y$10$BRzKfwBjec7BDJ3HKlAZLOYa8XB5vnJSlRUf2UibnMZ3vAkM2lmCW', '2024-08-01', '1111');
 
 --
 -- Triggers `administrators`
@@ -190,7 +191,6 @@ CREATE TABLE `lecturers` (
 --
 
 INSERT INTO `lecturers` (`lecturer_id`, `name`, `email`, `password`, `dob`, `school`, `id_num`) VALUES
-(1, 'karl', 'karl@gmail.com', '$2y$10$pveXFaaoV5OCz6sLdqtYBuAsPdeMHUzKgEy.HOGCRugdfVQoAze3O', '2024-09-03', '', ''),
 (2, 'Adzo Evon', 'adzo@gmail.com', '$2y$10$Sp/OJ8alVbnmMyM/.QUmh.w5NgUS6pPuXHyTN21QxsQyTtHzOHMB.', '2024-07-29', 'lec_GRADUATE STUDIES', '1231'),
 (3, 'daavi', 'daavi@gmail.com', '$2y$10$77KGQkeWI2trUhsuG5gTQO7krUkh7JNKPUNLVsPx7xt4ujEf/yY3W', '2024-09-03', 'lec_GEOSCIENCES', '12345'),
 (4, 'Owusu', 'owusu@gmail.com', '$2y$10$m3qWlQIUHc35MhJOp0hIYecMB.3keJJJUD/rRFAAND5GAHe0hn896', '2024-09-02', 'lec_MINES AND BUILT ENVIRONMENT', '1255'),
@@ -232,6 +232,20 @@ INSERT INTO `lecturerss` (`lecturer_id`, `name`, `dob`, `email`, `password`, `sc
 (1, 'Ayisi Emmanuel', '2024-08-30', 'sofaraaagyeijoseph5@gmail.com', '$2y$10$0zSoh1v7QK83q1DfPNTQ3elop7tkZxBoOdstpa4EPoxikRoT7j4ii', NULL, NULL),
 (11, 'karl', '2024-08-24', 'karl@gmail.com', '$2y$10$PJydEe/NoWodzw.NMQP2Yegx/Pa6jQ5Q9PDbxYRbUAdgiL0H.MMo6', NULL, NULL);
 
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `sender_role` enum('student','lecturer','administrator') NOT NULL,
+  `receiver_role` enum('student','lecturer','administrator') NOT NULL,
+  `message` text NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_read` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -252,6 +266,38 @@ CREATE TABLE `objective_questions` (
 
 CREATE TABLE `questions` (
   `id` int(11) NOT NULL,
+  `lecturer_id` int(11) DEFAULT NULL,
+  `admin_id` int(11) DEFAULT NULL,
+  `exam_id` varchar(255) NOT NULL,
+  `question` text NOT NULL,
+  `option_a` varchar(255) NOT NULL,
+  `option_b` varchar(255) NOT NULL,
+  `option_c` varchar(255) NOT NULL,
+  `option_d` varchar(255) NOT NULL,
+  `correct_answer` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `questions`
+--
+
+INSERT INTO `questions` (`id`, `lecturer_id`, `admin_id`, `exam_id`, `question`, `option_a`, `option_b`, `option_c`, `option_d`, `correct_answer`) VALUES
+(20, 1, 0, 'CENG402', 'What is the capital of Nigeria?', 'Abuja', 'Lagos', 'Benin', 'Port H.', 'A'),
+(21, 1, 0, 'CENG402', 'Who is the founder of Ghana?', 'Addo', 'Danquah', 'Busia', 'Nkrumah', 'D'),
+(22, 2, 0, 'CENG505', 'What is the capital of Nigeria?', 'Abuja', 'Lagos', 'Benin', 'Port H.', 'A'),
+(23, 2, 0, 'CENG505', 'Who is the founder of Ghana?', 'Addo', 'Danquah', 'Busia', 'Nkrumah', 'D'),
+(24, 2, 0, 'ELNG404', 'What is the capital of Nigeria?', 'Abuja', 'Lagos', 'Benin', 'Port H.', 'A'),
+(32, 4, 0, 'CENG504', 'What is the capital of Nigeria?', 'Abuja', 'Lagos', 'Benin', 'Port H.', 'A'),
+(33, 4, 0, 'CENG504', 'Who is the founder of Ghana?', 'Addo', 'Danquah', 'Busia', 'Nkrumah', 'D');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `questionss`
+--
+
+CREATE TABLE `questionss` (
+  `id` int(11) NOT NULL,
   `question` text NOT NULL,
   `type` varchar(50) NOT NULL,
   `subject_id` int(11) DEFAULT NULL,
@@ -263,6 +309,10 @@ CREATE TABLE `questions` (
 --
 
 INSERT INTO `questions` (`id`, `question`, `type`, `subject_id`, `created_at`) VALUES
+-- Dumping data for table `questionss`
+--
+
+INSERT INTO `questionss` (`id`, `question`, `type`, `subject_id`, `created_at`) VALUES
 (14, '2. How many parts of speech are there?', '', NULL, '2024-07-10 02:12:24'),
 (15, '3. What is an adjective?', '', NULL, '2024-07-10 02:12:24'),
 (20, '2. How many parts of speech are there?', '', NULL, '2024-07-10 03:34:49'),
@@ -290,11 +340,20 @@ CREATE TABLE `random_ids` (
 --
 
 CREATE TABLE `results` (
-  `result_id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
-  `exam_id` int(11) NOT NULL,
-  `score` decimal(5,2) NOT NULL
+  `result_id` int(10) NOT NULL,
+  `student_id` varchar(255) NOT NULL,
+  `exam_id` varchar(255) NOT NULL,
+  `score` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `results`
+--
+
+INSERT INTO `results` (`result_id`, `student_id`, `exam_id`, `score`) VALUES
+(61, '1', 'CENG402', '0/0'),
+(62, '1', 'CENG402', '2/2'),
+(63, '1', 'CENG505', '0/0');
 
 -- --------------------------------------------------------
 
@@ -531,6 +590,12 @@ ALTER TABLE `lecturers`
 ALTER TABLE `lecturerss`
   ADD PRIMARY KEY (`lecturer_id`),
   ADD UNIQUE KEY `email` (`email`);
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sender_id` (`sender_id`),
+  ADD KEY `receiver_id` (`receiver_id`);
 
 --
 -- Indexes for table `objective_questions`
@@ -616,7 +681,7 @@ ALTER TABLE `user_details`
 -- AUTO_INCREMENT for table `administrators`
 --
 ALTER TABLE `administrators`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `answers`
@@ -671,6 +736,10 @@ ALTER TABLE `lecturers`
 --
 ALTER TABLE `lecturerss`
   MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `objective_questions`
@@ -682,6 +751,12 @@ ALTER TABLE `objective_questions`
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- AUTO_INCREMENT for table `questionss`
+--
+ALTER TABLE `questionss`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
@@ -694,7 +769,7 @@ ALTER TABLE `random_ids`
 -- AUTO_INCREMENT for table `results`
 --
 ALTER TABLE `results`
-  MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `result_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `resultss`
@@ -747,6 +822,7 @@ ALTER TABLE `user_details`
 --
 ALTER TABLE `answers`
   ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`);
+  ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questionss` (`id`);
 
 --
 -- Constraints for table `courses`
@@ -772,6 +848,17 @@ ALTER TABLE `questions`
 ALTER TABLE `results`
   ADD CONSTRAINT `results_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
   ADD CONSTRAINT `results_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`exam_id`);
+-- Constraints for table `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `administrators` (`admin_id`),
+  ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `administrators` (`admin_id`);
+
+--
+-- Constraints for table `questionss`
+--
+ALTER TABLE `questionss`
+  ADD CONSTRAINT `questionss_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id_sub`);
 
 --
 -- Constraints for table `resultss`

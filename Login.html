@@ -14,6 +14,8 @@
             min-height: 100vh;
             margin: 0;
             background-color: #f8f9fa;
+            -webkit-text-size-adjust: 100%; /* Older versions of iOS Safari, Android */
+            text-size-adjust: 100%;
         }
         header {
             background-color: #343a40;
@@ -80,7 +82,7 @@
             <h2>UNIVERSITY OF ENERGY AND NATURAL RESOURCES</h2>
             <h3>ONLINE EXAMINATION MANAGEMENT SYSTEM</h3>
         </div>
-        <p><a href="signup.html" id="logIn"><button class="btn btn-primary">Signup</button></a></p>
+        <p><a href="SignUp.html" id="logIn"><button class="btn btn-primary">Signup</button></a></p>
     </header>
     <div class="content">
         <div class="login-container">
@@ -88,7 +90,7 @@
             <form id="login-form" method="post" action="login.php">
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>
@@ -116,7 +118,13 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = 'student_dashboard.html';
+                    if (data.role === 'student') {
+                        window.location.href = 'StudentProfile.html';
+                    } else if (data.role === 'lecturer') {
+                        window.location.href = 'LecturerProfile.html';
+                    } else if (data.role === 'admin') {
+                        window.location.href = 'AdminProfile.html';
+                    }
                 } else {
                     const errorMessage = document.getElementById('error-message');
                     errorMessage.textContent = data.message;

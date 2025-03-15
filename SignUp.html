@@ -12,6 +12,8 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            -webkit-text-size-adjust: 100%; /* Older versions of iOS Safari, Android */
+            text-size-adjust: 100%;
         }
         header {
             background-color: #343a40;
@@ -172,7 +174,7 @@
         <form id="signup-form">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Your name" required>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Your name" required autocomplete="off">
             </div>
             <div class="form-group">
                 <label for="dob">Date of Birth</label>
@@ -180,7 +182,7 @@
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                <input type="email" class="form-control" id="email" name="email" required autocomplete="off">
             </div>
             <h3>CATEGORY</h3>
             <div class="category">
@@ -230,15 +232,15 @@
                 </div>
                 <div class="form-group">
                     <label for="id_num">Id</label>
-                    <input type="text" class="form-control" id="id_num" name="id_num" placeholder="Your id number" >
+                    <input type="text" class="form-control" id="id_num" name="id_num" placeholder="Your id number" autocomplete="off">
                 </div>
             </div>
 
             <div id="lecturerSection" style="display: none;">
                 <h4>Lecturer</h4>
                 <div class="form-group">
-                    <label for="lec_school">School</label>
-                    <select id="lec_school" class="form-control" name="lec_school">
+                    <label for="school">School</label>
+                    <select id="lec_school" class="form-control" name="school">
                         <option value="">Select your school</option>
                         <option value="lec_SCIENCES">SCIENCES</option>
                         <option value="lec_ENGINEERING">ENGINEERING</option>
@@ -251,25 +253,24 @@
                         <option value="lec_ENERGY">ENERGY</option>
                     </select>
                 </div>
-
                 <div class="form-group">
-                    <label for="lec_id_num">Id</label>
-                    <input type="text" class="form-control" id="lec_id_num" name="lec_id_num" placeholder="Your id number" >
+                    <label for="id_num">Id</label>
+                    <input type="text" class="form-control" id="lec_id_num" name="id_num" placeholder="Your id number" autocomplete="off">
                 </div>
             </div>
 
             <div id="adminSection" style="display: none;">
                 <h4>Administrator</h4>
                 <div class="form-group">
-                    <label for="admin_id_num">Id</label>
-                    <input type="text" class="form-control" id="admin_id_num" name="admin_id_num" placeholder="Your id number" >
+                    <label for="id_num">Id</label>
+                    <input type="text" class="form-control" id="admin_id_num" name="id_num" placeholder="Your id number" autocomplete="off">
                 </div>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <input type="password" class="form-control" id="password" name="password" required autocomplete="off">
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Signup</button>
+            <button type="submit" class="btn btn-primary btn-block">SignUp</button>
             <div id="message" class="mt-3 text-center"></div>
         </form>
     </div>
@@ -314,19 +315,12 @@
             })
 
             .then(response => response.json())
-            .then(data => {
-                const messageDiv = document.getElementById('message');
-                if (data.success) {
-                    messageDiv.textContent = 'Signup successful!';
-                    messageDiv.className = 'text-success';
-                } else {
-                    messageDiv.textContent = data.message;
-                    messageDiv.className = 'text-danger';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            .then(data => { const messageDiv = document.getElementById('message');
+            if (data.success) { messageDiv.textContent = 'Signup successful!';
+            messageDiv.className = 'text-success'; 
+            } else { messageDiv.textContent = data.message;
+            messageDiv.className = 'text-danger'; } }) 
+            .catch(error => console.error('Error:', error));
         });
     </script>
 </body>
