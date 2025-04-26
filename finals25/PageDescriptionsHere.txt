@@ -1,0 +1,3 @@
+LANDING PAGE
+I want a landing page for an online examination management system, I want it in three divisions. The top division should be a navigation pane, there should be a log in button at the right side of this pane, at the left side, there should be a logo that can be replaced with my school’s logo. And at the center of this pane, I want the name of the school written in bold.
+The middle pane/division should hold a bold sign up button. And the lower pane/division should hold an about section, describing the function of the online examination management system.
