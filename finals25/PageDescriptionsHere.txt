@@ -8,3 +8,13 @@ The login page has the logo of the university on the right side of the webpage h
 A form labeled "Login" with requirement as follows , email/username ,Id number, password, with a log in button at the bottom and a forgot password link below.
 
 And a footer with names of three developers and below the names is the year and copyright text.
+
+SIGNUP PAGE
+I want a signup page for an examination management system. I want it in three divisons. The header consists of UENR logo on the left side, the middle pane should have the name of the school and title of the project and the right side should have the login button.
+
+A form labeled "signup" with requirement as follows: name, date of birth, email, and "category" with requirements student, lecturer and administrator. 
+When student is selected it should have requirement as follows: level, school, program, id and password.
+When lecturer is selected it should have requirement as follows: school, id and password.
+When an administratoris selected it should have requirement as follows: an id and password.
+
+And footer with copyright symbol, year , name of the school and copyright text.
