@@ -4,7 +4,5 @@ The middle pane/division should hold a bold sign up button. And the lower pane/d
 
 LOGIN PAGE
 The login page has the logo of the university on the right side of the webpage header , with the name of the university aligned in the middle with a sub-header of the system name and a signup button at the left corner of the header.
-
 A form labeled "Login" with requirement as follows , email/username ,Id number, password, with a log in button at the bottom and a forgot password link below.
-
 And a footer with names of three developers and below the names is the year and copyright text.
