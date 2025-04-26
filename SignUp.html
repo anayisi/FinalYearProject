@@ -315,12 +315,17 @@
             })
 
             .then(response => response.json())
-            .then(data => { const messageDiv = document.getElementById('message');
-            if (data.success) { messageDiv.textContent = 'Signup successful!';
-            messageDiv.className = 'text-success'; 
-            } else { messageDiv.textContent = data.message;
-            messageDiv.className = 'text-danger'; } }) 
-            .catch(error => console.error('Error:', error));
+.then(data => {
+    const messageDiv = document.getElementById('message');
+    if (data.success) {
+        messageDiv.textContent = 'Signup successful!';
+        messageDiv.className = 'text-success';
+    } else {
+        messageDiv.textContent = data.message;
+        messageDiv.className = 'text-danger';
+    }
+}) // <--- this was probably incomplete or missing
+.catch(error => console.error('Error:', error));
         });
     </script>
 </body>
