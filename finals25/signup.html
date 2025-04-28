@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University Examination System - Sign Up</title>
+    <title>Sign Up - University Examination System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -47,7 +47,8 @@
             <div class="flex items-center">
                 <img src="lg.png" alt="University Logo" class="h-12 w-12 rounded-full">
             </div>
-            <h1 class="text-2xl font-bold text-center">UNIVERSITY OF TECHNOLOGY AND INNOVATION</h1>
+            <h1 class="text-2xl font-bold text-center">UNIVERSITY OF ENERGY AND NATURAL RESOURCES</h1>
+            <h2>ONLINE EXAMINATION MANAGEMENT SYSTEM</h2>
             <a href="login.html" class="bg-white text-blue-800 px-4 py-2 rounded-lg font-semibold hover:bg-blue-100 transition duration-300">
                 <i class="fas fa-sign-in-alt mr-2"></i>Login
             </a>
@@ -60,7 +61,7 @@
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-blue-800"></div>
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Create Your Account</h2>
             
-            <form id="signupForm" class="space-y-6">
+            <form id="signup-form" class="space-y-6">
                 <!-- Basic Information -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -112,7 +113,7 @@
                 <!-- Dynamic Fields -->
                 <div id="dynamicFields">
                     <!-- Student Fields (default) -->
-                    <div id="studentFields" class="fade-in space-y-6">
+                    <div id="studentSection" class="fade-in space-y-6">
                         <div>
                             <label for="level" class="block text-sm font-medium text-gray-700 mb-1">Level</label>
                             <select id="level" name="level" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
@@ -150,10 +151,10 @@
                     </div>
                     
                     <!-- Lecturer Fields (hidden by default) -->
-                    <div id="lecturerFields" class="hidden fade-in space-y-6">
+                    <div id="lecturerSection" class="hidden fade-in space-y-6">
                         <div>
                             <label for="lecturerSchool" class="block text-sm font-medium text-gray-700 mb-1">School</label>
-                            <select id="lecturerSchool" name="lecturerSchool" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                            <select id="lec_school" name="school" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
                                 <option value="">Select School</option>
                                 <option value="SCIENCES">Sciences</option>
                                 <option value="ENGINEERING">Engineering</option>
@@ -169,7 +170,7 @@
                     </div>
                     
                     <!-- Admin Fields (hidden by default) -->
-                    <div id="adminFields" class="hidden fade-in">
+                    <div id="adminSection" class="hidden fade-in">
                         <!-- No additional fields needed for admin beyond ID and password -->
                     </div>
                 </div>
@@ -177,8 +178,8 @@
                 <!-- Common Fields -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="idNumber" class="block text-sm font-medium text-gray-700 mb-1">ID Number</label>
-                        <input type="text" id="idNumber" name="idNumber" required 
+                        <label for="id_num" class="block text-sm font-medium text-gray-700 mb-1">ID</label>
+                        <input type="text" id="id_num" name="id_num" required 
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
                     </div>
                     <div>
@@ -294,21 +295,53 @@
         });
 
         // Form submission
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // Validate passwords match
+            const name = document.getElementById('name').value;
+            const dob = document.getElementById('dob').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const id_num = document.getElementById('id_num').value;
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            const terms = document.getElementById('terms').checked;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
+            let additionalDetails = {};
+            if (userType === 'student') {
+                additionalDetails.level = document.getElementById('level').value;
+                additionalDetails.school = document.getElementById('school').value;
+                additionalDetails.program = document.getElementById('program').value;
+            } else if (userType === 'lecturer') {
+                additionalDetails.school = document.getElementById('lec_school').value;
+            } else if (userType === 'admin') {
+                // No additional fields for admin
+            }
+
+            // Validate passwords match
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
                 return;
             }
             
             // Here you would typically send the form data to the server
-            alert('Form submitted successfully!');
-            // this.reset();
+            fetch('signup.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, dob, email, password, userType, id_num, ...additionalDetails })
+            })
+
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Sign up successful!');
+                    //Redirect to login page
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
         });
     </script>
 </body>

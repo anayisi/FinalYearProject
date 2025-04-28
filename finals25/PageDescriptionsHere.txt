@@ -7,6 +7,7 @@ The login page has the logo of the university on the right side of the webpage h
 A form labeled "Login" with requirement as follows , email/username ,Id number, password, with a log in button at the bottom and a forgot password link below.
 And a footer with names of three developers and below the names is the year and copyright text.
 
+I want this login page updated, such that when a user clicks on the login button after keying in their credentials, a check will be run in the database with name "project". The database has three tables; Students, Lecturers, Administrators. When the login button is clicked, the system should scan through the database for the table holding the entered email address. When found, the id number should be confirmed for the particular user, and the password (hashed) should also be confirmed againt the hashed password of the user stored in the database. Based on the identity of the user (Student, Lecturer or Administrator), one of the following should be loaded, StudentProfile.html, LecturerProfile.html, AdministratorProfile.html, having passed the credentials of the user logging in to it.
 
 SIGNUP PAGE
 I want a signup page for an examination management system. I want it in three divisons. The header consists of UENR logo on the left side, the middle pane should have the name of the school and title of the project and the right side should have the login button.
@@ -22,3 +23,109 @@ If Lecturer is selected; School (with drop down options – Sciences, Engineerin
 If Administrator is selected; id number and password should be taken.
 The form should have a signup button that submits when all spaces are filled.
 The footer of this page should hold the names of the developers.
+
+****HOLDS****
+Compare the two signups and align the second with a signup.php
+Create a three new tables RandStu, RandLec, RandAdmin, in 'project' database that generates random id numbers for students, lecturers and administrators respectively...
+
+Update the new signup.php to run the id of the signing up user against the following tables in the database; randstu, randlec, randadmin. It is to ensure that the entered id corresponds to the identity (student, lecturer, admin) specified by the signing up user, doing so by ensuring that if a user is signing up as a Student, Lecturer or Administrator, the provided id is present specifically in the randstu, randlec or randadmin table respectively, otherwise an alert of incorrect id should be sent..
+
+// Mock database - In a real application, this would be replaced with actual database queries
+        const projectDatabase = {
+            Students: [
+                { id: 'ST001', email: 'student1@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'John Student', department: 'Computer Science' },
+                { id: 'ST002', email: 'student2@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'Jane Student', department: 'Electrical Engineering' }
+            ],
+            Lecturers: [
+                { id: 'LT001', email: 'lecturer1@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'Dr. Smith', department: 'Mathematics', courses: ['MATH101', 'MATH202'] },
+                { id: 'LT002', email: 'lecturer2@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'Prof. Johnson', department: 'Physics', courses: ['PHYS101', 'PHYS301'] }
+            ],
+            Administrators: [
+                { id: 'AD001', email: 'admin@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'Admin User', role: 'System Administrator' }
+            ]
+        };
+
+        // Simple SHA-256 hashing function (for demo purposes)
+        async function sha256(message) {
+            // Encode as UTF-8
+            const msgBuffer = new TextEncoder().encode(message);
+            
+            // Hash the message
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            
+            // Convert to hex string
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            
+            return hashHex;
+        }
+         try {
+                // Hash the password (in a real app, this would be done client-side before sending to server)
+                const hashedPassword = await sha256(password);
+                
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Check each table in the database for matching credentials
+                let user = null;
+                let userType = null;
+                
+                // Check Students table
+                const student = projectDatabase.Students.find(u => 
+                    (u.email === email || u.id === idNumber) && u.password === hashedPassword
+                );
+                
+                if (student) {
+                    user = student;
+                    userType = 'Student';
+                } else {
+                    // Check Lecturers table
+                    const lecturer = projectDatabase.Lecturers.find(u => 
+                        (u.email === email || u.id === idNumber) && u.password === hashedPassword
+                    );
+                    
+                    if (lecturer) {
+                        user = lecturer;
+                        userType = 'Lecturer';
+                    } else {
+                        // Check Administrators table
+                        const admin = projectDatabase.Administrators.find(u => 
+                            (u.email === email || u.id === idNumber) && u.password === hashedPassword
+                        );
+                        
+                        if (admin) {
+                            user = admin;
+                            userType = 'Administrator';
+                        }
+                    }
+                }
+                
+                if (user && userType) {
+                    // Successful login - redirect to appropriate profile page
+                    // In a real app, you would store the user session and redirect
+                    console.log(`Login successful as ${userType}:`, user);
+                    
+                    // Store user data in sessionStorage (temporary for this demo)
+                    sessionStorage.setItem('currentUser', JSON.stringify({
+                        type: userType,
+                        data: user
+                    }));
+                    
+                    // Redirect to appropriate profile page
+                    switch(userType) {
+                        case 'Student':
+                            window.location.href = 'StudentProfile.html';
+                            break;
+                        case 'Lecturer':
+                            window.location.href = 'LecturerProfile.html';
+                            break;
+                        case 'Administrator':
+                            window.location.href = 'AdministratorProfile.html';
+                            break;
+                    }
+                } else {
+                    // Invalid credentials
+                    errorMessage.textContent = 'Invalid email, ID number or password. Please try again.';
+                    errorMessage.classList.remove('hidden');
+                }
+            }

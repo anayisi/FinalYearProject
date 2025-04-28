@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Examination Management System - Login</title>
+    <title>OEMS - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -17,6 +17,18 @@
         .input-field:focus {
             outline: none;
             box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+        }
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -34,6 +46,7 @@
             <!-- Center - University Name -->
             <div class="flex-1 text-center">
                 <h1 class="text-2xl font-bold text-indigo-800">UNIVERSITY OF ENERGY AND NATURAL RESOURCES</h1>
+                <h2 class="text-2xl font-bold text-indigo-800">ONLINE EXAMINATION MANAGEMENT SYSTEM</h2>
             </div>
             
             <!-- Right side - Sign Up Button -->
@@ -52,29 +65,32 @@
         <div class="login-form bg-white bg-opacity-90 p-8 rounded-xl w-full max-w-md">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Login to Your Account</h2>
             
-            <form>
+            <form id="login-form" method="post" action="login.php">
                 <div class="mb-4">
                     <label for="email" class="block text-gray-700 font-medium mb-2">Email/Username</label>
-                    <input type="text" id="email" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 transition" placeholder="Enter your email or username">
-                </div>
-                
-                <div class="mb-4">
-                    <label for="id-number" class="block text-gray-700 font-medium mb-2">ID Number</label>
-                    <input type="text" id="id-number" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 transition" placeholder="Enter your ID number">
+                    <input type="email" id="email" name="email" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 transition" placeholder="Enter your email or username" required>
                 </div>
                 
                 <div class="mb-6">
                     <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
-                    <input type="password" id="password" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 transition" placeholder="Enter your password">
+                    <div class="relative">
+                        <input type="password" id="password" name="password" class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 transition" placeholder="Enter your password" required>
+                        <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-500 hover:text-gray-700">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 mb-4">
-                    Login
+                <button type="submit" id="loginButton" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 mb-4 flex items-center justify-center">
+                    <span id="loginText">Login</span>
+                    <div id="loadingSpinner" class="loading-spinner ml-2"></div>
                 </button>
                 
                 <div class="text-center">
-                    <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Forgot Password?</a>
+                    <a href="forgot.html" id="forgotPassword" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Forgot Password?</a>
                 </div>
+                
+                <div id="error-message" class="text-red-500 text-sm mt-4 text-center hidden"></div>
             </form>
         </div>
     </main>
@@ -97,18 +113,73 @@
     </footer>
 
     <script>
-        // Simple form validation example
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const email = document.getElementById('email').value;
-            const idNumber = document.getElementById('id-number').value;
-            const password = document.getElementById('password').value;
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            const icon = this.querySelector('i');
             
-            if (!email || !idNumber || !password) {
-                e.preventDefault();
-                alert('Please fill in all fields');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         });
-        
+
+        // Form submission handler
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const errorMessage = document.getElementById('error-message');
+            const loginButton = document.getElementById('loginButton');
+            const loginText = document.getElementById('loginText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            // Show loading state
+            loginButton.disabled = true;
+            loginText.textContent = 'Authenticating...';
+            loadingSpinner.style.display = 'block';
+            errorMessage.classList.add('hidden');
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            try {
+                fetch('login.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.role === 'student') {
+                            window.location.href = 'StudentProfile.html';
+                        } else if (data.role === 'lecturer') {
+                            window.location.href = 'LecturerProfile.html';
+                        } else if (data.role === 'admin') {
+                            window.location.href = 'AdminProfile.html';
+                        }
+                    } else {
+                        const errorMessage = document.getElementById('error-message');
+                        errorMessage.textContent = data.message;
+                        errorMessage.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Login error:', error);
+                    errorMessage.textContent = 'An error occurred during login. Please try again.';
+                    errorMessage.classList.remove('hidden');
+                });
+            } finally {
+                // Reset button state
+                loginButton.disabled = false;
+                loginText.textContent = 'Login';
+                loadingSpinner.style.display = 'none';
+            }
+        });
+
         // You can replace these with actual developer names
         const developers = ['Aadil', 'Hajara', 'Muhammad'];
         const devElements = document.querySelectorAll('footer span');
