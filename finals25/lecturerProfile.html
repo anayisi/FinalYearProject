@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer Dashboard - Examination System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 50%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .chat-message {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #questionsTable {
+            width: 100%;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header Section -->
+    <header class="bg-blue-700 text-white p-4 flex items-center justify-between shadow-md">
+        <div class="flex items-center">
+            <img src="https://via.placeholder.com/50" alt="School Logo" class="h-10 w-10 mr-2">
+        </div>
+        <h1 class="text-xl font-bold">UNIVERSITY OF EXAMINATION SYSTEM</h1>
+        <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg flex items-center">
+            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+        </button>
+    </header>
+
+    <!-- Main Content Section -->
+    <main class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <div class="w-64 bg-gray-800 text-white p-4">
+            <nav>
+                <ul class="space-y-2">
+                    <li>
+                        <button class="tab-btn active w-full text-left p-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition" data-tab="personal">
+                            <i class="fas fa-user mr-2"></i> Personal Details
+                        </button>
+                    </li>
+                    <li>
+                        <button class="tab-btn w-full text-left p-3 rounded-lg hover:bg-gray-700 transition" data-tab="questions">
+                            <i class="fas fa-question-circle mr-2"></i> Questions
+                        </button>
+                    </li>
+                    <li>
+                        <button class="tab-btn w-full text-left p-3 rounded-lg hover:bg-gray-700 transition" data-tab="results">
+                            <i class="fas fa-poll mr-2"></i> Results
+                        </button>
+                    </li>
+                    <li>
+                        <button class="tab-btn w-full text-left p-3 rounded-lg hover:bg-gray-700 transition" data-tab="feedback">
+                            <i class="fas fa-comments mr-2"></i> Feedback
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Tab Content Area -->
+        <div class="flex-1 p-8">
+            <!-- Personal Details Tab -->
+            <div id="personal" class="tab-content active">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Personal Details</h2>
+                <div class="bg-white p-6 rounded-lg shadow-md max-w-lg">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="font-semibold text-gray-700">User Type:</label>
+                            <p class="mt-1" id="userType">Lecturer</p>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-gray-700">Name:</label>
+                            <p class="mt-1" id="userName">Dr. Jane Smith</p>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-gray-700">Email:</label>
+                            <p class="mt-1" id="userEmail">jane.smith@university.edu</p>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-gray-700">Date of Birth:</label>
+                            <p class="mt-1" id="userDob">22/07/1978</p>
+                        </div>
+                    </div>
+                    <button id="editDetailsBtn" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-edit mr-2"></i> Edit Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Questions Tab -->
+            <div id="questions" class="tab-content">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Questions Management</h2>
+                
+                <!-- Upload Questions Section -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-700">Upload Questions from File</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-2">Exam ID:</label>
+                            <input type="text" id="examId" placeholder="Enter exam ID (e.g., CS101)" class="w-full border rounded-lg p-2">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-2">Select Question File:</label>
+                            <div class="flex items-center space-x-4">
+                                <input type="file" id="questionFile" accept=".txt" class="flex-1 border rounded-lg p-2">
+                                <button id="uploadQuestionsBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-upload mr-2"></i> Upload
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">File format: One question per line ending with '?', followed by options between // marks (e.g., What is 2+2? //4//5//6//7//A)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- View/Edit Questions Section -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-700">View/Edit Questions</h3>
+                    <div class="space-y-4 mb-4">
+                        <div class="flex items-center space-x-4">
+                            <input type="text" id="viewExamId" placeholder="Enter exam ID to view questions" class="flex-1 border rounded-lg p-2">
+                            <button id="populateQuestionsBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-search mr-2"></i> Populate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table id="questionsTable" class="min-w-full bg-white border rounded-lg">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="py-2 px-4 border-b">Question No.</th>
+                                    <th class="py-2 px-4 border-b">Question</th>
+                                    <th class="py-2 px-4 border-b">Option A</th>
+                                    <th class="py-2 px-4 border-b">Option B</th>
+                                    <th class="py-2 px-4 border-b">Option C</th>
+                                    <th class="py-2 px-4 border-b">Option D</th>
+                                    <th class="py-2 px-4 border-b">Answer</th>
+                                    <th class="py-2 px-4 border-b">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="questionsTableBody">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Tab -->
+            <div id="results" class="tab-content">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Exam Results</h2>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <input type="text" id="resultsExamId" placeholder="Enter exam ID to view results" class="flex-1 border rounded-lg p-2">
+                            <button id="viewResultsBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-eye mr-2"></i> View
+                            </button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table id="resultsTable" class="min-w-full bg-white border rounded-lg">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="py-2 px-4 border-b">Student ID</th>
+                                        <th class="py-2 px-4 border-b">Student Name</th>
+                                        <th class="py-2 px-4 border-b">Result</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultsTableBody">
+                                    <!-- Will be populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Tab -->
+            <div id="feedback" class="tab-content">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Feedback</h2>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex">
+                        <!-- User List -->
+                        <div class="w-1/3 pr-4 border-r">
+                            <h3 class="text-lg font-semibold mb-4">Users</h3>
+                            <div class="space-y-2 max-h-96 overflow-y-auto">
+                                <!-- Students -->
+                                <div>
+                                    <h4 class="font-medium text-gray-700 mb-2">Students</h4>
+                                    <div class="space-y-1">
+                                        <button class="user-btn w-full text-left p-2 rounded hover:bg-gray-100" data-user="student" data-id="STU12345">
+                                            Mike Johnson (STU12345)
+                                        </button>
+                                        <button class="user-btn w-full text-left p-2 rounded hover:bg-gray-100" data-user="student" data-id="STU67890">
+                                            Sarah Williams (STU67890)
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Administrators -->
+                                <div>
+                                    <h4 class="font-medium text-gray-700 mb-2">Administrators</h4>
+                                    <div class="space-y-1">
+                                        <button class="user-btn w-full text-left p-2 rounded hover:bg-gray-100" data-user="admin" data-id="ADM98765">
+                                            John Doe (ADM98765)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Conversation -->
+                        <div class="flex-1 pl-4">
+                            <h3 class="text-lg font-semibold mb-4">Conversation</h3>
+                            <div id="conversation" class="chat-message mb-4 p-4 bg-gray-50 rounded-lg h-64 overflow-y-auto">
+                                <p class="text-gray-500 italic">Select a user to view conversation</p>
+                            </div>
+                            
+                            <!-- Message Input -->
+                            <div class="flex items-center">
+                                <input type="text" id="messageInput" placeholder="Type your message..." class="flex-1 border rounded-l-lg p-2">
+                                <button id="sendMessageBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
+                                    <i class="fas fa-paper-plane"></i> Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white p-4 text-center">
+        <p>Developed by <span class="font-semibold">Examination System Team</span></p>
+    </footer>
+
+    <!-- Edit Details Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Edit Personal Details</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">&times;</button>
+            </div>
+            <form id="editForm" class="space-y-4">
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Name:</label>
+                    <input type="text" id="editName" class="w-full border rounded-lg p-2" required>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Email:</label>
+                    <input type="email" id="editEmail" class="w-full border rounded-lg p-2" required>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Date of Birth:</label>
+                    <input type="date" id="editDob" class="w-full border rounded-lg p-2" required>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelEdit" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-save mr-2"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Question Modal -->
+    <div id="editQuestionModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Edit Question</h3>
+                <button id="closeEditQuestionModal" class="text-gray-500 hover:text-gray-700">&times;</button>
+            </div>
+            <form id="editQuestionForm" class="space-y-4">
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Question:</label>
+                    <input type="text" id="editQuestionText" class="w-full border rounded-lg p-2" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Option A:</label>
+                        <input type="text" id="editOptionA" class="w-full border rounded-lg p-2" required>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Option B:</label>
+                        <input type="text" id="editOptionB" class="w-full border rounded-lg p-2" required>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Option C:</label>
+                        <input type="text" id="editOptionC" class="w-full border rounded-lg p-2" required>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Option D:</label>
+                        <input type="text" id="editOptionD" class="w-full border rounded-lg p-2" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Correct Answer:</label>
+                    <select id="editCorrectAnswer" class="w-full border rounded-lg p-2" required>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelEditQuestion" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-save mr-2"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- JavaScript Section -->
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active', 'bg-blue-600'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active', 'bg-blue-600');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        })
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                // Clear session or any authentication tokens
+                sessionStorage.removeItem('adminLoggedIn');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+                
+                // Prevent back button navigation
+                window.history.pushState(null, null, 'login.html');
+                window.onpopstate = function() {
+                    window.history.pushState(null, null, 'login.html');
+                };
+            });
+
+        // Edit Details Modal functionality
+        const editModal = document.getElementById('editModal');
+        const editDetailsBtn = document.getElementById('editDetailsBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelEdit = document.getElementById('cancelEdit');
+
+        editDetailsBtn.addEventListener('click', () => {
+            editModal.style.display = 'block';
+            // Populate current details in the modal fields
+            document.getElementById('editName').value = document.getElementById('userName').innerText;
+            document.getElementById('editEmail').value = document.getElementById('userEmail').innerText;
+            document.getElementById('editDob').value = document.getElementById('userDob').innerText.split('/').reverse().join('-'); // Convert to YYYY-MM-DD format
+        });
+
+        closeModal.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+
+        cancelEdit.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+
+        // Edit Question Modal functionality
+        const editQuestionModal = document.getElementById('editQuestionModal');
+        const closeEditQuestionModal = document.getElementById('closeEditQuestionModal');
+        const cancelEditQuestion = document.getElementById('cancelEditQuestion');
+        const editQuestionForm = document.getElementById('editQuestionForm');
+        const questionsTableBody = document.getElementById('questionsTableBody');
+        const editQuestionText = document.getElementById('editQuestionText');
+        const editOptionA = document.getElementById('editOptionA');
+        const editOptionB = document.getElementById('editOptionB');
+        const editOptionC = document.getElementById('editOptionC');
+        const editOptionD = document.getElementById('editOptionD');
+        const editCorrectAnswer = document.getElementById('editCorrectAnswer');
+        let currentQuestionId = null; // To store the ID of the question being edited
+        // Function to populate questions in the table
+        function populateQuestions(questions) {
+            questionsTableBody.innerHTML = ''; // Clear existing rows
+            questions.forEach((question, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="py-2 px-4 border-b">${index + 1}</td>
+                    <td class="py-2 px-4 border-b">${question.text}</td>
+                    <td class="py-2 px-4 border-b">${question.options[0]}</td>
+                    <td class="py-2 px-4 border-b">${question.options[1]}</td>
+                    <td class="py-2 px-4 border-b">${question.options[2]}</td>
+                    <td class="py-2 px-4 border-b">${question.options[3]}</td>
+                    <td class="py-2 px-4 border-b">${question.answer}</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="edit-btn bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg" data-id="${index}">
+                            Edit
+                        </button>
+                        <button class="delete-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg" data-id="${index}">
+                            Delete
+                        </button>
+                    </td>`;
+                questionsTableBody.appendChild(row);
+            });
+        }
+        // Function to handle edit button click
+        function handleEditButtonClick(event) {
+            const questionId = event.target.dataset.id;
+            currentQuestionId = questionId; // Store the ID of the question being edited
+            const question = questions[currentQuestionId]; // Get the question data
+            editQuestionText.value = question.text;
+            editOptionA.value = question.options[0];
+            editOptionB.value = question.options[1];
+            editOptionC.value = question.options[2];
+            editOptionD.value = question.options[3];
+            editCorrectAnswer.value = question.answer;
+            editQuestionModal.style.display = 'block';
+        }
+        // Function to handle delete button click
+        function handleDeleteButtonClick(event) {
+            const questionId = event.target.dataset.id;
+            questions.splice(questionId, 1); // Remove the question from the array
+            populateQuestions(questions); // Re-populate the table
+        }
+        // Event listeners for edit and delete buttons
+        questionsTableBody.addEventListener('click', (event) => {
+            if (event.target.classList.contains('edit-btn')) {
+                handleEditButtonClick(event);
+            } else if (event.target.classList.contains('delete-btn')) {
+                handleDeleteButtonClick(event);
+            }
+        });
+        // Event listener for edit question form submission
+        editQuestionForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent form submission
+            const updatedQuestion = {
+                text: editQuestionText.value,
+                options: [editOptionA.value, editOptionB.value, editOptionC.value, editOptionD.value],
+                answer: editCorrectAnswer.value
+            };
+            questions[currentQuestionId] = updatedQuestion; // Update the question in the array
+            populateQuestions(questions); // Re-populate the table
+            editQuestionModal.style.display = 'none'; // Close the modal
+        });
+        // Event listener for closing the edit question modal
+        closeEditQuestionModal.addEventListener('click', () => {
+            editQuestionModal.style.display = 'none';
+        });
+        cancelEditQuestion.addEventListener('click', () => {
+            editQuestionModal.style.display = 'none';
+        });
+        // Sample questions data (for demonstration purposes)
+        const questions = [
+            {
+                text: "What is the capital of France?",
+                options: ["Paris", "London", "Berlin", "Madrid"],
+                answer: "A"
+            },
+            {
+                text: "What is 2 + 2?",
+                options: ["3", "4", "5", "6"],
+                answer: "B"
+            }
+        ];
+        // Populate the questions table with sample data
+        populateQuestions(questions);
+        // Event listener for upload questions button
+        document.getElementById('uploadQuestionsBtn').addEventListener('click', () => {
+            const examId = document.getElementById('examId').value;
+            const questionFile = document.getElementById('questionFile').files[0];
+            if (examId && questionFile) {
+                // Simulate file upload and parsing
+                alert(`Uploading questions for exam ID: ${examId}`);
+                // Add logic to read the file and parse questions here
+            } else {
+                alert('Please enter exam ID and select a question file.');
+            }
+        });
+        // Event listener for populate questions button
+        document.getElementById('populateQuestionsBtn').addEventListener('click', () => {
+            const viewExamId = document.getElementById('viewExamId').value;
+            if (viewExamId) {
+                // Simulate fetching questions for the given exam ID
+                alert(`Fetching questions for exam ID: ${viewExamId}`);
+                // Add logic to fetch and display questions here
+            } else {
+                alert('Please enter an exam ID to view questions.');
+            }
+        });
+        // Event listener for view results button
+        document.getElementById('viewResultsBtn').addEventListener('click', () => {
+            const resultsExamId = document.getElementById('resultsExamId').value;
+            if (resultsExamId) {
+                // Simulate fetching results for the given exam ID
+                alert(`Fetching results for exam ID: ${resultsExamId}`);
+                // Add logic to fetch and display results here
+            } else {
+                alert('Please enter an exam ID to view results.');
+            }
+        });
+        // Event listener for user button click in feedback tab
+        const userButtons = document.querySelectorAll('.user-btn');
+        userButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const userId = event.target.dataset.id;
+                const userType = event.target.dataset.user;
+                // Simulate fetching conversation for the selected user
+                document.getElementById('conversation').innerHTML = `<p class="text-gray-500 italic">Loading conversation with ${userType} ID: ${userId}...</p>`;
+                // Add logic to fetch and display conversation here
+            });
+        });
+        // Event listener for send message button
+        document.getElementById('sendMessageBtn').addEventListener('click', () => {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            if (message) {
+                // Simulate sending the message
+                const conversationDiv = document.getElementById('conversation');
+                conversationDiv.innerHTML += `<p class="text-blue-600">${message}</p>`;
+                messageInput.value = ''; // Clear the input field
+            } else {
+                alert('Please enter a message to send.');
+            }
+        });
+        // Event listener for close modal button
+        closeModal.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+        // Event listener for cancel button in edit modal
+        cancelEdit.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+        // Event listener for close edit question modal button
+        closeEditQuestionModal.addEventListener('click', () => {
+            editQuestionModal.style.display = 'none';
+        });
+        // Event listener for cancel button in edit question modal
+        cancelEditQuestion.addEventListener('click', () => {
+            editQuestionModal.style.display = 'none';
+        });
+        // Event listener for clicking outside the modal to close it
+        window.addEventListener('click', (event) => {
+            if (event.target === editModal) {
+                editModal.style.display = 'none';
+            }
+            if (event.target === editQuestionModal) {
+                editQuestionModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>    

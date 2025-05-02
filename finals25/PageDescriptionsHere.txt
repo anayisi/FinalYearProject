@@ -24,108 +24,31 @@ If Administrator is selected; id number and password should be taken.
 The form should have a signup button that submits when all spaces are filled.
 The footer of this page should hold the names of the developers.
 
+ADMIN PROFILE
+I need an administrator’s dashboard for an online examination management system, which will be assessed when a user logs in with administrator credentials and they are confirmed accurate. The page should assess the ‘administrators ‘table of ‘project’ database and get the details of the logging in administrator. The page should have three divisions; header, main and footer. 
+The header should have a logo on the left side, name of my school in the center and a logout button on the right side (when clicked should send the user to the login page, ‘login.html’, and the back button of the browser shouldn’t be able to assess the dashboard again, rather require that the login credentials are inputted first).
+The main section should have five tabs (Personal Details, Generate IDs, Members, Feedback, Backup Data) vertically aligned on the left side of this section. A click on a tab should reveal its content to the remaining space on the right side of the section with the ‘Personal Details’ tab as the default reveal, and upon page refresh, the ‘Personal Details’ tab should be revealed.
+The Personal Details tab should have this content (assessed from the database); User Type: (Administrator), Name: (Name of User), Email: (Email of user), Date of Birth: (Date of Birth of user). There should be an ‘edit’ button under these details, which when clicked, opens a pop up window that allows one to edit their details (Name, Email, Date of Birth) and update same in the database with the click of a save button. 
+The Generate IDs tab should have this content (assessed from the randstu, randlec and randadmin tables of ‘project’ database); A table of three columns (Student IDs, Lecturer IDs, Administrator IDs), containing random IDs that are stored in the randstu, randlec and randadmin tables of the project database respectively. There should be a feature that allows the deletion of any of the IDs from any of the columns and subsequently from the database. There should be a feature that generates random alphanumeric IDs and stores them in a column specified from a drop down menu available when a Generate button is clicked, and subsequently store them in the respective table in the database.
+The Members tab should have this content; there should be three different tables, Administrators, Lecturers and Students, each with five columns (Name, DOB, Department or email (for Administrators Table), ID, Action) filled with data from the administrators, lecturers and students tables respectively. The Action Column should have a button that deletes a user from the database.
+The Feedback tab should have this content; there should be a user’s section that holds the names of all students and lecturers available in the ‘project’ database (from ‘students’ and ‘lecturers’ tables). Each name should be a button which when clicked, loads the chat of the particular user with all administrators onto another section (Conversation section) in the same space (from the ‘chats’ table). There should also be a last section that allows the typing of message with a send button attached, which when clicked, stores the message in the ‘chat’ table of the database after updating the conversation section.
+The ‘Backup Data’ tab should have this content; there should be a drop down button that allows one to select any of these; Lecturer’s Data, Student’s Data, Administrators Data, Questions and Chats. Upon Selection, there should be an ‘Upload’ button which when clicked, assesses the ‘project’ database and creates an sql file of the lecturers, students, administrators, questions or chats table respectively and upload them to google drive. 
+The footer should hold the names of the site developers.
+
+LECTURER PROFILE
+I need a lecturer’s dashboard for an online examination management system, which will be assessed when a user logs in with lecturer credentials and they are confirmed accurate. The page should assess the ‘lecturers’ table of ‘project’ database and get the details of the logging in lecturer. The page should have three divisions; header, main and footer. 
+The header should have a logo on the left side, name of my school in the center and a logout button on the right side (when clicked should send the user to the login page, ‘login.html’, and the back button of the browser shouldn’t be able to assess the dashboard again, rather require that the login credentials are inputted first).
+The main section should have four tabs (Personal Details, Questions, Results, Feedback) vertically aligned on the left side of this section. A click on a tab should reveal its content to the remaining space on the right side of the section with the ‘Personal Details’ tab as the default reveal, and upon page refresh, the ‘Personal Details’ tab should be revealed.
+The Personal Details tab should have this content (assessed from the database); User Type: (Lecturer), Name: (Name of User), Email: (Email of user), Date of Birth: (Date of Birth of user). There should be an ‘edit’ button under these details, which when clicked, opens a pop up window that allows one to edit their details (Name, Email, Date of Birth) and update same in the database with the click of a save button. 
+The Questions tab should have this content; there should be a ‘choose file’ feature that allows the signed in lecturer to choose a .txt file after an alphanumeric course id has been entered into an available text box. There should be an upload button, which when clicked extracts the content of the file (question by question, together with their possible answers) and stores in the ‘questions’ table of the ‘project’ database, together with the entered exam id. (The .txt file will have a question per line, ending each question with a question mark, and with four possible answers, A to D, typed between ‘//’, the correct answer will also be stored by its Alphabet in the fifth ‘//’). There should also be a questions table in this space, with eight columns (Question No. , Question, Option A, Option B, Option C, Option D, Answer, Action), this table should be populated based on the exam id entered into another text box after a ‘populate’ button has been clicked (the system should assess the database and retrieve all questions bearing the entered exam id). The action column should hold two buttons, delete and edit. Where the delete button removes the particular question from the system and the edit button allows the particular question to be edited in a pop up window and saved at the click of a save button. 
+The Results tab should have this content; there should be a text box that accepts an alphanumeric exam id, and at the click of a ‘View’ button, the system should assess the ‘results’ table of the ‘project’ database and populate the results of all students for that particular exam into a three column (student id, student name, result) table. On refresh, the table should vanish until an exam id is re-entered.
+The Feedback tab should have this content; there should be a user’s section that holds the names of all students and administrators available in the ‘project’ database (from ‘students’ and ‘administrators’ tables). Each name should be a button which when clicked, loads the chat between the logged in user and the particular user whose name has been clicked, onto another section (Conversation section) in the same space (from the ‘chats’ table). There should also be a last section that allows the typing of message, with a ‘send’ button attached, which when clicked, stores the message in the ‘chat’ table of the database after updating the conversation section.
+The footer should hold the names of the site developers.
+
+
 ****HOLDS****
 Compare the two signups and align the second with a signup.php
 Create a three new tables RandStu, RandLec, RandAdmin, in 'project' database that generates random id numbers for students, lecturers and administrators respectively...
 
 Update the new signup.php to run the id of the signing up user against the following tables in the database; randstu, randlec, randadmin. It is to ensure that the entered id corresponds to the identity (student, lecturer, admin) specified by the signing up user, doing so by ensuring that if a user is signing up as a Student, Lecturer or Administrator, the provided id is present specifically in the randstu, randlec or randadmin table respectively, otherwise an alert of incorrect id should be sent..
 
-// Mock database - In a real application, this would be replaced with actual database queries
-        const projectDatabase = {
-            Students: [
-                { id: 'ST001', email: 'student1@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'John Student', department: 'Computer Science' },
-                { id: 'ST002', email: 'student2@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'Jane Student', department: 'Electrical Engineering' }
-            ],
-            Lecturers: [
-                { id: 'LT001', email: 'lecturer1@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'Dr. Smith', department: 'Mathematics', courses: ['MATH101', 'MATH202'] },
-                { id: 'LT002', email: 'lecturer2@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'Prof. Johnson', department: 'Physics', courses: ['PHYS101', 'PHYS301'] }
-            ],
-            Administrators: [
-                { id: 'AD001', email: 'admin@uenr.edu.gh', password: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', name: 'Admin User', role: 'System Administrator' }
-            ]
-        };
-
-        // Simple SHA-256 hashing function (for demo purposes)
-        async function sha256(message) {
-            // Encode as UTF-8
-            const msgBuffer = new TextEncoder().encode(message);
-            
-            // Hash the message
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            
-            // Convert to hex string
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            
-            return hashHex;
-        }
-         try {
-                // Hash the password (in a real app, this would be done client-side before sending to server)
-                const hashedPassword = await sha256(password);
-                
-                // Simulate network delay
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Check each table in the database for matching credentials
-                let user = null;
-                let userType = null;
-                
-                // Check Students table
-                const student = projectDatabase.Students.find(u => 
-                    (u.email === email || u.id === idNumber) && u.password === hashedPassword
-                );
-                
-                if (student) {
-                    user = student;
-                    userType = 'Student';
-                } else {
-                    // Check Lecturers table
-                    const lecturer = projectDatabase.Lecturers.find(u => 
-                        (u.email === email || u.id === idNumber) && u.password === hashedPassword
-                    );
-                    
-                    if (lecturer) {
-                        user = lecturer;
-                        userType = 'Lecturer';
-                    } else {
-                        // Check Administrators table
-                        const admin = projectDatabase.Administrators.find(u => 
-                            (u.email === email || u.id === idNumber) && u.password === hashedPassword
-                        );
-                        
-                        if (admin) {
-                            user = admin;
-                            userType = 'Administrator';
-                        }
-                    }
-                }
-                
-                if (user && userType) {
-                    // Successful login - redirect to appropriate profile page
-                    // In a real app, you would store the user session and redirect
-                    console.log(`Login successful as ${userType}:`, user);
-                    
-                    // Store user data in sessionStorage (temporary for this demo)
-                    sessionStorage.setItem('currentUser', JSON.stringify({
-                        type: userType,
-                        data: user
-                    }));
-                    
-                    // Redirect to appropriate profile page
-                    switch(userType) {
-                        case 'Student':
-                            window.location.href = 'StudentProfile.html';
-                            break;
-                        case 'Lecturer':
-                            window.location.href = 'LecturerProfile.html';
-                            break;
-                        case 'Administrator':
-                            window.location.href = 'AdministratorProfile.html';
-                            break;
-                    }
-                } else {
-                    // Invalid credentials
-                    errorMessage.textContent = 'Invalid email, ID number or password. Please try again.';
-                    errorMessage.classList.remove('hidden');
-                }
-            }
