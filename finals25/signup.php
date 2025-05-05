@@ -81,7 +81,7 @@ if ($category === 'student') {
 } elseif ($category === 'lecturer') {
     $checkTable = 'randlec';
     $column = 'lecturer_id';
-} elseif ($category === 'administrator') {
+} elseif ($category === 'admin') {
     $checkTable = 'randadmin';
     $column = 'admin_id';
 } else {
@@ -115,7 +115,7 @@ if ($category === 'student') {
     $stmt = $conn->prepare("INSERT INTO lecturers (name, dob, email, password, school, id_num) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param('ssssss', $name, $dob, $email, $hashed_password, $school, $id_num);
 
-} elseif ($category === 'administrator') {
+} elseif ($category === 'admin') {
     $stmt = $conn->prepare("INSERT INTO administrators (name, dob, email, password, id_num) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param('sssss', $name, $dob, $email, $hashed_password, $id_num);
 }

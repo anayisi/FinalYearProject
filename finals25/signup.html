@@ -262,16 +262,16 @@
         // Handle user type selection
         document.querySelectorAll('input[name="userType"]').forEach(radio => {
             radio.addEventListener('change', function() {
-                document.getElementById('studentFields').classList.add('hidden');
-                document.getElementById('lecturerFields').classList.add('hidden');
-                document.getElementById('adminFields').classList.add('hidden');
+                document.getElementById('studentSection').classList.add('hidden');
+                document.getElementById('lecturerSection').classList.add('hidden');
+                document.getElementById('adminSection').classList.add('hidden');
                 
                 if (this.value === 'student') {
-                    document.getElementById('studentFields').classList.remove('hidden');
+                    document.getElementById('studentSection').classList.remove('hidden');
                 } else if (this.value === 'lecturer') {
-                    document.getElementById('lecturerFields').classList.remove('hidden');
+                    document.getElementById('lecturerSection').classList.remove('hidden');
                 } else if (this.value === 'admin') {
-                    document.getElementById('adminFields').classList.remove('hidden');
+                    document.getElementById('adminSection').classList.remove('hidden');
                 }
             });
         });
