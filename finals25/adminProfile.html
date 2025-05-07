@@ -98,19 +98,23 @@
                     <div class="space-y-4">
                         <div>
                             <label class="font-semibold text-gray-700">User Type:</label>
-                            <p class="mt-1" id="userType">Administrator</p>
+                            <p class="mt-1" id="userType"> </p>
                         </div>
                         <div>
                             <label class="font-semibold text-gray-700">Name:</label>
-                            <p class="mt-1" id="userName">John Doe</p>
+                            <p class="mt-1" id="userName"> </p>
                         </div>
                         <div>
                             <label class="font-semibold text-gray-700">Email:</label>
-                            <p class="mt-1" id="userEmail">john.doe@university.edu</p>
+                            <p class="mt-1" id="userEmail"> </p>
                         </div>
                         <div>
                             <label class="font-semibold text-gray-700">Date of Birth:</label>
-                            <p class="mt-1" id="userDob">15/03/1985</p>
+                            <p class="mt-1" id="userDob"> </p>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-gray-700">ID Number:</label>
+                            <p class="mt-1" id="userId"> </p>
                         </div>
                     </div>
                     <button id="editDetailsBtn" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
@@ -379,6 +383,21 @@
     <script>
         // Tab switching functionality
         document.addEventListener('DOMContentLoaded', function() {
+            //Populate User Details    
+            fetch('admin.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('userType').textContent = 'Administrator';
+                    document.getElementById('userName').textContent = data.administrator.name;
+                    document.getElementById('userEmail').textContent = data.administrator.email;
+                    document.getElementById('userDob').textContent = data.administrator.dob;
+                    document.getElementById('userId').textContent = data.administrator.id_num;
+                } else {
+                        alert('Failed to load user details.');}
+            })
+            .catch(error => console.error('Error:', error));
+            
             const tabButtons = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
             
