@@ -112,27 +112,25 @@
             <div id="personal" class="tab-content active">
                 <h2 class="text-2xl font-bold mb-6 text-blue-700 border-b pb-2">Personal Details</h2>
                 <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-gray-500">User Type</p>
-                            <p class="font-medium" id="userType">Student</p>
-                        </div>
-                        <div>
-                            <p class="text-gray-500">Student ID</p>
-                            <p class="font-medium" id="studentId">STD2023001</p>
-                        </div>
+                    <div>
+                        <label class="font-semibold text-gray-700">User Type:</label>
+                        <p class="mt-1" id="userType"> </p>
                     </div>
                     <div>
-                        <p class="text-gray-500">Full Name</p>
-                        <p class="font-medium" id="studentName">John Doe</p>
+                        <label class="font-semibold text-gray-700">Name:</label>
+                        <p class="mt-1" id="userName"> </p>
                     </div>
                     <div>
-                        <p class="text-gray-500">Email</p>
-                        <p class="font-medium" id="studentEmail">john.doe@university.edu</p>
+                        <label class="font-semibold text-gray-700">Email:</label>
+                        <p class="mt-1" id="userEmail"> </p>
                     </div>
                     <div>
-                        <p class="text-gray-500">Date of Birth</p>
-                        <p class="font-medium" id="studentDob">15/05/2000</p>
+                        <label class="font-semibold text-gray-700">Date of Birth:</label>
+                        <p class="mt-1" id="userDob"> </p>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-gray-700">ID Number:</label>
+                        <p class="mt-1" id="userId"> </p>
                     </div>
                 </div>
                 <button id="editDetailsBtn" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
@@ -246,32 +244,28 @@
     <div id="editModal" class="modal">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Edit Personal Details</h3>
-                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
+                <h3 class="text-lg font-bold">Edit Personal Details</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">&times;</button>
             </div>
-            <form id="editForm">
-                <div class="space-y-4">
-                    <div>
-                        <label for="editName" class="block text-gray-700 mb-1">Full Name</label>
-                        <input type="text" id="editName" class="w-full border rounded-lg p-2">
-                    </div>
-                    <div>
-                        <label for="editEmail" class="block text-gray-700 mb-1">Email</label>
-                        <input type="email" id="editEmail" class="w-full border rounded-lg p-2">
-                    </div>
-                    <div>
-                        <label for="editDob" class="block text-gray-700 mb-1">Date of Birth</label>
-                        <input type="date" id="editDob" class="w-full border rounded-lg p-2">
-                    </div>
+            <form id="editForm" class="space-y-4">
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Name:</label>
+                    <input type="text" id="editName" class="w-full border rounded-lg p-2" required>
                 </div>
-                <div class="mt-6 flex justify-end space-x-3">
-                    <button type="button" id="cancelEditBtn" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-lg">
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Email:</label>
+                    <input type="email" id="editEmail" class="w-full border rounded-lg p-2" required>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Date of Birth:</label>
+                    <input type="date" id="editDob" class="w-full border rounded-lg p-2" required>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelEdit" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
                         Cancel
                     </button>
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                        Save Changes
+                        <i class="fas fa-save mr-2"></i> Save Changes
                     </button>
                 </div>
             </form>
@@ -319,14 +313,20 @@
     </div>
 
     <script>
-        // Simulated database data (in a real app, this would come from server-side)
-        const studentData = {
-            id: "STD2023001",
-            name: "John Doe",
-            email: "john.doe@university.edu",
-            dob: "2000-05-15",
-            type: "Student"
-        };
+        //Populate User Details    
+        fetch('student.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('userType').textContent = 'Student';
+                document.getElementById('userName').textContent = data.student.name;
+                document.getElementById('userEmail').textContent = data.student.email;
+                document.getElementById('userDob').textContent = data.student.dob;
+                document.getElementById('userId').textContent = data.student.id_num;
+            } else {
+                    alert('Failed to load user details.');}
+        })
+        .catch(error => console.error('Error:', error));
 
         const admins = [
             { id: "ADM001", name: "Dr. Smith (Academic Advisor)" },
@@ -376,15 +376,81 @@
             ]
         };
 
+        // Edit Details Modal functionality
+        const editModal = document.getElementById('editModal');
+        const editDetailsBtn = document.getElementById('editDetailsBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelEdit = document.getElementById('cancelEdit');
+        
+        editDetailsBtn.addEventListener('click', () => {
+            editModal.style.display = 'block';
+            // Populate current details in the modal fields
+            document.getElementById('editName').value = document.getElementById('userName').innerText;
+            document.getElementById('editEmail').value = document.getElementById('userEmail').innerText;
+            document.getElementById('editDob').value = document.getElementById('userDob').innerText.split('/').reverse().join('-'); // Convert to YYYY-MM-DD format
+        });
+
+        closeModal.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+
+        cancelEdit.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === editModal) {
+                editModal.style.display = 'none';
+            }
+        });
+        
+        // Form submission
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('editName').value;
+            const email = document.getElementById('editEmail').value;
+            const dob = document.getElementById('editDob').value;
+            
+            // Convert date back to display format (DD/MM/YYYY)
+            const dobDate = new Date(dob);
+            const formattedDob = `${dobDate.getDate().toString().padStart(2, '0')}/${(dobDate.getMonth() + 1).toString().padStart(2, '0')}/${dobDate.getFullYear()}`;
+            
+            // Update displayed values
+            document.getElementById('userName').textContent = name;
+            document.getElementById('userEmail').textContent = email;
+            document.getElementById('userDob').textContent = formattedDob;
+            
+            //update the database with new values
+            fetch('UpdateStudentDetails.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    dob: formattedDob
+                })
+            })
+            
+            // Close modal
+            editmodal.style.display = 'none';
+            
+            // Show success message
+            alert('Details updated successfully!');
+        });
+
         // DOM Elements
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
         const logoutBtn = document.getElementById('logoutBtn');
-        const editDetailsBtn = document.getElementById('editDetailsBtn');
+        /*const editDetailsBtn = document.getElementById('editDetailsBtn');
         const editModal = document.getElementById('editModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const cancelEditBtn = document.getElementById('cancelEditBtn');
-        const editForm = document.getElementById('editForm');
+        const editForm = document.getElementById('editForm');*/
         const startExamBtn = document.getElementById('startExamBtn');
         const examIdInput = document.getElementById('examIdInput');
         const examContent = document.getElementById('examContent');
@@ -416,7 +482,7 @@
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
-            // Load student data
+            /*// Load student data
             document.getElementById('studentId').textContent = studentData.id;
             document.getElementById('studentName').textContent = studentData.name;
             document.getElementById('studentEmail').textContent = studentData.email;
@@ -427,7 +493,7 @@
             document.getElementById('editName').value = studentData.name;
             document.getElementById('editEmail').value = studentData.email;
             document.getElementById('editDob').value = studentData.dob;
-
+            */
             // Load admin list
             loadAdminList();
 
@@ -451,18 +517,18 @@
                 window.location.href = 'login.html';
             });
 
-            // Edit details
+            /*// Edit details
             editDetailsBtn.addEventListener('click', function() {
                 editModal.style.display = 'block';
-            });
+            });*/
 
             // Close modal buttons
             closeModalBtn.addEventListener('click', closeEditModal);
             cancelEditBtn.addEventListener('click', closeEditModal);
             window.addEventListener('click', function(event) {
-                if (event.target === editModal) {
+                /*if (event.target === editModal) {
                     closeEditModal();
-                }
+                }*/
                 if (event.target === instructionsModal) {
                     instructionsModal.style.display = 'none';
                 }
@@ -471,11 +537,11 @@
                 }
             });
 
-            // Edit form submission
+            /*// Edit form submission
             editForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 saveStudentDetails();
-            });
+            });*/
 
             // Start exam
             startExamBtn.addEventListener('click', function() {
@@ -547,7 +613,7 @@
             localStorage.setItem('lastActiveTab', tabId);
         }
 
-        function closeEditModal() {
+        /*function closeEditModal() {
             editModal.style.display = 'none';
         }
 
@@ -574,7 +640,7 @@
         function formatDate(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
-        }
+        }*/
 
         function showExamInstructions(examId) {
             const questions = examQuestions[examId];

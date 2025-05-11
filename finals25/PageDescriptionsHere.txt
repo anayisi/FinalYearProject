@@ -1,3 +1,7 @@
+TO DO'S
+1. Check the 'project' database, administrators table, the 'dob' column is giving '0000-00-00' instead of an actual date...
+editModal, editDetailsBtn
+
 LANDING PAGE
 I want a landing page for an online examination management system, I want it in three divisions. The top division should be a navigation pane, there should be a log in button at the right side of this pane, at the left side, there should be a logo that can be replaced with my school’s logo. And at the center of this pane, I want the name of the school written in bold.
 The middle pane/division should hold a bold sign up button. And the lower pane/division should hold an about section, describing the function of the online examination management system.
@@ -61,4 +65,3 @@ Compare the two signups and align the second with a signup.php
 Create a three new tables RandStu, RandLec, RandAdmin, in 'project' database that generates random id numbers for students, lecturers and administrators respectively...
 
 Update the new signup.php to run the id of the signing up user against the following tables in the database; randstu, randlec, randadmin. It is to ensure that the entered id corresponds to the identity (student, lecturer, admin) specified by the signing up user, doing so by ensuring that if a user is signing up as a Student, Lecturer or Administrator, the provided id is present specifically in the randstu, randlec or randadmin table respectively, otherwise an alert of incorrect id should be sent..
-

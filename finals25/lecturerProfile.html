@@ -424,6 +424,43 @@
             editModal.style.display = 'none';
         });
 
+        // Form submission
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('editName').value;
+            const email = document.getElementById('editEmail').value;
+            const dob = document.getElementById('editDob').value;
+            
+            // Convert date back to display format (DD/MM/YYYY)
+            const dobDate = new Date(dob);
+            const formattedDob = `${dobDate.getDate().toString().padStart(2, '0')}/${(dobDate.getMonth() + 1).toString().padStart(2, '0')}/${dobDate.getFullYear()}`;
+            
+            // Update displayed values
+            document.getElementById('userName').textContent = name;
+            document.getElementById('userEmail').textContent = email;
+            document.getElementById('userDob').textContent = formattedDob;
+            
+            //update the database with new values
+            fetch('UpdateLecturerDetails.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    dob: formattedDob
+                })
+            })
+            // Close modal
+            editmodal.style.display = 'none';
+                
+            // Show success message
+            alert('Details updated successfully!');
+        });
+
         // Edit Question Modal functionality
         const editQuestionModal = document.getElementById('editQuestionModal');
         const closeEditQuestionModal = document.getElementById('closeEditQuestionModal');
