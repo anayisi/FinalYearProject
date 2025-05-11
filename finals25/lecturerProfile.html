@@ -97,19 +97,23 @@
                     <div class="space-y-4">
                         <div>
                             <label class="font-semibold text-gray-700">User Type:</label>
-                            <p class="mt-1" id="userType">Lecturer</p>
+                            <p class="mt-1" id="userType"> </p>
                         </div>
                         <div>
                             <label class="font-semibold text-gray-700">Name:</label>
-                            <p class="mt-1" id="userName">Dr. Jane Smith</p>
+                            <p class="mt-1" id="userName"> </p>
                         </div>
                         <div>
                             <label class="font-semibold text-gray-700">Email:</label>
-                            <p class="mt-1" id="userEmail">jane.smith@university.edu</p>
+                            <p class="mt-1" id="userEmail"> </p>
                         </div>
                         <div>
                             <label class="font-semibold text-gray-700">Date of Birth:</label>
-                            <p class="mt-1" id="userDob">22/07/1978</p>
+                            <p class="mt-1" id="userDob"> </p>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-gray-700">ID Number:</label>
+                            <p class="mt-1" id="userId"> </p>
                         </div>
                     </div>
                     <button id="editDetailsBtn" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
@@ -350,6 +354,21 @@
     </div>
     <!-- JavaScript Section -->
     <script>
+        //Populate User Details    
+        fetch('lecturer.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('userType').textContent = 'Lecturer';
+                document.getElementById('userName').textContent = data.lecturer.name;
+                document.getElementById('userEmail').textContent = data.lecturer.email;
+                document.getElementById('userDob').textContent = data.lecturer.dob;
+                document.getElementById('userId').textContent = data.lecturer.id_num;
+            } else {
+                    alert('Failed to load user details.');}
+        })
+        .catch(error => console.error('Error:', error));
+
         // Tab switching functionality
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.tab-btn');

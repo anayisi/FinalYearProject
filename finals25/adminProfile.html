@@ -381,23 +381,23 @@
     </div>
 
     <script>
+        //Populate User Details    
+        fetch('admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('userType').textContent = 'Administrator';
+                document.getElementById('userName').textContent = data.administrator.name;
+                document.getElementById('userEmail').textContent = data.administrator.email;
+                document.getElementById('userDob').textContent = data.administrator.dob;
+                document.getElementById('userId').textContent = data.administrator.id_num;
+            } else {
+                    alert('Failed to load user details.');}
+        })
+        .catch(error => console.error('Error:', error));
+
         // Tab switching functionality
         document.addEventListener('DOMContentLoaded', function() {
-            //Populate User Details    
-            fetch('admin.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('userType').textContent = 'Administrator';
-                    document.getElementById('userName').textContent = data.administrator.name;
-                    document.getElementById('userEmail').textContent = data.administrator.email;
-                    document.getElementById('userDob').textContent = data.administrator.dob;
-                    document.getElementById('userId').textContent = data.administrator.id_num;
-                } else {
-                        alert('Failed to load user details.');}
-            })
-            .catch(error => console.error('Error:', error));
-            
             const tabButtons = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
             
@@ -414,7 +414,8 @@
                 });
             });
         })
-            // Logout functionality
+
+        // Logout functionality
             document.getElementById('logoutBtn').addEventListener('click', function() {
                 // Clear session or any authentication tokens
                 sessionStorage.removeItem('adminLoggedIn');
@@ -429,36 +430,31 @@
                 };
             });
             
-            // Modal functionality
-            const modal = document.getElementById('editModal');
-            const editBtn = document.getElementById('editDetailsBtn');
-            const closeBtn = document.getElementById('closeModal');
-            const cancelBtn = document.getElementById('cancelEdit');
+            // Edit Details Modal functionality
+            const editModal = document.getElementById('editModal');
+            const editDetailsBtn = document.getElementById('editDetailsBtn');
+            const closeModal = document.getElementById('closeModal');
+            const cancelEdit = document.getElementById('cancelEdit');
             
-            editBtn.addEventListener('click', function() {
-                // Populate form with current values
-                document.getElementById('editName').value = document.getElementById('userName').textContent;
-                document.getElementById('editEmail').value = document.getElementById('userEmail').textContent;
-                
-                // Convert displayed date to input format (assuming DD/MM/YYYY format)
-                const dobParts = document.getElementById('userDob').textContent.split('/');
-                const formattedDob = `${dobParts[2]}-${dobParts[1].padStart(2, '0')}-${dobParts[0].padStart(2, '0')}`;
-                document.getElementById('editDob').value = formattedDob;
-                
-                modal.style.display = 'block';
+            editDetailsBtn.addEventListener('click', () => {
+                editModal.style.display = 'block';
+                // Populate current details in the modal fields
+                document.getElementById('editName').value = document.getElementById('userName').innerText;
+                document.getElementById('editEmail').value = document.getElementById('userEmail').innerText;
+                document.getElementById('editDob').value = document.getElementById('userDob').innerText.split('/').reverse().join('-'); // Convert to YYYY-MM-DD format
             });
-            
-            closeBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
+    
+            closeModal.addEventListener('click', () => {
+                editModal.style.display = 'none';
             });
-            
-            cancelBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
+    
+            cancelEdit.addEventListener('click', () => {
+                editModal.style.display = 'none';
             });
             
             window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
+                if (event.target === editModal) {
+                    editModal.style.display = 'none';
                 }
             });
             
@@ -480,12 +476,21 @@
                 document.getElementById('userEmail').textContent = email;
                 document.getElementById('userDob').textContent = formattedDob;
                 
-                // Here you would typically send this data to the server to update the database
-                // For now, we'll just log it
-                console.log('Updating user details:', { name, email, dob });
+                //update the database with new values
+                fetch('UpdateAdminDetails.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        dob: formattedDob
+                    })
+                })
                 
                 // Close modal
-                modal.style.display = 'none';
+                editmodal.style.display = 'none';
                 
                 // Show success message
                 alert('Details updated successfully!');
@@ -595,4 +600,5 @@
                     messageInput.value = '';
                 }});
     </script>
+</body>
 </html>
