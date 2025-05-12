@@ -147,19 +147,12 @@
                                     <th class="py-2 px-4 border-b">Student IDs</th>
                                     <th class="py-2 px-4 border-b">Lecturer IDs</th>
                                     <th class="py-2 px-4 border-b">Administrator IDs</th>
-                                    <th class="py-2 px-4 border-b">Actions</th>
+                                    <!-- <th class="py-2 px-4 border-b">Actions</th>-->
                                 </tr>
                             </thead>
                             <tbody id="idTableBody">
                                 <!-- Sample data - will be populated from database -->
-                                <tr>
-                                    <td class="py-2 px-4 border-b">STU12345 <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="student" data-id="STU12345"><i class="fas fa-trash"></i></button></td>
-                                    <td class="py-2 px-4 border-b">LEC54321 <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="lecturer" data-id="LEC54321"><i class="fas fa-trash"></i></button></td>
-                                    <td class="py-2 px-4 border-b">ADM98765 <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="admin" data-id="ADM98765"><i class="fas fa-trash"></i></button></td>
-                                    <td class="py-2 px-4 border-b">
-                                        <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></button>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -441,7 +434,7 @@
                 // Populate current details in the modal fields
                 document.getElementById('editName').value = document.getElementById('userName').innerText;
                 document.getElementById('editEmail').value = document.getElementById('userEmail').innerText;
-                document.getElementById('editDob').value = document.getElementById('userDob').innerText.split('/').reverse().join('-'); // Convert to YYYY-MM-DD format
+                document.getElementById('editDob').value = document.getElementById('userDob').innerText;
             });
     
             closeModal.addEventListener('click', () => {
@@ -467,14 +460,10 @@
                 const email = document.getElementById('editEmail').value;
                 const dob = document.getElementById('editDob').value;
                 
-                // Convert date back to display format (DD/MM/YYYY)
-                const dobDate = new Date(dob);
-                const formattedDob = `${dobDate.getDate().toString().padStart(2, '0')}/${(dobDate.getMonth() + 1).toString().padStart(2, '0')}/${dobDate.getFullYear()}`;
-                
                 // Update displayed values
                 document.getElementById('userName').textContent = name;
                 document.getElementById('userEmail').textContent = email;
-                document.getElementById('userDob').textContent = formattedDob;
+                document.getElementById('userDob').textContent = dob;
                 
                 //update the database with new values
                 fetch('UpdateAdminDetails.php', {
@@ -485,7 +474,7 @@
                     body: JSON.stringify({
                         name: name,
                         email: email,
-                        dob: formattedDob
+                        dob: dob
                     })
                 })
                 
@@ -496,6 +485,29 @@
                 alert('Details updated successfully!');
             });
             
+            //fetch ids from database when page loads
+            window.onload = function() {
+                fetch('fetchIds.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const tableBody = document.getElementById('idTableBody');
+                        data.ids.forEach(id => {
+                            const newRow = document.createElement('tr');
+                            newRow.innerHTML = `
+                                <td class="py-2 px-4 border-b">${id.student_id} <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="student" data-id="${id.student_id}"><i class="fas fa-trash"></i></button></td>
+                                <td class="py-2 px-4 border-b">${id.lecturer_id} <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="lecturer" data-id="${id.lecturer_id}"><i class="fas fa-trash"></i></button></td>
+                                <td class="py-2 px-4 border-b">${id.admin_id} <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="admin" data-id="${id.admin_id}"><i class="fas fa-trash"></i></button></td>
+                                `;
+                            tableBody.appendChild(newRow);
+                        });
+                    } else {
+                        alert('Failed to load IDs.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            };
+
             // Generate ID functionality
             document.getElementById('generateIdBtn').addEventListener('click', function() {
                 const idType = document.getElementById('idType').value;
@@ -536,16 +548,21 @@
                     ${stuCell}
                     ${lecCell}
                     ${admCell}
-                    <td class="py-2 px-4 border-b">
-                        <button class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></button>
-                    </td>
                 `;
                 
                 tableBody.appendChild(newRow);
                 
-                // Here you would typically send this new ID to the server to store in the database
-                console.log(`Generated new ${idType}
-                ID:`, newId);
+                // Store the new ID in the database
+                fetch('generateId.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idType: idType,
+                        newId: newId
+                    })
+                })
                 
                 // Show success message
                 alert(`${idType.charAt(0).toUpperCase() + idType.slice(1)} ID generated successfully!`);
@@ -553,14 +570,26 @@
             
             // Delete ID functionality
             document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('delete-id')) {
-                    const idType = e.target.getAttribute('data-type');
-                    const id = e.target.getAttribute('data-id');
+                let button = e.target.closest('.delete-id');
+                if (button) {
+                    const idType = button.getAttribute('data-type');
+                    const id = button.getAttribute('data-id');
                     
                     // Confirm deletion
                     if (confirm(`Are you sure you want to delete ${idType.charAt(0).toUpperCase() + idType.slice(1)} ID: ${id}?`)) {
                         // Remove from table (in a real app, this would also remove from the database)
-                        e.target.closest('tr').remove();
+                        button.closest('tr').remove();
+                        //delete from database
+                        fetch('deleteId.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                idType: idType,
+                                id: id
+                            })
+                        })
                         
                         // Show success message
                         alert(`${idType.charAt(0).toUpperCase() + idType.slice(1)} ID deleted successfully!`);
@@ -578,7 +607,6 @@
                     if (confirm(`Are you sure you want to delete ${userType.charAt(0).toUpperCase() + userType.slice(1)}: ${userId}?`)) {
                         // Remove from table (in a real app, this would also remove from the database)
                         e.target.closest('tr').remove();
-                        
                         // Show success message
                         alert(`${userType.charAt(0).toUpperCase() + userType.slice(1)} deleted successfully!`);
                     }

@@ -387,7 +387,7 @@
             // Populate current details in the modal fields
             document.getElementById('editName').value = document.getElementById('userName').innerText;
             document.getElementById('editEmail').value = document.getElementById('userEmail').innerText;
-            document.getElementById('editDob').value = document.getElementById('userDob').innerText.split('/').reverse().join('-'); // Convert to YYYY-MM-DD format
+            document.getElementById('editDob').value = document.getElementById('userDob').innerText;
         });
 
         closeModal.addEventListener('click', () => {
@@ -413,14 +413,10 @@
             const email = document.getElementById('editEmail').value;
             const dob = document.getElementById('editDob').value;
             
-            // Convert date back to display format (DD/MM/YYYY)
-            const dobDate = new Date(dob);
-            const formattedDob = `${dobDate.getDate().toString().padStart(2, '0')}/${(dobDate.getMonth() + 1).toString().padStart(2, '0')}/${dobDate.getFullYear()}`;
-            
             // Update displayed values
             document.getElementById('userName').textContent = name;
             document.getElementById('userEmail').textContent = email;
-            document.getElementById('userDob').textContent = formattedDob;
+            document.getElementById('userDob').textContent = dob;
             
             //update the database with new values
             fetch('UpdateStudentDetails.php', {
@@ -431,7 +427,7 @@
                 body: JSON.stringify({
                     name: name,
                     email: email,
-                    dob: formattedDob
+                    dob: dob
                 })
             })
             
