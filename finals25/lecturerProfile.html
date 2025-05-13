@@ -132,13 +132,13 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block font-semibold text-gray-700 mb-2">Exam ID:</label>
-                            <input type="text" id="examId" placeholder="Enter exam ID (e.g., CS101)" class="w-full border rounded-lg p-2">
+                            <input type="text" id="examId" name="examId" placeholder="Enter exam ID (e.g., CS101)" class="w-full border rounded-lg p-2">
                         </div>
                         <div>
                             <label class="block font-semibold text-gray-700 mb-2">Select Question File:</label>
                             <div class="flex items-center space-x-4">
-                                <input type="file" id="questionFile" accept=".txt" class="flex-1 border rounded-lg p-2">
-                                <button id="uploadQuestionsBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                                <input type="file" id="questionFile" name="questionFile" accept=".txt" class="flex-1 border rounded-lg p-2">
+                                <button type="submit" id="uploadQuestionsBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
                                     <i class="fas fa-upload mr-2"></i> Upload
                                 </button>
                             </div>
@@ -387,20 +387,20 @@
                 });
             });
         })
-            // Logout functionality
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                // Clear session or any authentication tokens
-                sessionStorage.removeItem('adminLoggedIn');
-                
-                // Redirect to login page
-                window.location.href = 'login.html';
-                
-                // Prevent back button navigation
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            // Clear session or any authentication tokens
+            sessionStorage.removeItem('adminLoggedIn');
+            
+            // Redirect to login page
+            window.location.href = 'login.html';
+            
+            // Prevent back button navigation
+            window.history.pushState(null, null, 'login.html');
+            window.onpopstate = function() {
                 window.history.pushState(null, null, 'login.html');
-                window.onpopstate = function() {
-                    window.history.pushState(null, null, 'login.html');
-                };
-            });
+            };
+        });
 
         // Edit Details Modal functionality
         const editModal = document.getElementById('editModal');
@@ -470,30 +470,59 @@
         const editOptionD = document.getElementById('editOptionD');
         const editCorrectAnswer = document.getElementById('editCorrectAnswer');
         let currentQuestionId = null; // To store the ID of the question being edited
+
         // Function to populate questions in the table
         function populateQuestions(questions) {
-            questionsTableBody.innerHTML = ''; // Clear existing rows
-            questions.forEach((question, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="py-2 px-4 border-b">${index + 1}</td>
-                    <td class="py-2 px-4 border-b">${question.text}</td>
-                    <td class="py-2 px-4 border-b">${question.options[0]}</td>
-                    <td class="py-2 px-4 border-b">${question.options[1]}</td>
-                    <td class="py-2 px-4 border-b">${question.options[2]}</td>
-                    <td class="py-2 px-4 border-b">${question.options[3]}</td>
-                    <td class="py-2 px-4 border-b">${question.answer}</td>
-                    <td class="py-2 px-4 border-b">
-                        <button class="edit-btn bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg" data-id="${index}">
-                            Edit
-                        </button>
-                        <button class="delete-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg" data-id="${index}">
-                            Delete
-                        </button>
-                    </td>`;
-                questionsTableBody.appendChild(row);
-            });
+        const questionsTableBody = document.getElementById('questionsTableBody');
+        questionsTableBody.innerHTML = ''; // Clear existing rows
+        questions.forEach((question, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="py-2 px-4 border-b">${index + 1}</td>
+            <td class="py-2 px-4 border-b">${question.question}</td>
+            <td class="py-2 px-4 border-b">${question.option_a}</td>
+            <td class="py-2 px-4 border-b">${question.option_b}</td>
+            <td class="py-2 px-4 border-b">${question.option_c}</td>
+            <td class="py-2 px-4 border-b">${question.option_d}</td>
+            <td class="py-2 px-4 border-b">${question.correct_answer}</td>
+            <td class="py-2 px-4 border-b">
+            <button class="edit-btn bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg" data-id="${question.id}">
+                Edit
+            </button>
+            <button class="delete-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg" data-id="${question.id}">
+                Delete
+            </button>
+            </td>`;
+        questionsTableBody.appendChild(row);
+        });
         }
+
+        //Event listener for populate questions button
+        document.getElementById('populateQuestionsBtn').addEventListener('click', () => {
+            const viewExamId = document.getElementById('viewExamId').value;
+            if (viewExamId) {
+            fetch('fetch_questions.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ exam_id: viewExamId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                populateQuestions(data.questions);
+                } else {
+                alert(data.message || 'No questions found.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching questions:', error);
+                alert('An error occurred while fetching questions.');
+            });
+            } else {
+            alert('Please enter an exam ID to view questions.');
+            }
+        });
+        
         // Function to handle edit button click
         function handleEditButtonClick(event) {
             const questionId = event.target.dataset.id;
@@ -507,12 +536,14 @@
             editCorrectAnswer.value = question.answer;
             editQuestionModal.style.display = 'block';
         }
+        
         // Function to handle delete button click
         function handleDeleteButtonClick(event) {
             const questionId = event.target.dataset.id;
             questions.splice(questionId, 1); // Remove the question from the array
             populateQuestions(questions); // Re-populate the table
         }
+        
         // Event listeners for edit and delete buttons
         questionsTableBody.addEventListener('click', (event) => {
             if (event.target.classList.contains('edit-btn')) {
@@ -521,6 +552,7 @@
                 handleDeleteButtonClick(event);
             }
         });
+        
         // Event listener for edit question form submission
         editQuestionForm.addEventListener('submit', (event) => {
             event.preventDefault(); // Prevent form submission
@@ -533,51 +565,47 @@
             populateQuestions(questions); // Re-populate the table
             editQuestionModal.style.display = 'none'; // Close the modal
         });
+        
         // Event listener for closing the edit question modal
         closeEditQuestionModal.addEventListener('click', () => {
             editQuestionModal.style.display = 'none';
         });
+
         cancelEditQuestion.addEventListener('click', () => {
             editQuestionModal.style.display = 'none';
         });
-        // Sample questions data (for demonstration purposes)
-        const questions = [
-            {
-                text: "What is the capital of France?",
-                options: ["Paris", "London", "Berlin", "Madrid"],
-                answer: "A"
-            },
-            {
-                text: "What is 2 + 2?",
-                options: ["3", "4", "5", "6"],
-                answer: "B"
-            }
-        ];
+        
         // Populate the questions table with sample data
-        populateQuestions(questions);
+        //populateQuestions(questions);
+        
         // Event listener for upload questions button
         document.getElementById('uploadQuestionsBtn').addEventListener('click', () => {
-            const examId = document.getElementById('examId').value;
-            const questionFile = document.getElementById('questionFile').files[0];
-            if (examId && questionFile) {
-                // Simulate file upload and parsing
-                alert(`Uploading questions for exam ID: ${examId}`);
-                // Add logic to read the file and parse questions here
-            } else {
-                alert('Please enter exam ID and select a question file.');
-            }
+        const examId = document.getElementById('examId').value.trim();
+        const questionFile = document.getElementById('questionFile').files[0];
+
+        if (!examId || !questionFile) {
+            alert('Please enter exam ID and select a question file.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('examId', examId);
+        formData.append('questionFile', questionFile);
+
+        fetch('upload_questions.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.text())
+        .then(response => {
+            alert(response.trim());
+        })
+        .catch(err => {
+            console.error(err);
+            alert('An error occurred while uploading the file.');
         });
-        // Event listener for populate questions button
-        document.getElementById('populateQuestionsBtn').addEventListener('click', () => {
-            const viewExamId = document.getElementById('viewExamId').value;
-            if (viewExamId) {
-                // Simulate fetching questions for the given exam ID
-                alert(`Fetching questions for exam ID: ${viewExamId}`);
-                // Add logic to fetch and display questions here
-            } else {
-                alert('Please enter an exam ID to view questions.');
-            }
         });
+        
         // Event listener for view results button
         document.getElementById('viewResultsBtn').addEventListener('click', () => {
             const resultsExamId = document.getElementById('resultsExamId').value;
@@ -589,6 +617,7 @@
                 alert('Please enter an exam ID to view results.');
             }
         });
+
         // Event listener for user button click in feedback tab
         const userButtons = document.querySelectorAll('.user-btn');
         userButtons.forEach(button => {
@@ -600,6 +629,7 @@
                 // Add logic to fetch and display conversation here
             });
         });
+        
         // Event listener for send message button
         document.getElementById('sendMessageBtn').addEventListener('click', () => {
             const messageInput = document.getElementById('messageInput');
@@ -613,22 +643,27 @@
                 alert('Please enter a message to send.');
             }
         });
+        
         // Event listener for close modal button
         closeModal.addEventListener('click', () => {
             editModal.style.display = 'none';
         });
+        
         // Event listener for cancel button in edit modal
         cancelEdit.addEventListener('click', () => {
             editModal.style.display = 'none';
         });
+        
         // Event listener for close edit question modal button
         closeEditQuestionModal.addEventListener('click', () => {
             editQuestionModal.style.display = 'none';
         });
+        
         // Event listener for cancel button in edit question modal
         cancelEditQuestion.addEventListener('click', () => {
             editQuestionModal.style.display = 'none';
         });
+        
         // Event listener for clicking outside the modal to close it
         window.addEventListener('click', (event) => {
             if (event.target === editModal) {
