@@ -23,7 +23,7 @@ if ($mysqli->connect_errno) {
     exit;
 }
 
-$stmt = $mysqli->prepare("SELECT question, option_a, option_b, option_c, option_d, correct_answer 
+$stmt = $mysqli->prepare("SELECT id, question, option_a, option_b, option_c, option_d, correct_answer 
                           FROM questions 
                           WHERE exam_id = ? AND lecturer_id = ?");
 $stmt->bind_param('ss', $exam_id, $lecturer_id);

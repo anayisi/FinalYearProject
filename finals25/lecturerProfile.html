@@ -163,6 +163,7 @@
                         <table id="questionsTable" class="min-w-full bg-white border rounded-lg">
                             <thead class="bg-gray-100">
                                 <tr>
+                                    <th class="py-2 px-4 border-b">Question ID</th>
                                     <th class="py-2 px-4 border-b">Question No.</th>
                                     <th class="py-2 px-4 border-b">Question</th>
                                     <th class="py-2 px-4 border-b">Option A</th>
@@ -457,19 +458,33 @@
             alert('Details updated successfully!');
         });
 
-        // Edit Question Modal functionality
-        const editQuestionModal = document.getElementById('editQuestionModal');
-        const closeEditQuestionModal = document.getElementById('closeEditQuestionModal');
-        const cancelEditQuestion = document.getElementById('cancelEditQuestion');
-        const editQuestionForm = document.getElementById('editQuestionForm');
-        const questionsTableBody = document.getElementById('questionsTableBody');
-        const editQuestionText = document.getElementById('editQuestionText');
-        const editOptionA = document.getElementById('editOptionA');
-        const editOptionB = document.getElementById('editOptionB');
-        const editOptionC = document.getElementById('editOptionC');
-        const editOptionD = document.getElementById('editOptionD');
-        const editCorrectAnswer = document.getElementById('editCorrectAnswer');
-        let currentQuestionId = null; // To store the ID of the question being edited
+        // Event listener for upload questions button
+        document.getElementById('uploadQuestionsBtn').addEventListener('click', () => {
+        const examId = document.getElementById('examId').value.trim();
+        const questionFile = document.getElementById('questionFile').files[0];
+
+        if (!examId || !questionFile) {
+            alert('Please enter exam ID and select a question file.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('examId', examId);
+        formData.append('questionFile', questionFile);
+
+        fetch('upload_questions.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.text())
+        .then(response => {
+            alert(response.trim());
+        })
+        .catch(err => {
+            console.error(err);
+            alert('An error occurred while uploading the file.');
+        });
+        });
 
         // Function to populate questions in the table
         function populateQuestions(questions) {
@@ -478,6 +493,7 @@
         questions.forEach((question, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td class="py-2 px-4 border-b">${question.id}</td>
             <td class="py-2 px-4 border-b">${index + 1}</td>
             <td class="py-2 px-4 border-b">${question.question}</td>
             <td class="py-2 px-4 border-b">${question.option_a}</td>
@@ -522,26 +538,53 @@
             alert('Please enter an exam ID to view questions.');
             }
         });
-        
-        // Function to handle edit button click
+
+        // Edit Question Modal functionality
+        const editQuestionModal = document.getElementById('editQuestionModal');
+        const closeEditQuestionModal = document.getElementById('closeEditQuestionModal');
+        const cancelEditQuestion = document.getElementById('cancelEditQuestion');
+        const editQuestionForm = document.getElementById('editQuestionForm');
+        const questionsTableBody = document.getElementById('questionsTableBody');
+        const editQuestionText = document.getElementById('editQuestionText');
+        const editOptionA = document.getElementById('editOptionA');
+        const editOptionB = document.getElementById('editOptionB');
+        const editOptionC = document.getElementById('editOptionC');
+        const editOptionD = document.getElementById('editOptionD');
+        const editCorrectAnswer = document.getElementById('editCorrectAnswer');
+        let currentQuestionId = null; // To store the ID of the question being edited
+
+        // Handle Edit button
         function handleEditButtonClick(event) {
-            const questionId = event.target.dataset.id;
-            currentQuestionId = questionId; // Store the ID of the question being edited
-            const question = questions[currentQuestionId]; // Get the question data
-            editQuestionText.value = question.text;
-            editOptionA.value = question.options[0];
-            editOptionB.value = question.options[1];
-            editOptionC.value = question.options[2];
-            editOptionD.value = question.options[3];
-            editCorrectAnswer.value = question.answer;
-            editQuestionModal.style.display = 'block';
+            currentQuestionId = event.target.dataset.id;
+
+            fetch(`get_question.php?id=${currentQuestionId}`)
+                .then(res => res.json())
+                .then(question => {
+                    editQuestionText.value = question.question;
+                    editOptionA.value = question.option_a;
+                    editOptionB.value = question.option_b;
+                    editOptionC.value = question.option_c;
+                    editOptionD.value = question.option_d;
+                    editCorrectAnswer.value = question.correct_answer;
+                    editQuestionModal.style.display = 'block';
+                });
         }
-        
-        // Function to handle delete button click
+
+        // Handle Delete button
         function handleDeleteButtonClick(event) {
-            const questionId = event.target.dataset.id;
-            questions.splice(questionId, 1); // Remove the question from the array
-            populateQuestions(questions); // Re-populate the table
+            const id = event.target.dataset.id;
+            if (confirm('Are you sure you want to delete this question?')) {
+                fetch('delete_question.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `id=${id}`
+                })
+                .then(res => res.text())
+                .then(response => {
+                    alert(response);
+                    populateQuestions();
+                });
+            }
         }
         
         // Event listeners for edit and delete buttons
@@ -553,18 +596,34 @@
             }
         });
         
-        // Event listener for edit question form submission
+        // Handle Edit form submission
         editQuestionForm.addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent form submission
-            const updatedQuestion = {
-                text: editQuestionText.value,
-                options: [editOptionA.value, editOptionB.value, editOptionC.value, editOptionD.value],
-                answer: editCorrectAnswer.value
-            };
-            questions[currentQuestionId] = updatedQuestion; // Update the question in the array
-            populateQuestions(questions); // Re-populate the table
-            editQuestionModal.style.display = 'none'; // Close the modal
+            event.preventDefault();
+
+            const formData = new URLSearchParams();
+            formData.append('id', currentQuestionId);
+            formData.append('question', editQuestionText.value);
+            formData.append('option_a', editOptionA.value);
+            formData.append('option_b', editOptionB.value);
+            formData.append('option_c', editOptionC.value);
+            formData.append('option_d', editOptionD.value);
+            formData.append('correct_answer', editCorrectAnswer.value);
+
+            fetch('update_question.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: formData.toString()
+            })
+            .then(res => res.text())
+            .then(response => {
+                alert(response);
+                editQuestionModal.style.display = 'none';
+                populateQuestions();
+            });
         });
+
+        // Initial load
+        populateQuestions();
         
         // Event listener for closing the edit question modal
         closeEditQuestionModal.addEventListener('click', () => {
@@ -573,37 +632,6 @@
 
         cancelEditQuestion.addEventListener('click', () => {
             editQuestionModal.style.display = 'none';
-        });
-        
-        // Populate the questions table with sample data
-        //populateQuestions(questions);
-        
-        // Event listener for upload questions button
-        document.getElementById('uploadQuestionsBtn').addEventListener('click', () => {
-        const examId = document.getElementById('examId').value.trim();
-        const questionFile = document.getElementById('questionFile').files[0];
-
-        if (!examId || !questionFile) {
-            alert('Please enter exam ID and select a question file.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('examId', examId);
-        formData.append('questionFile', questionFile);
-
-        fetch('upload_questions.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.text())
-        .then(response => {
-            alert(response.trim());
-        })
-        .catch(err => {
-            console.error(err);
-            alert('An error occurred while uploading the file.');
-        });
         });
         
         // Event listener for view results button
