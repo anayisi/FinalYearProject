@@ -334,7 +334,7 @@
             { id: "ADM003", name: "Ms. Williams (Student Support)" }
         ];
 
-        const examQuestions = {
+        /*const examQuestions = {
             "EXAM2023-001": [
                 {
                     id: 1,
@@ -357,7 +357,7 @@
                     answer: "4"
                 }
             ]
-        };
+        };*/
 
         const examResults = {
             "STD2023001": [
@@ -442,11 +442,6 @@
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
         const logoutBtn = document.getElementById('logoutBtn');
-        /*const editDetailsBtn = document.getElementById('editDetailsBtn');
-        const editModal = document.getElementById('editModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const cancelEditBtn = document.getElementById('cancelEditBtn');
-        const editForm = document.getElementById('editForm');*/
         const startExamBtn = document.getElementById('startExamBtn');
         const examIdInput = document.getElementById('examIdInput');
         const examContent = document.getElementById('examContent');
@@ -470,188 +465,43 @@
         const sendMessageBtn = document.getElementById('sendMessageBtn');
 
         // Current state
+        let examQuestions = {};
         let currentExamId = null;
         let currentExamTimer = null;
         let examTimeLeft = 0;
         let currentAdminId = null;
         let examStarted = false;
 
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            /*// Load student data
-            document.getElementById('studentId').textContent = studentData.id;
-            document.getElementById('studentName').textContent = studentData.name;
-            document.getElementById('studentEmail').textContent = studentData.email;
-            document.getElementById('studentDob').textContent = formatDate(studentData.dob);
-            document.getElementById('userType').textContent = studentData.type;
-
-            // Set up edit form with current values
-            document.getElementById('editName').value = studentData.name;
-            document.getElementById('editEmail').value = studentData.email;
-            document.getElementById('editDob').value = studentData.dob;
-            */
-            // Load admin list
-            loadAdminList();
-
-            // Set up event listeners
-            setupEventListeners();
-        });
-
-        function setupEventListeners() {
-            // Tab switching
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    switchTab(tabId);
-                });
-            });
-
-            // Logout
-            logoutBtn.addEventListener('click', function() {
-                // In a real app, you would also clear server-side session
-                localStorage.removeItem('studentSession');
-                window.location.href = 'login.html';
-            });
-
-            /*// Edit details
-            editDetailsBtn.addEventListener('click', function() {
-                editModal.style.display = 'block';
-            });*/
-
-            // Close modal buttons
-            closeModalBtn.addEventListener('click', closeEditModal);
-            cancelEditBtn.addEventListener('click', closeEditModal);
-            window.addEventListener('click', function(event) {
-                /*if (event.target === editModal) {
-                    closeEditModal();
-                }*/
-                if (event.target === instructionsModal) {
-                    instructionsModal.style.display = 'none';
-                }
-                if (event.target === resultModal) {
-                    resultModal.style.display = 'none';
-                }
-            });
-
-            /*// Edit form submission
-            editForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveStudentDetails();
-            });*/
-
-            // Start exam
-            startExamBtn.addEventListener('click', function() {
-                const examId = examIdInput.value.trim();
-                if (examId && examQuestions[examId]) {
-                    currentExamId = examId;
-                    showExamInstructions(examId);
-                } else {
-                    alert('Invalid Exam ID or no questions available for this exam.');
-                }
-            });
-
-            // Begin exam after instructions
-            beginExamBtn.addEventListener('click', startExam);
-
-            // Submit exam
-            examForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                submitExam();
-            });
-
-            // View results
-            viewResultsBtn.addEventListener('click', function() {
-                const examId = resultExamId.value.trim();
-                if (examId) {
-                    showResults(examId);
-                } else {
-                    alert('Please enter a valid Exam ID');
-                }
-            });
-
-            // Close result modal
-            closeResultModalBtn.addEventListener('click', function() {
-                resultModal.style.display = 'none';
-            });
-
-            // Send message
-            sendMessageBtn.addEventListener('click', sendMessage);
-            messageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-
-            // Handle tab visibility change for exam submission
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden && examStarted) {
-                    submitExam();
-                }
-            });
-        }
-
-        function switchTab(tabId) {
-            // Update active tab button
-            tabButtons.forEach(button => {
-                button.classList.remove('active', 'bg-blue-100', 'text-blue-700');
-                button.classList.add('hover:bg-gray-100');
-            });
-            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active', 'bg-blue-100', 'text-blue-700');
-            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.remove('hover:bg-gray-100');
-
-            // Update active tab content
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(tabId).classList.add('active');
-
-            // Store the last active tab in localStorage
-            localStorage.setItem('lastActiveTab', tabId);
-        }
-
-        /*function closeEditModal() {
-            editModal.style.display = 'none';
-        }
-
-        function saveStudentDetails() {
-            // In a real app, this would send data to the server
-            const newName = document.getElementById('editName').value;
-            const newEmail = document.getElementById('editEmail').value;
-            const newDob = document.getElementById('editDob').value;
-
-            // Update displayed values
-            document.getElementById('studentName').textContent = newName;
-            document.getElementById('studentEmail').textContent = newEmail;
-            document.getElementById('studentDob').textContent = formatDate(newDob);
-
-            // Update student data object
-            studentData.name = newName;
-            studentData.email = newEmail;
-            studentData.dob = newDob;
-
-            alert('Details updated successfully!');
-            closeEditModal();
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
-        }*/
-
-        function showExamInstructions(examId) {
-            const questions = examQuestions[examId];
-            const totalTime = questions.length * 30; // 30 seconds per question
-            examTimeLeft = totalTime;
-            
-            // Display total time in minutes and seconds
-            const minutes = Math.floor(totalTime / 60);
-            const seconds = totalTime % 60;
-            totalTimeDisplay.textContent = `${minutes > 0 ? minutes + ' minute' + (minutes > 1 ? 's' : '') + ' and ' : ''}${seconds} seconds`;
-            
-            instructionsModal.style.display = 'block';
-        }
-
         function startExam() {
+            instructionsModal.style.display = 'none';
+            examStarted = true;
+
+            const questions = examQuestions[currentExamId];
+            questionsContainer.innerHTML = '';
+
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.innerHTML = `
+                    <h4 class="font-semibold mb-2">Question ${index + 1}: ${question.text}</h4>
+                    <div class="space-y-2 ml-4">
+                        ${question.options.map((option, i) => `
+                            <label class="flex items-center">
+                                <input type="radio" name="q${question.id}" value="${option}" class="mr-2">
+                                ${String.fromCharCode(65 + i)}. ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+            // Start timer
+            examContent.classList.remove('hidden');
+            updateTimerDisplay();
+            currentExamTimer = setInterval(updateTimer, 1000);
+        }
+
+        /*function startExam() {
             instructionsModal.style.display = 'none';
             examStarted = true;
             
@@ -680,7 +530,7 @@
             examContent.classList.remove('hidden');
             updateTimerDisplay();
             currentExamTimer = setInterval(updateTimer, 1000);
-        }
+        }*/
 
         function updateTimer() {
             examTimeLeft--;
@@ -738,6 +588,19 @@
             examIdInput.value = '';
         }
 
+        function showExamInstructions(examId) {
+            const questions = examQuestions[examId];
+            const totalTime = questions.length * 30; // 30 seconds per question
+            examTimeLeft = totalTime;
+            
+            // Display total time in minutes and seconds
+            const minutes = Math.floor(totalTime / 60);
+            const seconds = totalTime % 60;
+            totalTimeDisplay.textContent = `${minutes > 0 ? minutes + ' minute' + (minutes > 1 ? 's' : '') + ' and ' : ''}${seconds} seconds`;
+            
+            instructionsModal.style.display = 'block';
+        }
+
         function showResults(examId) {
             const results = examResults["STD2023001"].filter(r => r.examId === examId);
             
@@ -761,6 +624,141 @@
             }
         }
 
+        startExamBtn.addEventListener('click', function () {
+            const examId = examIdInput.value.trim();
+
+            if (!examId) {
+                alert('Please enter an Exam ID.');
+                return;
+            }
+
+            fetch(`getExamQuestions.php?exam_id=${encodeURIComponent(examId)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.questions.length > 0) {
+                        examQuestions[examId] = data.questions;
+                        currentExamId = examId;
+                        showExamInstructions(examId);
+                    } else {
+                        alert('Invalid Exam ID or no questions available for this exam.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching questions:', error);
+                    alert('An error occurred while loading the exam.');
+                });
+            
+        });
+
+        // Start exam
+        /*startExamBtn.addEventListener('click', function() {
+            const examId = examIdInput.value.trim();
+            if (examId && examQuestions[examId]) {
+                currentExamId = examId;
+                showExamInstructions(examId);
+            } else {
+                alert('Invalid Exam ID or no questions available for this exam.');
+            }
+        });*/
+
+        // Begin exam after instructions
+        beginExamBtn.addEventListener('click', startExam);
+
+        // Submit exam
+        examForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitExam();
+        });
+
+        function setupEventListeners() {
+
+            // Close result modal
+            closeResultModalBtn.addEventListener('click', function() {
+                resultModal.style.display = 'none';
+            });
+
+            // View results
+            viewResultsBtn.addEventListener('click', function() {
+                const examId = resultExamId.value.trim();
+                if (examId) {
+                    showResults(examId);
+                } else {
+                    alert('Please enter a valid Exam ID');
+                }
+            });
+
+            // Tab switching
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', function() {
+                // In a real app, you would also clear server-side session
+                localStorage.removeItem('studentSession');
+                window.location.href = 'login.html';
+            });
+
+            // Close modal buttons
+            closeModalBtn.addEventListener('click', closeEditModal);
+            cancelEditBtn.addEventListener('click', closeEditModal);
+            window.addEventListener('click', function(event) {
+                if (event.target === instructionsModal) {
+                    instructionsModal.style.display = 'none';
+                }
+                if (event.target === resultModal) {
+                    resultModal.style.display = 'none';
+                }
+            });
+
+            // Send message
+            sendMessageBtn.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Handle tab visibility change for exam submission
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && examStarted) {
+                    submitExam();
+                }
+            });
+        }
+
+        function switchTab(tabId) {
+            // Update active tab button
+            tabButtons.forEach(button => {
+                button.classList.remove('active', 'bg-blue-100', 'text-blue-700');
+                button.classList.add('hover:bg-gray-100');
+            });
+            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active', 'bg-blue-100', 'text-blue-700');
+            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.remove('hover:bg-gray-100');
+
+            // Update active tab content
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+
+            // Store the last active tab in localStorage
+            localStorage.setItem('lastActiveTab', tabId);
+        }
+
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load admin list
+            loadAdminList();
+
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
         function loadAdminList() {
             adminList.innerHTML = '';
             
