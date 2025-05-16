@@ -15,7 +15,7 @@ if ($conn->connect_error) {
     exit();
 }
 
-$stmt = $conn->prepare("SELECT id, question, option_a, option_b, option_c, option_d FROM questions WHERE exam_id = ?");
+$stmt = $conn->prepare("SELECT id, question, option_a, option_b, option_c, option_d, correct_answer FROM questions WHERE exam_id = ?");
 $stmt->bind_param("s", $examId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -30,7 +30,8 @@ while ($row = $result->fetch_assoc()) {
             $row['option_b'],
             $row['option_c'],
             $row['option_d']
-        ]
+        ],
+        'correct_answer' => $row['correct_answer']
     ];
 }
 

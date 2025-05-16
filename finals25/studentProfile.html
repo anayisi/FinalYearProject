@@ -189,7 +189,9 @@
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th class="py-3 px-4 text-left">Student Name</th>
+                                    <th class="py-3 px-4 text-left">Student Id</th>
                                     <th class="py-3 px-4 text-left">Exam ID</th>
+                                    <th class="py-3 px-4 text-left">Result No.</th>
                                     <th class="py-3 px-4 text-left">Result</th>
                                 </tr>
                             </thead>
@@ -334,38 +336,6 @@
             { id: "ADM003", name: "Ms. Williams (Student Support)" }
         ];
 
-        /*const examQuestions = {
-            "EXAM2023-001": [
-                {
-                    id: 1,
-                    text: "What is the capital of France?",
-                    options: ["London", "Berlin", "Paris", "Madrid"],
-                    answer: "Paris"
-                },
-                {
-                    id: 2,
-                    text: "Which planet is known as the Red Planet?",
-                    options: ["Venus", "Mars", "Jupiter", "Saturn"],
-                    answer: "Mars"
-                }
-            ],
-            "EXAM2023-002": [
-                {
-                    id: 1,
-                    text: "What is 2 + 2?",
-                    options: ["3", "4", "5", "6"],
-                    answer: "4"
-                }
-            ]
-        };*/
-
-        const examResults = {
-            "STD2023001": [
-                { examId: "EXAM2023-001", score: "8/10" },
-                { examId: "EXAM2023-002", score: "10/10" }
-            ]
-        };
-
         const chatHistory = {
             "ADM001": [
                 { sender: "ADM001", message: "Hello John, how can I help you today?", time: "2023-06-10 10:30" },
@@ -476,10 +446,68 @@
             instructionsModal.style.display = 'none';
             examStarted = true;
 
-            const questions = examQuestions[currentExamId];
+            // Clone and shuffle questions array
+            const questions = [...examQuestions[currentExamId]];
+            
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+
             questionsContainer.innerHTML = '';
 
             questions.forEach((question, index) => {
+                // Map correct_answer (A/B/C/D) to the actual text
+                const optionsMap = {
+                    A: question.options[0],
+                    B: question.options[1],
+                    C: question.options[2],
+                    D: question.options[3]
+                };
+
+                const correctOptionText = optionsMap[question.correct_answer];
+
+                // Build array of option objects with correctness flag
+                const optionObjects = question.options.map(opt => ({
+                    text: opt,
+                    isCorrect: opt === correctOptionText
+                }));
+
+                // Shuffle options
+                for (let i = optionObjects.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [optionObjects[i], optionObjects[j]] = [optionObjects[j], optionObjects[i]];
+                }
+
+                // Store correct answer text after shuffling
+                question.shuffledCorrectAnswer = optionObjects.find(opt => opt.isCorrect).text;
+
+                // Render question
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.innerHTML = `
+                    <h4 class="font-semibold mb-2">Question ${index + 1}: ${question.text}</h4>
+                    <div class="space-y-2 ml-4">
+                        ${optionObjects.map((option, i) => `
+                            <label class="flex items-center">
+                                <input type="radio" name="q${question.id}" value="${option.text}" class="mr-2">
+                                ${String.fromCharCode(65 + i)}. ${option.text}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+
+                // Store correct answer and question ID for later grading
+                questionDiv.dataset.questionId = question.id;
+                questionDiv.dataset.correctAnswer = question.shuffledCorrectAnswer;
+
+                questionsContainer.appendChild(questionDiv);
+            });
+
+            // Save the updated questions with tracked answers
+            examQuestions[currentExamId] = questions;
+
+            /*questions.forEach((question, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question-container';
                 questionDiv.innerHTML = `
@@ -494,43 +522,13 @@
                     </div>
                 `;
                 questionsContainer.appendChild(questionDiv);
-            });
+            });*/
+
             // Start timer
             examContent.classList.remove('hidden');
             updateTimerDisplay();
             currentExamTimer = setInterval(updateTimer, 1000);
         }
-
-        /*function startExam() {
-            instructionsModal.style.display = 'none';
-            examStarted = true;
-            
-            // Load questions
-            const questions = examQuestions[currentExamId];
-            questionsContainer.innerHTML = '';
-            
-            questions.forEach((question, index) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question-container';
-                questionDiv.innerHTML = `
-                    <h4 class="font-semibold mb-2">Question ${index + 1}: ${question.text}</h4>
-                    <div class="space-y-2 ml-4">
-                        ${question.options.map((option, i) => `
-                            <label class="flex items-center">
-                                <input type="radio" name="q${question.id}" value="${option}" class="mr-2">
-                                ${String.fromCharCode(65 + i)}. ${option}
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
-                questionsContainer.appendChild(questionDiv);
-            });
-            
-            // Start timer
-            examContent.classList.remove('hidden');
-            updateTimerDisplay();
-            currentExamTimer = setInterval(updateTimer, 1000);
-        }*/
 
         function updateTimer() {
             examTimeLeft--;
@@ -558,27 +556,40 @@
             examStarted = false;
             clearInterval(currentExamTimer);
             
-            // Calculate score
             const questions = examQuestions[currentExamId];
             let correctAnswers = 0;
-            
-            questions.forEach(question => {
+
+            questions.forEach((question) => {
                 const selectedOption = document.querySelector(`input[name="q${question.id}"]:checked`);
-                if (selectedOption && selectedOption.value === question.answer) {
+                if (selectedOption && selectedOption.value === question.shuffledCorrectAnswer) {
                     correctAnswers++;
                 }
             });
-            
+
             const score = `${correctAnswers}/${questions.length}`;
-            
-            // In a real app, this would send the results to the server
-            if (!examResults["STD2023001"].some(r => r.examId === currentExamId)) {
-                examResults["STD2023001"].push({
-                    examId: currentExamId,
+
+            // Send results to backend
+            fetch('submit_results.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    exam_id: currentExamId,
                     score: score
-                });
-            }
-            
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Exam submitted successfully!');
+                    resetExamState();
+                } else {
+                    alert('Error submitting exam: ' + data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error Sending Scores: ', err);
+            });
+
             // Show result
             resultScore.textContent = score;
             resultModal.style.display = 'block';
@@ -602,6 +613,43 @@
         }
 
         function showResults(examId) {
+            fetch('get_results.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ exam_id: examId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.results.length > 0) {
+                    resultsTableBody.innerHTML = '';
+
+                    data.results.forEach(result => {
+                        const row = document.createElement('tr');
+                        row.className = 'hover:bg-gray-50';
+                        row.innerHTML = `
+                            <td class="py-3 px-4">${result.student_name}</td>
+                            <td class="py-3 px-4">${result.student_idNum}</td>
+                            <td class="py-3 px-4">${result.exam_id}</td>
+                            <td class="py-3 px-4">${result.result_id}</td>
+                            <td class="py-3 px-4">${result.score}</td>
+                        `;
+                        resultsTableBody.appendChild(row);
+                    });
+
+                    resultsTableContainer.classList.remove('hidden');
+                } else {
+                    alert('No results found for this exam ID');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching results:', error);
+                alert('An error occurred while fetching results.');
+            });
+        }
+
+        /*function showResults(examId) {
             const results = examResults["STD2023001"].filter(r => r.examId === examId);
             
             if (results.length > 0) {
@@ -612,6 +660,7 @@
                     row.className = 'hover:bg-gray-50';
                     row.innerHTML = `
                         <td class="py-3 px-4">${studentData.name}</td>
+                        <td class="py-3 px-4">${studentData.id_num}</td>
                         <td class="py-3 px-4">${result.examId}</td>
                         <td class="py-3 px-4">${result.score}</td>
                     `;
@@ -622,7 +671,8 @@
             } else {
                 alert('No results found for this exam ID');
             }
-        }
+        }*/
+        //Reframe this code to access the 'results' table of 'project' database and use the student_id (stored in the session) in combination with the provided exam_id to fetch the following details and populate them; student_name, student_idNum, exam_id and score. Note that there could be several scores bearing the same exam_id and student id.
 
         startExamBtn.addEventListener('click', function () {
             const examId = examIdInput.value.trim();
@@ -649,17 +699,6 @@
                 });
             
         });
-
-        // Start exam
-        /*startExamBtn.addEventListener('click', function() {
-            const examId = examIdInput.value.trim();
-            if (examId && examQuestions[examId]) {
-                currentExamId = examId;
-                showExamInstructions(examId);
-            } else {
-                alert('Invalid Exam ID or no questions available for this exam.');
-            }
-        });*/
 
         // Begin exam after instructions
         beginExamBtn.addEventListener('click', startExam);
