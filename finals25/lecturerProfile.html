@@ -187,26 +187,31 @@
                 <h2 class="text-2xl font-bold mb-6 text-gray-800">Exam Results</h2>
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="space-y-4">
+                        <label for="resultExamId" class="block font-semibold text-gray-700 mb-2">Enter Exam ID to view results:</label>
                         <div class="flex items-center space-x-4">
-                            <input type="text" id="resultsExamId" placeholder="Enter exam ID to view results" class="flex-1 border rounded-lg p-2">
+                            <input type="text" id="resultExamId" placeholder="e.g. HIST101" class="flex-1 border rounded-lg p-2">
                             <button id="viewResultsBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                                <i class="fas fa-eye mr-2"></i> View
+                                View Results
                             </button>
                         </div>
                         
-                        <div class="overflow-x-auto">
-                            <table id="resultsTable" class="min-w-full bg-white border rounded-lg">
-                                <thead class="bg-gray-100">
-                                    <tr>
-                                        <th class="py-2 px-4 border-b">Student ID</th>
-                                        <th class="py-2 px-4 border-b">Student Name</th>
-                                        <th class="py-2 px-4 border-b">Result</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="resultsTableBody">
-                                    <!-- Will be populated dynamically -->
-                                </tbody>
-                            </table>
+                        <div id="resultsTableContainer" class="hidden">
+                            <div class="overflow-x-auto">
+                                <table id="resultsTable" class="min-w-full bg-white border rounded-lg">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="py-2 px-4 border-b">Student Name</th>
+                                            <th class="py-2 px-4 border-b">Student Id</th>
+                                            <th class="py-2 px-4 border-b">Exam Id</th>
+                                            <th class="py-2 px-4 border-b">Result No.</th>
+                                            <th class="py-2 px-4 border-b">Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resultsTableBody">
+                                        <!-- Will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -391,7 +396,7 @@
         // Logout functionality
         document.getElementById('logoutBtn').addEventListener('click', function() {
             // Clear session or any authentication tokens
-            sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('lecturerLoggedIn');
             
             // Redirect to login page
             window.location.href = 'login.html';
@@ -551,7 +556,58 @@
         const editOptionC = document.getElementById('editOptionC');
         const editOptionD = document.getElementById('editOptionD');
         const editCorrectAnswer = document.getElementById('editCorrectAnswer');
+        const viewResultsBtn = document.getElementById('viewResultsBtn');
+        const resultExamId = document.getElementById('resultExamId');
+        const resultsTableContainer = document.getElementById('resultsTableContainer');
+        const resultsTableBody = document.getElementById('resultsTableBody');
         let currentQuestionId = null; // To store the ID of the question being edited
+
+        function showResults(examId) {
+            fetch('get_resultsForLecturers.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ exam_id: examId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.results.length > 0) {
+                    resultsTableBody.innerHTML = '';
+
+                    data.results.forEach(result => {
+                        const row = document.createElement('tr');
+                        row.className = 'hover:bg-gray-50';
+                        row.innerHTML = `
+                            <td class="py-3 px-4">${result.student_name}</td>
+                            <td class="py-3 px-4">${result.student_idNum}</td>
+                            <td class="py-3 px-4">${result.exam_id}</td>
+                            <td class="py-3 px-4">${result.result_id}</td>
+                            <td class="py-3 px-4">${result.score}</td>
+                        `;
+                        resultsTableBody.appendChild(row);
+                    });
+
+                    resultsTableContainer.classList.remove('hidden');
+                } else {
+                    alert('No results found for this exam ID');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching results:', error);
+                alert('An error occurred while fetching results.');
+            });
+        }
+        
+        // Event listener for view results button
+        viewResultsBtn.addEventListener('click', function() {
+            const examId = resultExamId.value.trim();
+            if (examId) {
+                showResults(examId);
+            } else {
+                alert('Please enter a valid Exam ID');
+            }
+        });
 
         // Handle Edit button
         function handleEditButtonClick(event) {
@@ -622,8 +678,8 @@
             });
         });
 
-        // Initial load
-        populateQuestions();
+        /*// Initial load
+        populateQuestions();*/
         
         // Event listener for closing the edit question modal
         closeEditQuestionModal.addEventListener('click', () => {
@@ -632,18 +688,6 @@
 
         cancelEditQuestion.addEventListener('click', () => {
             editQuestionModal.style.display = 'none';
-        });
-        
-        // Event listener for view results button
-        document.getElementById('viewResultsBtn').addEventListener('click', () => {
-            const resultsExamId = document.getElementById('resultsExamId').value;
-            if (resultsExamId) {
-                // Simulate fetching results for the given exam ID
-                alert(`Fetching results for exam ID: ${resultsExamId}`);
-                // Add logic to fetch and display results here
-            } else {
-                alert('Please enter an exam ID to view results.');
-            }
         });
 
         // Event listener for user button click in feedback tab

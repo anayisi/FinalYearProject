@@ -176,7 +176,7 @@
                 <div class="mb-6">
                     <label for="resultExamId" class="block text-gray-700 mb-2">Enter Exam ID to view results:</label>
                     <div class="flex">
-                        <input type="text" id="resultExamId" class="border rounded-l-lg p-2 flex-grow" placeholder="e.g. EXAM2023-001">
+                        <input type="text" id="resultExamId" class="border rounded-l-lg p-2 flex-grow" placeholder="e.g. HIST101">
                         <button id="viewResultsBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
                             View Results
                         </button>
@@ -613,7 +613,7 @@
         }
 
         function showResults(examId) {
-            fetch('get_results.php', {
+            fetch('get_resultsForStudents.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -648,31 +648,6 @@
                 alert('An error occurred while fetching results.');
             });
         }
-
-        /*function showResults(examId) {
-            const results = examResults["STD2023001"].filter(r => r.examId === examId);
-            
-            if (results.length > 0) {
-                resultsTableBody.innerHTML = '';
-                
-                results.forEach(result => {
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-50';
-                    row.innerHTML = `
-                        <td class="py-3 px-4">${studentData.name}</td>
-                        <td class="py-3 px-4">${studentData.id_num}</td>
-                        <td class="py-3 px-4">${result.examId}</td>
-                        <td class="py-3 px-4">${result.score}</td>
-                    `;
-                    resultsTableBody.appendChild(row);
-                });
-                
-                resultsTableContainer.classList.remove('hidden');
-            } else {
-                alert('No results found for this exam ID');
-            }
-        }*/
-        //Reframe this code to access the 'results' table of 'project' database and use the student_id (stored in the session) in combination with the provided exam_id to fetch the following details and populate them; student_name, student_idNum, exam_id and score. Note that there could be several scores bearing the same exam_id and student id.
 
         startExamBtn.addEventListener('click', function () {
             const examId = examIdInput.value.trim();
