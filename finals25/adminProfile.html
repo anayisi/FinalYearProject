@@ -171,7 +171,6 @@
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th class="py-2 px-4 border-b">Name</th>
-                                    <th class="py-2 px-4 border-b">DOB</th>
                                     <th class="py-2 px-4 border-b">Email</th>
                                     <th class="py-2 px-4 border-b">ID</th>
                                     <th class="py-2 px-4 border-b">Action</th>
@@ -179,17 +178,7 @@
                             </thead>
                             <tbody id="adminTableBody">
                                 <!-- Sample data - will be populated from database -->
-                                <tr>
-                                    <td class="py-2 px-4 border-b">John Doe</td>
-                                    <td class="py-2 px-4 border-b">15/03/1985</td>
-                                    <td class="py-2 px-4 border-b">john.doe@university.edu</td>
-                                    <td class="py-2 px-4 border-b">ADM98765</td>
-                                    <td class="py-2 px-4 border-b">
-                                        <button class="text-red-600 hover:text-red-800 delete-user" data-type="admin" data-id="ADM98765">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                    </td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -203,25 +192,15 @@
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th class="py-2 px-4 border-b">Name</th>
-                                    <th class="py-2 px-4 border-b">DOB</th>
-                                    <th class="py-2 px-4 border-b">Department</th>
+                                    <th class="py-2 px-4 border-b">Email</th>
+                                    <th class="py-2 px-4 border-b">School</th>
                                     <th class="py-2 px-4 border-b">ID</th>
                                     <th class="py-2 px-4 border-b">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="lecturerTableBody">
                                 <!-- Sample data - will be populated from database -->
-                                <tr>
-                                    <td class="py-2 px-4 border-b">Jane Smith</td>
-                                    <td class="py-2 px-4 border-b">22/07/1978</td>
-                                    <td class="py-2 px-4 border-b">Computer Science</td>
-                                    <td class="py-2 px-4 border-b">LEC54321</td>
-                                    <td class="py-2 px-4 border-b">
-                                        <button class="text-red-600 hover:text-red-800 delete-user" data-type="lecturer" data-id="LEC54321">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -235,25 +214,15 @@
                             <thead class="bg-gray-100">
                                 <tr>
                                     <th class="py-2 px-4 border-b">Name</th>
-                                    <th class="py-2 px-4 border-b">DOB</th>
-                                    <th class="py-2 px-4 border-b">Department</th>
+                                    <th class="py-2 px-4 border-b">Level</th>
+                                    <th class="py-2 px-4 border-b">Program</th>
                                     <th class="py-2 px-4 border-b">ID</th>
                                     <th class="py-2 px-4 border-b">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="studentTableBody">
                                 <!-- Sample data - will be populated from database -->
-                                <tr>
-                                    <td class="py-2 px-4 border-b">Mike Johnson</td>
-                                    <td class="py-2 px-4 border-b">05/11/2000</td>
-                                    <td class="py-2 px-4 border-b">Mathematics</td>
-                                    <td class="py-2 px-4 border-b">STU12345</td>
-                                    <td class="py-2 px-4 border-b">
-                                        <button class="text-red-600 hover:text-red-800 delete-user" data-type="student" data-id="STU12345">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                    </td>
-                                </tr>
+    
                             </tbody>
                         </table>
                     </div>
@@ -597,18 +566,89 @@
                 }
             });
             
-            // Delete user functionality
-            document.addEventListener('click', function(e) {
+            window.onload = function () {
+                fetch('members.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const adminTable = document.getElementById('adminTableBody');
+                            data.administrators.forEach(admin => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td class="py-2 px-4 border-b">${admin.name}</td>
+                                    <td class="py-2 px-4 border-b">${admin.email}</td>
+                                    <td class="py-2 px-4 border-b">${admin.id_num}</td>
+                                    <td class="py-2 px-4 border-b">
+                                        <button class="delete-user bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg" 
+                                                data-type="administrator" data-id="${admin.admin_id}">
+                                            Delete
+                                        </button>
+                                    </td>`;
+                                adminTable.appendChild(row);
+                            });
+
+                            const lecturerTable = document.getElementById('lecturerTableBody');
+                            data.lecturers.forEach(lecturer => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td class="py-2 px-4 border-b">${lecturer.name}</td>
+                                    <td class="py-2 px-4 border-b">${lecturer.email}</td>
+                                    <td class="py-2 px-4 border-b">${lecturer.school}</td>
+                                    <td class="py-2 px-4 border-b">${lecturer.id_num}</td>
+                                    <td class="py-2 px-4 border-b">
+                                        <button class="delete-user bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg" 
+                                                data-type="lecturer" data-id="${lecturer.lecturer_id}">
+                                            Delete
+                                        </button>
+                                    </td>`;
+                                lecturerTable.appendChild(row);
+                            });
+
+                            const studentTable = document.getElementById('studentTableBody');
+                            data.students.forEach(student => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td class="py-2 px-4 border-b">${student.name}</td>
+                                    <td class="py-2 px-4 border-b">${student.level}</td>
+                                    <td class="py-2 px-4 border-b">${student.program}</td>
+                                    <td class="py-2 px-4 border-b">${student.id_num}</td>
+                                    <td class="py-2 px-4 border-b">
+                                        <button class="delete-user bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg" 
+                                                data-type="student" data-id="${student.student_id}">
+                                            Delete
+                                        </button>
+                                    </td>`;
+                                studentTable.appendChild(row);
+                            });
+                        } else {
+                            alert('Failed to load member data.');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            };
+
+            // Delete user from database and UI
+            document.addEventListener('click', function (e) {
                 if (e.target.classList.contains('delete-user')) {
                     const userType = e.target.getAttribute('data-type');
                     const userId = e.target.getAttribute('data-id');
-                    
-                    // Confirm deletion
-                    if (confirm(`Are you sure you want to delete ${userType.charAt(0).toUpperCase() + userType.slice(1)}: ${userId}?`)) {
-                        // Remove from table (in a real app, this would also remove from the database)
-                        e.target.closest('tr').remove();
-                        // Show success message
-                        alert(`${userType.charAt(0).toUpperCase() + userType.slice(1)} deleted successfully!`);
+
+                    if (confirm(`Are you sure you want to delete this ${userType}?`)) {
+                        fetch('delete_user.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ type: userType, id: userId })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                e.target.closest('tr').remove();
+                                alert(`${userType} deleted successfully.`);
+                            } else {
+                                alert(`Failed to delete ${userType}.`);
+                            }
+                        })
+                        .catch(error => console.error('Delete error:', error));
                     }
                 }
             });
