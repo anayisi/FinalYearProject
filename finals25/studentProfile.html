@@ -290,7 +290,9 @@
                 <p>4. Only one answer can be selected for each question.</p>
                 <p>5. The exam will automatically submit when time expires.</p>
                 <p>6. If you close or switch tabs, the exam will be submitted automatically.</p>
-                <p>7. Unanswered questions will be marked as incorrect.</p>
+                <p>7. Don't try to refresh, mininize or restore the window while exam is in session.</p>
+                <p>8. Unanswered questions will be marked as incorrect.</p>
+                <p style="font: bold; color: red" >All the best....</p>
             </div>
             <div class="flex justify-end">
                 <button id="beginExamBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
@@ -443,6 +445,14 @@
         let examStarted = false;
 
         function startExam() {
+            // Check if window is maximized
+            const isMaximized = window.innerWidth >= screen.availWidth && window.innerHeight >= screen.availHeight;
+
+            if (!isMaximized) {
+                alert('Please maximize your browser window before starting the exam.');
+                return;
+            }
+
             instructionsModal.style.display = 'none';
             examStarted = true;
             startExamBtn.disabled = true;
@@ -646,6 +656,14 @@
                 return;
             }
 
+            // Check if window is maximized
+            const isMaximized = window.innerWidth >= screen.availWidth && window.innerHeight >= screen.availHeight;
+
+            if (!isMaximized) {
+                alert('Please maximize your browser window before starting the exam.');
+                return;
+            }
+
             fetch(`getExamQuestions.php?exam_id=${encodeURIComponent(examId)}`)
                 .then(response => response.json())
                 .then(data => {
@@ -673,15 +691,41 @@
             submitExam();
         });
 
+        function tryAutoSubmitExam(reason) {
+            if (typeof examStarted !== 'undefined' && examStarted === true && typeof submitExam === 'function') {
+                console.log(reason + " - submitting exam automatically.");
+                submitExam(); // This should handle cleanup and submission
+            }
+        }
+
         function setupEventListeners() {
-            // Handle tab visibility change for exam submission
+            // Handle tab visibility change (minimized, switched tabs)
             document.addEventListener('visibilitychange', function () {
-                if (document.hidden && typeof examStarted !== 'undefined' && examStarted === true) {
-                    if (typeof submitExam === 'function') {
-                        console.log("Tab hidden - submitting exam automatically.");
-                        submitExam(); // Will handle its own cleanup
-                    }
+                if (document.hidden) {
+                    tryAutoSubmitExam("Tab hidden or minimized");
                 }
+            });
+
+            // Handle tab refresh or close
+            window.addEventListener('beforeunload', function (e) {
+                tryAutoSubmitExam("Page refresh or close");
+                // Prevent default to show confirmation dialog (optional)
+                e.preventDefault();
+                e.returnValue = '';
+            });
+
+            let lastWindowSize = { width: window.innerWidth, height: window.innerHeight };
+
+            window.addEventListener('resize', function () {
+                const newWidth = window.innerWidth;
+                const newHeight = window.innerHeight;
+
+                // Detect significant change in window size (you can adjust the threshold)
+                if (Math.abs(newWidth - lastWindowSize.width) > 100 || Math.abs(newHeight - lastWindowSize.height) > 100) {
+                    tryAutoSubmitExam("Window resized");
+                }
+
+                lastWindowSize = { width: newWidth, height: newHeight };
             });
 
             // Close result modal
