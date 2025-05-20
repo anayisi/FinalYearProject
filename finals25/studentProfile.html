@@ -145,7 +145,7 @@
                     <label for="examIdInput" class="block text-gray-700 mb-2">Enter Exam ID:</label>
                     <div class="flex">
                         <input type="text" id="examIdInput" class="border rounded-l-lg p-2 flex-grow" placeholder="e.g. EXAM2023-001">
-                        <button id="startExamBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
+                        <button id="startExamBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg disabled:opacity-50 disabled:cursor-not-allowed">
                             Start Exam
                         </button>
                     </div>
@@ -247,7 +247,7 @@
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold">Edit Personal Details</h3>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700">&times;</button>
+                <button id="closeModal" class="text-red-700 hover:text-gray-700">&times;</button>
             </div>
             <form id="editForm" class="space-y-4">
                 <div>
@@ -401,11 +401,11 @@
                 })
             })
             
-            // Close modal
-            editmodal.style.display = 'none';
-            
             // Show success message
             alert('Details updated successfully!');
+
+            // Close modal
+            editModal.style.display = 'none';
         });
 
         // DOM Elements
@@ -445,6 +445,7 @@
         function startExam() {
             instructionsModal.style.display = 'none';
             examStarted = true;
+            startExamBtn.disabled = true;
 
             // Clone and shuffle questions array
             const questions = [...examQuestions[currentExamId]];
@@ -507,23 +508,6 @@
             // Save the updated questions with tracked answers
             examQuestions[currentExamId] = questions;
 
-            /*questions.forEach((question, index) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question-container';
-                questionDiv.innerHTML = `
-                    <h4 class="font-semibold mb-2">Question ${index + 1}: ${question.text}</h4>
-                    <div class="space-y-2 ml-4">
-                        ${question.options.map((option, i) => `
-                            <label class="flex items-center">
-                                <input type="radio" name="q${question.id}" value="${option}" class="mr-2">
-                                ${String.fromCharCode(65 + i)}. ${option}
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
-                questionsContainer.appendChild(questionDiv);
-            });*/
-
             // Start timer
             examContent.classList.remove('hidden');
             updateTimerDisplay();
@@ -553,6 +537,8 @@
         }
 
         function submitExam() {
+            if (!examStarted) return;
+
             examStarted = false;
             clearInterval(currentExamTimer);
             
@@ -597,6 +583,7 @@
             // Reset exam UI
             examContent.classList.add('hidden');
             examIdInput.value = '';
+            startExamBtn.disabled = false; //Re-enable start button
         }
 
         function showExamInstructions(examId) {
@@ -650,6 +637,8 @@
         }
 
         startExamBtn.addEventListener('click', function () {
+            if (examStarted) return;
+            
             const examId = examIdInput.value.trim();
 
             if (!examId) {
@@ -685,6 +674,15 @@
         });
 
         function setupEventListeners() {
+            // Handle tab visibility change for exam submission
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden && typeof examStarted !== 'undefined' && examStarted === true) {
+                    if (typeof submitExam === 'function') {
+                        console.log("Tab hidden - submitting exam automatically.");
+                        submitExam(); // Will handle its own cleanup
+                    }
+                }
+            });
 
             // Close result modal
             closeResultModalBtn.addEventListener('click', function() {
@@ -733,13 +731,6 @@
             messageInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     sendMessage();
-                }
-            });
-
-            // Handle tab visibility change for exam submission
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden && examStarted) {
-                    submitExam();
                 }
             });
         }

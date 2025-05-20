@@ -281,7 +281,7 @@
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold">Edit Personal Details</h3>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700">&times;</button>
+                <button id="closeModal" class="text-red-700 hover:text-gray-700">&times;</button>
             </div>
             <form id="editForm" class="space-y-4">
                 <div>
@@ -456,11 +456,13 @@
                     dob: dob
                 })
             })
-            // Close modal
-            editmodal.style.display = 'none';
-                
+            
             // Show success message
             alert('Details updated successfully!');
+            
+            // Close modal
+            editModal.style.display = 'none';
+
         });
 
         // Event listener for upload questions button
@@ -629,19 +631,42 @@
         // Handle Delete button
         function handleDeleteButtonClick(event) {
             const id = event.target.dataset.id;
+            const viewExamId = document.getElementById('viewExamId').value;
+
             if (confirm('Are you sure you want to delete this question?')) {
                 fetch('delete_question.php', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `id=${id}`
                 })
                 .then(res => res.text())
                 .then(response => {
                     alert(response);
-                    populateQuestions();
+
+                    // Re-fetch questions after deletion
+                    if (viewExamId) {
+                        fetch('fetch_questions.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ exam_id: viewExamId })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                populateQuestions(data.questions);
+                            } else {
+                                alert(data.message || 'No questions found.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching questions:', error);
+                            alert('An error occurred while fetching updated questions.');
+                        });
+                    }
                 });
             }
         }
+
         
         // Event listeners for edit and delete buttons
         questionsTableBody.addEventListener('click', (event) => {
@@ -667,19 +692,40 @@
 
             fetch('update_question.php', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData.toString()
             })
             .then(res => res.text())
             .then(response => {
                 alert(response);
                 editQuestionModal.style.display = 'none';
-                populateQuestions();
+
+                // Re-fetch and repopulate questions to reflect the changes
+                const viewExamId = document.getElementById('viewExamId').value;
+                if (viewExamId) {
+                    fetch('fetch_questions.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ exam_id: viewExamId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            populateQuestions(data.questions);
+                        } else {
+                            alert(data.message || 'No questions found.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching updated questions:', error);
+                        alert('An error occurred while updating the table.');
+                    });
+                }
             });
         });
 
         /*// Initial load
-        populateQuestions();*/
+        populateQuestions();
         
         // Event listener for closing the edit question modal
         closeEditQuestionModal.addEventListener('click', () => {
@@ -688,7 +734,7 @@
 
         cancelEditQuestion.addEventListener('click', () => {
             editQuestionModal.style.display = 'none';
-        });
+        });*/
 
         // Event listener for user button click in feedback tab
         const userButtons = document.querySelectorAll('.user-btn');
