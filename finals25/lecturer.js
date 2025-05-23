@@ -83,6 +83,60 @@ fetch('upload_questions.php', {
 });
 });
 
+/////////////
+document.getElementById('TypeQuestionForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const examId = document.getElementById('TexamId').value.trim();
+    const question = document.getElementById('TquestionText').value.trim();
+    const optionA = document.getElementById('ToptionA').value.trim();
+    const optionB = document.getElementById('ToptionB').value.trim();
+    const optionC = document.getElementById('ToptionC').value.trim();
+    const optionD = document.getElementById('ToptionD').value.trim();
+    const correctAnswer = document.getElementById('TcorrectAnswer').value;
+
+    if (!examId || !question || !optionA || !optionB || !optionC || !optionD || !correctAnswer) {
+        alert("Please fill out all fields.");
+        return;
+    }
+
+    fetch('add_question.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            exam_id: examId,
+            question: question,
+            option_a: optionA,
+            option_b: optionB,
+            option_c: optionC,
+            option_d: optionD,
+            correct_answer: correctAnswer
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        //const messageBox = document.getElementById('TypedQuestionMessage');
+        if (data.success) {
+            alert("Question added successfully!");
+            /*messageBox.textContent = "Question added successfully!";
+            messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+            messageBox.classList.add('bg-green-100', 'text-green-700');*/
+            document.getElementById('TypeQuestionForm').reset();
+        } else {
+            alert(data.message || "Failed to add question.");
+            /*messageBox.textContent = data.message || "Failed to add question.";
+            messageBox.classList.remove('hidden', 'bg-green-100', 'text-green-700');
+            messageBox.classList.add('bg-red-100', 'text-red-700');*/
+        }
+    })
+    .catch(error => {
+        console.error('Error adding question:', error);
+        alert('An error occurred while adding the question.');
+    });
+});
+
+
+////////////
 // Function to populate questions in the table
 function populateQuestions(questions) {
 const questionsTableBody = document.getElementById('questionsTableBody');

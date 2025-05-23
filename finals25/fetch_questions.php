@@ -35,7 +35,14 @@ while ($row = $result->fetch_assoc()) {
     $questions[] = $row;
 }
 
-echo json_encode(['success' => true, 'questions' => $questions]);
+if (empty($questions)) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'No questions found for this Exam ID under your account.'
+    ]);
+} else {
+    echo json_encode(['success' => true, 'questions' => $questions]);
+}
 
 $stmt->close();
 $mysqli->close();
