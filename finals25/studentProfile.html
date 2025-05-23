@@ -6,70 +6,8 @@
     <title>Student Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .tab-content { /*Custom CSS for transitions and animations*/
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 50%;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            animation: modalFadeIn 0.3s;
-        }
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .timer {
-            font-family: monospace;
-            font-size: 1.5rem;
-            color: #dc2626;
-            font-weight: bold;
-        }
-        .question-container {
-            border-left: 4px solid #3b82f6;
-            padding-left: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .chat-message {
-            max-width: 70%;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            border-radius: 1rem;
-        }
-        .sent-message {
-            background-color: #3b82f6;
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 0.25rem;
-        }
-        .received-message {
-            background-color: #e5e7eb;
-            margin-right: auto;
-            border-bottom-left-radius: 0.25rem;
-        }
-    </style>
+    <link rel="stylesheet" href="all.css">
+    <link rel="stylesheet" href="student.css">
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
     <!-- Header Section -->
@@ -316,6 +254,8 @@
         </div>
     </div>
 
+    <script src="all.js"></script>
+    <script src="student.js"></script>
     <script>
         //Populate User Details    
         fetch('student.php')
@@ -332,7 +272,7 @@
         })
         .catch(error => console.error('Error:', error));
 
-        const admins = [
+        /*const admins = [
             { id: "ADM001", name: "Aadil (Developer)" },
             { id: "ADM002", name: "Hajara (Developer)" },
             { id: "ADM003", name: "Muhammadu (Developer)" }
@@ -413,7 +353,6 @@
         // DOM Elements
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
-        const logoutBtn = document.getElementById('logoutBtn');
         const startExamBtn = document.getElementById('startExamBtn');
         const examIdInput = document.getElementById('examIdInput');
         const examContent = document.getElementById('examContent');
@@ -741,24 +680,32 @@
                 } else {
                     alert('Please enter a valid Exam ID');
                 }
-            });
+            });*/
 
-            // Tab switching
+            /*// Tab switching
             tabButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
                     switchTab(tabId);
                 });
-            });
-
-            // Logout
-            logoutBtn.addEventListener('click', function() {
-                // In a real app, you would also clear server-side session
-                localStorage.removeItem('studentSession');
+            });*/
+        
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                // Clear session or any authentication tokens
+                sessionStorage.removeItem('studentLoggedIn');
+                
+                // Redirect to login page
                 window.location.href = 'login.html';
+                
+                // Prevent back button navigation
+                window.history.pushState(null, null, 'login.html');
+                window.onpopstate = function() {
+                    window.history.pushState(null, null, 'login.html');
+                };
             });
-
-            // Close modal buttons
+            
+            /*// Close modal buttons
             closeModalBtn.addEventListener('click', closeEditModal);
             cancelEditBtn.addEventListener('click', closeEditModal);
             window.addEventListener('click', function(event) {
@@ -890,7 +837,7 @@
         function formatTime(isoString) {
             const date = new Date(isoString);
             return date.toLocaleString();
-        }
+        }*/
     </script>
 </body>
 </html>
