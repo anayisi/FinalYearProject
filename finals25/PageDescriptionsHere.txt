@@ -71,3 +71,11 @@ For the result submission, the system should access the 'students' table of 'pro
 Check the members tab of admin Profile, then tighten the loops in all the profiles, and then let's work on the logout functionality with trial.php before we come to the feedback tab.
 
 // Reframe the codes given such that on login, the system automatically accesses the 'administrators', 'lecturers' and 'students' table of the 'project' database for the following data and populate them; for administrators (name, email, id_num), for lecturers (name, email, school, id_num) and for students (name, level, program, id_num). I want a delete button on each row, which is able to delete the user from the database when clicked.
+
+READ THIS......
+1. The system should support other question types like Multiple choice multiple select, Fill in the spaces. ¬ With multiple choice and Multiple select {The questions should be set in I, II, III  and options given in a. I & II form} 
+¬ Fill in spaces will negatively affect students with poor spelling skills as the answers will be stored in the database and graded against students answers strictly.
+2. Lecturer should be able to insert questions on the platform rather than uploading questions via .txt file
+¬ Lecturers typing questions directly in portal has lots of downsides compared to uploading an already documented file. [save and continue later, keeping a copy for future reference, etc.]
+
+Get more points to defend these claim...
