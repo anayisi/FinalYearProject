@@ -24,7 +24,7 @@ $questions = [];
 while ($row = $result->fetch_assoc()) {
     $questions[] = [
         'id' => $row['id'],
-        'text' => $row['question'],
+        'text' => nl2br(htmlspecialchars($row['question'])),
         'options' => [
             $row['option_a'],
             $row['option_b'],

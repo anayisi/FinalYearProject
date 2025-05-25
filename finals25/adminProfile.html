@@ -93,15 +93,32 @@
             <div id="generate" class="tab-content">
                 <h2 class="text-2xl font-bold mb-6 text-gray-800">Generate IDs</h2>
                 <div class="bg-white p-6 rounded-lg shadow-md">
+                    <!--SYSTEM GENERATED IDs-->
+                    <h3 class="text-xl font-semibold mb-4 text-gray-700">System Generated IDs</h3>
                     <div class="mb-6">
                         <div class="flex items-center space-x-4">
                             <select id="idType" class="border rounded-lg p-2 flex-1">
-                                <option value="student">Student IDs</option>
-                                <option value="lecturer">Lecturer IDs</option>
-                                <option value="admin">Administrator IDs</option>
+                                <option value="student">Student ID</option>
+                                <option value="lecturer">Lecturer ID</option>
+                                <option value="admin">Administrator ID</option>
                             </select>
                             <button id="generateIdBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
                                 <i class="fas fa-plus-circle mr-2"></i> Generate
+                            </button>
+                        </div>
+                    </div>
+                    <!--INDEX NUMBERS INSERTIONS-->
+                    <h3 class="text-xl font-semibold mb-4 text-gray-700">Index Numbers</h3>
+                    <div class="mb-6">
+                        <div class="flex items-center space-x-4">
+                            <select id="indexType" class="border rounded-lg p-2 flex-1">
+                                <option value="student">Student Index Numbers</option>
+                                <option value="lecturer">Lecturer Staff Ids</option>
+                                <option value="admin">Administrator Staff Ids</option>
+                            </select>
+                            <textarea type="text" id="indexNumber" placeholder="Enter Id Number" rows="5" class="border rounded-lg p-2 flex-1 resize-none"></textarea>
+                            <button id="addIndexBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-plus-circle mr-2"></i> Add
                             </button>
                         </div>
                     </div>
@@ -307,8 +324,8 @@
             </form>
         </div>
     </div>
-    <script src="all.js"></script>
     <script src="admin.js"></script>
+    <script src="all.js"></script>
     <script>
         //Populate User Details    
         fetch('admin.php')
@@ -324,6 +341,65 @@
                     alert('Failed to load user details.');}
         })
         .catch(error => console.error('Error:', error));
+
+        // Add Index Numbers functionality
+        document.getElementById('addIndexBtn').addEventListener('click', () => {
+            const type = document.getElementById('indexType').value;
+            const rawInput = document.getElementById('indexNumber').value.trim();
+
+            // Split input by line and filter out empty lines
+            const ids = rawInput.split('\n').map(id => id.trim()).filter(id => id !== '');
+
+            if (ids.length === 0) {
+                alert('Please enter at least one ID.');
+                return;
+            }
+
+            fetch('add_indexes.php', {
+                method: 'POST',
+                body: JSON.stringify({ type, ids }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Invalid JSON from server:', text);
+                    throw new Error('Invalid JSON');
+                }
+            }))
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById('indexNumber').value = '';
+
+                    // Update the table according to the type of IDs successfully added to the database
+                    const tableBody = document.getElementById('idTableBody');
+                    ids.forEach(id => {
+                        if (data.skippedIds && data.skippedIds.includes(id)) return; // Skip already existing IDs
+
+                        const newRow = document.createElement('tr');
+                        if (type === 'student') {
+                            newRow.innerHTML = `<td class="py-2 px-4 border-b">${id} <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="student" data-id="${id}"><i class="fas fa-trash"></i></button></td><td class="py-2 px-4 border-b"></td><td class="py-2 px-4 border-b"></td>`;
+                        } else if (type === 'lecturer') {
+                            newRow.innerHTML = `<td class="py-2 px-4 border-b"></td><td class="py-2 px-4 border-b">${id} <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="lecturer" data-id="${id}"><i class="fas fa-trash"></i></button></td><td class="py-2 px-4 border-b"></td>`;
+                        } else if (type === 'admin') {
+                            newRow.innerHTML = `<td class="py-2 px-4 border-b"></td><td class="py-2 px-4 border-b"></td><td class="py-2 px-4 border-b">${id} <button class="ml-2 text-red-600 hover:text-red-800 delete-id" data-type="admin" data-id="${id}"><i class="fas fa-trash"></i></button></td>`;
+                        }
+                        tableBody.appendChild(newRow);
+                    });
+                    
+                } else {
+                    alert('Server Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('An error occurred while adding IDs.');
+            });
+        });
 
         /*// Tab switching functionality
         document.addEventListener('DOMContentLoaded', function() {
