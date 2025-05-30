@@ -257,18 +257,3 @@ document.addEventListener('click', function (e) {
         }
     }
 });
-
-// Feedback conversation functionality
-const conversation = document.getElementById('conversation');
-const messageInput = document.getElementById('messageInput');
-const sendMessageBtn = document.getElementById('sendMessageBtn');
-
-sendMessageBtn.addEventListener('click', function() {
-const message = messageInput.value.trim();
-if (message) {
-    const newMessage = document.createElement('p');
-    newMessage.textContent = `You: ${message}`;
-    newMessage.classList.add('text-gray-800', 'mb-2');
-    conversation.appendChild(newMessage);
-    messageInput.value = '';
-}});

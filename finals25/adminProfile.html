@@ -220,38 +220,21 @@
                         <!-- User List -->
                         <div class="w-1/3 pr-4 border-r">
                             <h3 class="text-lg font-semibold mb-4">Users</h3>
-                            <div class="space-y-2 max-h-96 overflow-y-auto">
-                                <!-- Students -->
-                                <div>
-                                    <h4 class="font-medium text-gray-700 mb-2">Students</h4>
-                                    <div class="space-y-1">
-                                        <button class="user-btn w-full text-left p-2 rounded hover:bg-gray-100" data-user="student" data-id="STU12345">
-                                            Mike Johnson (STU12345)
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Lecturers -->
-                                <div>
-                                    <h4 class="font-medium text-gray-700 mb-2">Lecturers</h4>
-                                    <div class="space-y-1">
-                                        <button class="user-btn w-full text-left p-2 rounded hover:bg-gray-100" data-user="lecturer" data-id="LEC54321">
-                                            Jane Smith (LEC54321)
-                                        </button>
-                                    </div>
-                                </div>
+                            <div class="space-y-2 max-h-96 overflow-y-auto" id="userList">
+                                <!-- Populated via JS -->
                             </div>
                         </div>
-                        
+
                         <!-- Conversation -->
                         <div class="flex-1 pl-4">
                             <h3 class="text-lg font-semibold mb-4">Conversation</h3>
                             <div id="conversation" class="chat-message mb-4 p-4 bg-gray-50 rounded-lg h-64 overflow-y-auto">
                                 <p class="text-gray-500 italic">Select a user to view conversation</p>
                             </div>
-                            
+
                             <!-- Message Input -->
                             <div class="flex items-center">
-                                <input type="text" id="messageInput" placeholder="Type your message..." class="flex-1 border rounded-l-lg p-2">
+                                <textarea id="messageInput" placeholder="Type your message..." rows="3" class="flex-1 border rounded-l-lg p-2"></textarea>
                                 <button id="sendMessageBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
                                     <i class="fas fa-paper-plane"></i> Send
                                 </button>
@@ -709,6 +692,99 @@
             conversation.appendChild(newMessage);
             messageInput.value = '';
         }});*/
+    
+        // Feedback conversation functionality
+        let selectedUser = { id: null, role: null };
+
+        function loadConversation(userId, role) {
+            selectedUser = { id: userId, role: role };
+            fetch('load_conversation.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `user_id=${userId}&user_role=${role}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                const convoBox = document.getElementById("conversation");
+                convoBox.innerHTML = '';
+                data.forEach(msg => {
+                    const p = document.createElement('p');
+                    p.className = msg.sender_role === 'admin' ? 'text-blue-600' : 'text-gray-800';
+                    p.textContent = `${msg.sender_role}: ${msg.message}`;
+                    convoBox.appendChild(p);
+                });
+                convoBox.scrollTop = convoBox.scrollHeight;
+            });
+        }
+
+
+        function loadUsers() {
+            fetch('load_users.php')
+                .then(res => res.json())
+                .then(data => {
+                    const userList = document.getElementById("userList");
+                    userList.innerHTML = '';
+
+                    const makeSection = (title, users, role) => {
+                        const section = document.createElement('div');
+                        section.innerHTML = `<h4 class="font-medium text-gray-700 mb-2">${title}</h4>`;
+                        users.forEach(user => {
+                            const btn = document.createElement('button');
+                            btn.className = "user-btn w-full text-left p-2 rounded hover:bg-gray-100";
+                            btn.textContent = `${user.name} (${user.id_num})`;
+                            btn.onclick = () => loadConversation(user.id_num, role);
+                            section.appendChild(btn);
+                        });
+                        userList.appendChild(section);
+                    };
+
+                    makeSection("Students", data.students, "student");
+                    makeSection("Lecturers", data.lecturers, "lecturer");
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", loadUsers);
+
+        document.getElementById("sendMessageBtn").onclick = () => {
+            const msg = document.getElementById("messageInput").value.trim();
+            if (!msg || !selectedUser.id) return;
+            
+            fetch('send_message.php', {
+                method: 'POST',
+                body: JSON.stringify({ user_id: selectedUser.id, user_role: selectedUser.role, message: msg }),
+                headers: { 'Content-Type': 'application/json' }
+            }).then(() => {
+                document.getElementById("messageInput").value = '';
+                loadConversation(selectedUser.id, selectedUser.role);
+            });
+        };
+
+        /*/ Backup functionality
+        document.getElementById('backupBtn').addEventListener('click', function() {
+            const backupType = document.getElementById('backupType').value;
+            const statusDiv = document.getElementById('backupStatus');
+            statusDiv.classList.remove('hidden');
+
+            fetch('backup.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: backupType })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Backup of ${backupType} completed successfully!`);
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+                statusDiv.classList.add('hidden');
+            })
+            .catch(error => {
+                console.error('Backup error:', error);
+                alert('An error occurred while backing up data.');
+                statusDiv.classList.add('hidden');
+            });
+        });*/
     </script>
 </body>
 </html>

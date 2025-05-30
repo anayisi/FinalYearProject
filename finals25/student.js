@@ -1,19 +1,3 @@
-const admins = [
-    { id: "ADM001", name: "Aadil (Developer)" },
-    { id: "ADM002", name: "Hajara (Developer)" },
-    { id: "ADM003", name: "Muhammadu (Developer)" }
-];
-
-const chatHistory = {
-    "ADM001": [
-        { sender: "ADM001", message: "Hello Aadil, how can I help you today?", time: "2023-06-10 10:30" },
-        { sender: "STD2023001", message: "Hi Hajara, I have a question about my course selection.", time: "2023-06-10 10:32" }
-    ],
-    "ADM002": [
-        { sender: "ADM002", message: "Your exam schedule has been updated.", time: "2023-06-05 14:15" }
-    ]
-};
-
 // Edit Details Modal functionality
 const editModal = document.getElementById('editModal');
 const editDetailsBtn = document.getElementById('editDetailsBtn');
@@ -456,8 +440,70 @@ function switchTab(tabId) {
     localStorage.setItem('lastActiveTab', tabId);
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    let selectedAdmin = null;
 
-// Initialize the page
+    function loadAdmins() {
+        fetch('get_admins_for_student.php')
+            .then(res => res.json())
+            .then(admins => {
+                const adminList = document.getElementById('adminList');
+                adminList.innerHTML = '';
+                admins.forEach(admin => {
+                    const btn = document.createElement('button');
+                    btn.textContent = admin.name;
+                    btn.className = 'user-btn w-full text-left p-2 rounded hover:bg-gray-100 flex justify-between items-center';
+                    btn.dataset.id = admin.id;
+
+                    if (admin.hasNewMsg) {
+                        btn.innerHTML += '<span class="w-2 h-2 bg-red-600 rounded-full ml-2"></span>';
+                    }
+
+                    btn.onclick = () => {
+                        selectedAdmin = admin.id;
+                        loadConversation(admin.id);
+                    };
+
+                    adminList.appendChild(btn);
+                });
+            });
+    }
+
+    function loadConversation(adminId) {
+        fetch(`get_conversation.php?admin_id=${adminId}`)
+            .then(res => res.json())
+            .then(messages => {
+                const area = document.getElementById('conversationArea');
+                area.innerHTML = '';
+                messages.forEach(msg => {
+                    const bubble = document.createElement('div');
+                    bubble.className = `mb-2 p-2 rounded-lg w-fit max-w-[70%] ${msg.sender_role === 'student' ? 'bg-blue-100 ml-auto' : 'bg-gray-200'}`;
+                    bubble.textContent = msg.message;
+                    area.appendChild(bubble);
+                });
+                area.scrollTop = area.scrollHeight;
+            });
+    }
+
+    document.getElementById('sendMessageBtn').onclick = () => {
+        const msg = document.getElementById('messageInput').value.trim();
+        if (!msg || !selectedAdmin) return;
+
+        fetch('send_student_message.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ admin_id: selectedAdmin, message: msg })
+        }).then(() => {
+            document.getElementById('messageInput').value = '';
+            loadConversation(selectedAdmin);
+            loadAdmins();
+        });
+    };
+
+    loadAdmins();
+});
+
+/*/ Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     // Load admin list
     loadAdminList();
@@ -548,4 +594,4 @@ function sendMessage() {
 function formatTime(isoString) {
     const date = new Date(isoString);
     return date.toLocaleString();
-}
+}*/
