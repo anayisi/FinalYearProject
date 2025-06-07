@@ -83,7 +83,7 @@ fetch('upload_questions.php', {
 });
 });
 
-/////////////
+
 document.getElementById('TypeQuestionForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -115,18 +115,11 @@ document.getElementById('TypeQuestionForm').addEventListener('submit', function 
     })
     .then(response => response.json())
     .then(data => {
-        //const messageBox = document.getElementById('TypedQuestionMessage');
         if (data.success) {
             alert("Question added successfully!");
-            /*messageBox.textContent = "Question added successfully!";
-            messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-700');
-            messageBox.classList.add('bg-green-100', 'text-green-700');*/
             document.getElementById('TypeQuestionForm').reset();
         } else {
             alert(data.message || "Failed to add question.");
-            /*messageBox.textContent = data.message || "Failed to add question.";
-            messageBox.classList.remove('hidden', 'bg-green-100', 'text-green-700');
-            messageBox.classList.add('bg-red-100', 'text-red-700');*/
         }
     })
     .catch(error => {
@@ -136,7 +129,6 @@ document.getElementById('TypeQuestionForm').addEventListener('submit', function 
 });
 
 
-////////////
 // Function to populate questions in the table
 function populateQuestions(questions) {
 const questionsTableBody = document.getElementById('questionsTableBody');
@@ -366,32 +358,6 @@ editQuestionForm.addEventListener('submit', (event) => {
             });
         }
     });
-});
-
-// Event listener for user button click in feedback tab
-const userButtons = document.querySelectorAll('.user-btn');
-userButtons.forEach(button => {
-    button.addEventListener('click', (event) => {
-        const userId = event.target.dataset.id;
-        const userType = event.target.dataset.user;
-        // Simulate fetching conversation for the selected user
-        document.getElementById('conversation').innerHTML = `<p class="text-gray-500 italic">Loading conversation with ${userType} ID: ${userId}...</p>`;
-        // Add logic to fetch and display conversation here
-    });
-});
-
-// Event listener for send message button
-document.getElementById('sendMessageBtn').addEventListener('click', () => {
-    const messageInput = document.getElementById('messageInput');
-    const message = messageInput.value;
-    if (message) {
-        // Simulate sending the message
-        const conversationDiv = document.getElementById('conversation');
-        conversationDiv.innerHTML += `<p class="text-blue-600">${message}</p>`;
-        messageInput.value = ''; // Clear the input field
-    } else {
-        alert('Please enter a message to send.');
-    }
 });
 
 // Event listener for close modal button

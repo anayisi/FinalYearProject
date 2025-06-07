@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2025 at 10:00 PM
+-- Generation Time: Jun 07, 2025 at 08:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,7 +41,8 @@ CREATE TABLE `administrators` (
 --
 
 INSERT INTO `administrators` (`admin_id`, `name`, `email`, `password`, `dob`, `id_num`) VALUES
-(5, 'Emmanuel Ayisi', 'emm4090@gmail.com', '$2y$10$iFI2DnR4xDp6uA8buVwn1uFUraXu1zYEIh27Fpev3NB17Y6qv.6cy', '2025-05-16', 'AC5gt0');
+(5, 'Emmanuel Ayisi', 'emm4090@gmail.com', '$2y$10$iFI2DnR4xDp6uA8buVwn1uFUraXu1zYEIh27Fpev3NB17Y6qv.6cy', '2025-05-16', 'AC5gt0'),
+(6, 'Agyei Sofaraa', 'jsofaraaagyei@gmail.com', '$2y$10$N04qo3GpDjdWOldWFpOx4.inVPHPN2XPqSr0EkGY.tXcgAjchWZca', '2025-05-06', 'ADM1100343');
 
 --
 -- Triggers `administrators`
@@ -58,18 +59,26 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `chats`
+-- Table structure for table `conversations`
 --
 
-CREATE TABLE `chats` (
-  `chat_id` int(11) NOT NULL,
-  `sender_id` int(11) NOT NULL,
-  `sender_role` enum('admin','lecturer','student') NOT NULL,
-  `receiver_id` int(11) NOT NULL,
-  `receiver_role` enum('admin','lecturer','student') NOT NULL,
-  `message` text NOT NULL,
-  `timestamp` datetime DEFAULT current_timestamp()
+CREATE TABLE `conversations` (
+  `id` int(11) NOT NULL,
+  `sender_type` enum('admin','student','lecturer') DEFAULT NULL,
+  `sender_id` varchar(50) DEFAULT NULL,
+  `receiver_type` enum('admin','student','lecturer') DEFAULT NULL,
+  `receiver_id` varchar(50) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `timestamp` datetime DEFAULT current_timestamp(),
+  `is_read` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `conversations`
+--
+
+INSERT INTO `conversations` (`id`, `sender_type`, `sender_id`, `receiver_type`, `receiver_id`, `message`, `timestamp`, `is_read`) VALUES
+(95, 'student', '8', 'admin', '5', '...', '2025-06-07 17:20:05', 1);
 
 -- --------------------------------------------------------
 
@@ -92,7 +101,7 @@ CREATE TABLE `lecturers` (
 --
 
 INSERT INTO `lecturers` (`lecturer_id`, `name`, `email`, `password`, `dob`, `school`, `id_num`) VALUES
-(8, 'Mr. AsanteE', 'asante@gmail.com', '$2y$10$YX0hVwKBk7G1V.a4MZajQeeIslcEjVXvciz0lg0cVAwaXshenmZCC', '1996-02-07', 'GEOSCIENCES', 'LECF4YP0UHM');
+(8, 'Mr. Asante', 'asante@gmail.com', '$2y$10$YX0hVwKBk7G1V.a4MZajQeeIslcEjVXvciz0lg0cVAwaXshenmZCC', '1996-02-07', 'GEOSCIENCES', 'LECF4YP0UHM');
 
 --
 -- Triggers `lecturers`
@@ -153,7 +162,13 @@ INSERT INTO `questions` (`id`, `lecturer_id`, `exam_id`, `question`, `option_a`,
 (27, '8', 'ACT101', 'Kofi goes to school on________________\nI. Monday\nII. Tuesday\nIII. Saturday\nIV. Sunday', 'I & II', 'III & IV', 'I, II, IV', 'I & IV', 'A'),
 (28, '8', 'ACT101', 'Kofi goes to church on________________', 'Monday', 'Tuesday', 'Sunday', 'Wednesday', 'C'),
 (32, '8', 'ACT101', 'Abu goes to mosque on________________', 'Monday', 'Tuesday', 'Sunday', 'Friday', 'D'),
-(33, '8', 'ACT101', 'Who is wrong?\nI. Kofi\nII. Ama\nIII. Yaw\nIV. None is wrong', 'I', 'I & II', 'I & III', 'IV', 'D');
+(33, '8', 'ACT101', 'Who is wrong?\nI. Kofi\nII. Ama\nIII. Yaw\nIV. None is wrong', 'I', 'I & II', 'I & III', 'IV', 'D'),
+(34, '8', 'RENG111', 'What is 1+8....', '100', '9', '8', '7', 'C'),
+(35, '8', 'RENG111', 'Who is USA\'s President?', 'Kamala', 'George', 'Trump', 'Obama', 'C'),
+(36, '8', 'RENG111', 'Capital of Burkina Faso?', 'Ouagadugu', 'Yamosokro', 'Tumu', 'Koforidua', 'A'),
+(37, '8', 'RENG112', 'What is 1+8?', '10', '9', '8', '7', 'AB'),
+(38, '8', 'RENG112', 'Who is USA\'s President?', 'Kamala', 'George', 'Trump', 'Obama', 'C'),
+(39, '8', 'RENG112', 'Capital of Burkina Faso?', 'Ouagadugu', 'Yamosokro', 'Tumu', 'Koforidua', 'A');
 
 -- --------------------------------------------------------
 
@@ -196,8 +211,7 @@ INSERT INTO `randlec` (`lecturer_id`) VALUES
 ('LEC1108022'),
 ('LECF3PQVZT2'),
 ('LECF4YP0UHM'),
-('LECUI76UBX0'),
-('LECYHWP3YQR');
+('LECUI76UBX0');
 
 -- --------------------------------------------------------
 
@@ -296,7 +310,16 @@ INSERT INTO `results` (`result_id`, `student_id`, `student_name`, `student_idNum
 (118, '8', 'Naheema', 'STUBEHHBKF8', 'HIST101', '1/2'),
 (119, '8', 'Naheema', 'STUBEHHBKF8', 'HIST101', '1/2'),
 (120, '8', 'Naheema', 'STUBEHHBKF8', 'HIST101', '0/2'),
-(121, '8', 'Naheem', 'STUBEHHBKF8', 'ACT101', '4/4');
+(121, '8', 'Naheem', 'STUBEHHBKF8', 'ACT101', '4/4'),
+(122, '8', 'Naheem', 'STUBEHHBKF8', 'HIST101', '1/2'),
+(123, '8', 'Naheem', 'STUBEHHBKF8', 'HIST101', '0/2'),
+(124, '8', 'Naheem', 'STUBEHHBKF8', 'HIST101', '0/2'),
+(125, '8', 'Naheem', 'STUBEHHBKF8', 'HIST101', '0/2'),
+(126, '8', 'Naheem', 'STUBEHHBKF8', 'HIST101', '1/2'),
+(127, '8', 'Naheem', 'STUBEHHBKF8', 'RENG112', '0/3'),
+(128, '8', 'Naheem', 'STUBEHHBKF8', 'RENG111', '0/3'),
+(129, '8', 'Naheem', 'STUBEHHBKF8', 'RENG112', '0/3'),
+(130, '8', 'Naheem', 'STUBEHHBKF8', 'RENG112', '0/3');
 
 -- --------------------------------------------------------
 
@@ -346,10 +369,10 @@ ALTER TABLE `administrators`
   ADD PRIMARY KEY (`admin_id`);
 
 --
--- Indexes for table `chats`
+-- Indexes for table `conversations`
 --
-ALTER TABLE `chats`
-  ADD PRIMARY KEY (`chat_id`);
+ALTER TABLE `conversations`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `lecturers`
@@ -409,13 +432,13 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `administrators`
 --
 ALTER TABLE `administrators`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `chats`
+-- AUTO_INCREMENT for table `conversations`
 --
-ALTER TABLE `chats`
-  MODIFY `chat_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `conversations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- AUTO_INCREMENT for table `lecturers`
@@ -427,7 +450,7 @@ ALTER TABLE `lecturers`
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `random_ids`
@@ -439,7 +462,7 @@ ALTER TABLE `random_ids`
 -- AUTO_INCREMENT for table `results`
 --
 ALTER TABLE `results`
-  MODIFY `result_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
+  MODIFY `result_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
 
 --
 -- AUTO_INCREMENT for table `students`
